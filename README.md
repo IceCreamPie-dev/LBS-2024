@@ -2,3 +2,6 @@
 DB : postgresql  
 프론트 : Vue  
 백엔드 : Express.js
+
+오늘 할일 _
+메롱메롱메롱메롱메롱
