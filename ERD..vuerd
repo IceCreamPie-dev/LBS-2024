@@ -1,0 +1,220 @@
+{
+  "canvas": {
+    "version": "2.2.13",
+    "width": 2000,
+    "height": 2000,
+    "scrollTop": 0,
+    "scrollLeft": -1,
+    "zoomLevel": 1,
+    "show": {
+      "tableComment": true,
+      "columnComment": true,
+      "columnDataType": true,
+      "columnDefault": true,
+      "columnAutoIncrement": false,
+      "columnPrimaryKey": true,
+      "columnUnique": false,
+      "columnNotNull": true,
+      "relationship": true
+    },
+    "database": "MySQL",
+    "databaseName": "lbs",
+    "canvasType": "ERD",
+    "language": "GraphQL",
+    "tableCase": "pascalCase",
+    "columnCase": "camelCase",
+    "highlightTheme": "VS2015",
+    "bracketType": "none",
+    "setting": {
+      "relationshipDataTypeSync": true,
+      "relationshipOptimization": false,
+      "columnOrder": [
+        "columnName",
+        "columnDataType",
+        "columnNotNull",
+        "columnUnique",
+        "columnAutoIncrement",
+        "columnDefault",
+        "columnComment"
+      ]
+    },
+    "pluginSerializationMap": {}
+  },
+  "table": {
+    "tables": [
+      {
+        "id": "a3af6bbd-97ae-4178-b923-1e7cda24906d",
+        "name": "User",
+        "comment": "계정정보",
+        "columns": [
+          {
+            "id": "e2f743a6-e435-4234-a9b3-3ce20a7f4a32",
+            "name": "email",
+            "comment": "",
+            "dataType": "",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": true,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": true,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "f0050c8f-040b-4ce5-8068-8297f024afaf",
+            "name": "uid",
+            "comment": "",
+            "dataType": "",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          },
+          {
+            "id": "4adefa88-de3c-47bf-94d8-ea524ad90f3b",
+            "name": "pwd",
+            "comment": "",
+            "dataType": "",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": false
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": false,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          }
+        ],
+        "ui": {
+          "active": false,
+          "left": 216,
+          "top": 259,
+          "zIndex": 83,
+          "widthName": 60,
+          "widthComment": 60
+        },
+        "visible": true
+      },
+      {
+        "id": "89c6922a-1df2-4c63-a81b-52e097e4dd87",
+        "name": "Obj",
+        "comment": "회원 수강내역",
+        "columns": [
+          {
+            "id": "3e848b2c-34bf-44e5-adb8-3d095c6151eb",
+            "name": "email",
+            "comment": "",
+            "dataType": "",
+            "default": "",
+            "option": {
+              "autoIncrement": false,
+              "primaryKey": false,
+              "unique": false,
+              "notNull": true
+            },
+            "ui": {
+              "active": false,
+              "pk": false,
+              "fk": true,
+              "pfk": false,
+              "widthName": 60,
+              "widthComment": 60,
+              "widthDataType": 60,
+              "widthDefault": 60
+            }
+          }
+        ],
+        "ui": {
+          "active": false,
+          "left": 915,
+          "top": 279,
+          "zIndex": 100,
+          "widthName": 60,
+          "widthComment": 83.37998962402344
+        },
+        "visible": true
+      },
+      {
+        "id": "21101559-8340-4a94-8c14-bb489e7e9878",
+        "name": "",
+        "comment": "",
+        "columns": [],
+        "ui": {
+          "active": false,
+          "left": 831,
+          "top": 524,
+          "zIndex": 88,
+          "widthName": 60,
+          "widthComment": 60
+        },
+        "visible": true
+      }
+    ],
+    "indexes": []
+  },
+  "memo": {
+    "memos": []
+  },
+  "relationship": {
+    "relationships": [
+      {
+        "id": "bc30d4ca-3823-4ee1-9a2e-8b654ac61a67",
+        "identification": false,
+        "relationshipType": "ZeroN",
+        "startRelationshipType": "Dash",
+        "start": {
+          "tableId": "a3af6bbd-97ae-4178-b923-1e7cda24906d",
+          "columnIds": [
+            "e2f743a6-e435-4234-a9b3-3ce20a7f4a32"
+          ],
+          "x": 563,
+          "y": 324.25,
+          "direction": "right"
+        },
+        "end": {
+          "tableId": "89c6922a-1df2-4c63-a81b-52e097e4dd87",
+          "columnIds": [
+            "3e848b2c-34bf-44e5-adb8-3d095c6151eb"
+          ],
+          "x": 915,
+          "y": 323.75,
+          "direction": "left"
+        },
+        "constraintName": "fk_user_to_",
+        "visible": true
+      }
+    ]
+  }
+}
