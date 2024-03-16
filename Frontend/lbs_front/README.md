@@ -1,4 +1,7 @@
 # lbs_front
+처음 시작시.
+- lbs_front 현재 폴더에서 npm install 을 하여 패키지를 설치 하세요.
+- npm run serve 명령어를 입력하여 서버 실행
 
 ## Project setup
 ```
