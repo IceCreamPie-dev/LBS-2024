@@ -11,4 +11,7 @@
 - QnA 게시판
 
 백엔드 : Express.js
+- port : 3000
+
 DB : Mysql
+- port : 3306
