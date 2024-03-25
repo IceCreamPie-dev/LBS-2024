@@ -3,8 +3,8 @@
     "version": "2.2.13",
     "width": 2000,
     "height": 2000,
-    "scrollTop": -358.83640000000025,
-    "scrollLeft": -138.40625,
+    "scrollTop": -427.83640000000025,
+    "scrollLeft": -280.40625,
     "zoomLevel": 0.8,
     "show": {
       "tableComment": true,
@@ -44,7 +44,7 @@
     "tables": [
       {
         "id": "a3af6bbd-97ae-4178-b923-1e7cda24906d",
-        "name": "User",
+        "name": "Users",
         "comment": "계정정보",
         "columns": [
           {
@@ -74,7 +74,7 @@
             "id": "82f9d628-2244-44dc-a380-7209b680327c",
             "name": "i_year",
             "comment": "입학년도",
-            "dataType": "",
+            "dataType": "INT",
             "default": "",
             "option": {
               "autoIncrement": false,
@@ -213,7 +213,7 @@
           "active": false,
           "left": 151.7146,
           "top": 832.139,
-          "zIndex": 179,
+          "zIndex": 27,
           "widthName": 60,
           "widthComment": 60
         },
@@ -412,7 +412,7 @@
             "id": "ce1e348e-5f23-46c7-bc6e-dcff9e549b26",
             "name": "total_score",
             "comment": "총 졸업학점",
-            "dataType": "",
+            "dataType": "INT",
             "default": "",
             "option": {
               "autoIncrement": false,
@@ -436,7 +436,7 @@
           "active": false,
           "left": 147.6943,
           "top": 354.6831,
-          "zIndex": 307,
+          "zIndex": 30,
           "widthName": 118.37588500976562,
           "widthComment": 60
         },
@@ -912,7 +912,7 @@
           "active": false,
           "left": 1556.5791,
           "top": 573.667,
-          "zIndex": 274,
+          "zIndex": 5,
           "widthName": 60,
           "widthComment": 120
         },
@@ -1066,7 +1066,7 @@
           "active": false,
           "left": 701.9981,
           "top": 960.62,
-          "zIndex": 5,
+          "zIndex": 24,
           "widthName": 60,
           "widthComment": 70.37998962402344
         },
@@ -1220,7 +1220,7 @@
           "active": false,
           "left": 1177.4885,
           "top": 856.3044,
-          "zIndex": 24,
+          "zIndex": 3,
           "widthName": 60,
           "widthComment": 60
         },
@@ -1328,7 +1328,7 @@
           "active": false,
           "left": 700.156,
           "top": 1195.3188,
-          "zIndex": 4,
+          "zIndex": 1,
           "widthName": 60,
           "widthComment": 60
         },
@@ -1410,10 +1410,10 @@
           }
         ],
         "ui": {
-          "active": true,
+          "active": false,
           "left": 1288.25,
           "top": 424.8364,
-          "zIndex": 334,
+          "zIndex": 8,
           "widthName": 60,
           "widthComment": 60
         },
@@ -1475,7 +1475,7 @@
           "active": false,
           "left": 734.9063,
           "top": 426.5864,
-          "zIndex": 313,
+          "zIndex": 7,
           "widthName": 60,
           "widthComment": 67
         },
