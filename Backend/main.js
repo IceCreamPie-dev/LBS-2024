@@ -117,6 +117,12 @@ app.delete('/board/:id', (req, res) => {
     res.json({ success: true });
   });
 });
+// CORS 설정
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
+  next();
+});
 
 // 서버 시작
 app.listen(3000, () => {
