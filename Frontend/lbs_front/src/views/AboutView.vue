@@ -14,7 +14,7 @@
           <div class="form-group">
             <label for="studentId" class="form-label">학번</label>
             <input type="text" id="studentId" class="form-input" v-model="studentId" @input="validateStudentId" />
-            <span class="error-message" v-if="!isStudentIdValid && studentId && studentId.length > 10"> ❌ {{  errorMessage }}</span>
+            <span class="error-message" v-if="!isStudentIdValid && studentId && studentId.length >= 11"> ❌ {{ errorMessage }}</span>
             <span class="success-message" v-if="isStudentIdValid && studentId"> ✔</span>
           </div>
           <div class="form-group">
