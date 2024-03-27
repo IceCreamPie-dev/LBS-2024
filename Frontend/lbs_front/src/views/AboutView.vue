@@ -14,7 +14,7 @@
           <div class="form-group">
             <label for="studentId" class="form-label">학번</label>
             <input type="text" id="studentId" class="form-input" v-model="studentId" @input="validateStudentId" />
-            <span class="error-message" v-if="!isStudentIdValid && studentId"> ❌ 올바르지 않은 학번입니다.</span>
+            <span class="error-message" v-if="!isStudentIdValid && studentId && studentId.length >= 11"> ❌ {{ errorMessage }}</span>
             <span class="success-message" v-if="isStudentIdValid && studentId"> ✔</span>
           </div>
           <div class="form-group">
@@ -56,7 +56,8 @@ export default {
       isStudentIdValid: true,
       isEmailValid: true,
       isPasswordValid: true,
-      isConfirmPasswordValid: true
+      isConfirmPasswordValid: true,
+      errorMessage:''
     };
   },
   methods: {
@@ -79,6 +80,13 @@ export default {
       // 학번에 이상한 문자가 있는지 확인
       const studentIdPattern = /^[0-9]+$/;
       this.isStudentIdValid = studentIdPattern.test(this.studentId);
+
+      // 학번이 11자리 이상일때 오류 메시지 설정해두기
+      if(this.studentId.length > 10)  {
+        this.errorMessage = '학번은 10자리까지 입력가능합니다';
+      } else {
+        this.errorMessage = '';
+      }
     },
     validateEmail() {
       // 이메일이 비어 있는지 확인
