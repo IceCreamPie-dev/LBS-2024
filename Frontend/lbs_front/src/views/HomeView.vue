@@ -1,7 +1,7 @@
 <template>
   <div class="home-account">
     <header class="header"></header>
-    <img alt="Vue logo" src="../assets/logo.png">
+    <img src="../assets/logo.png" alt="Vue logo" class="logo"/>
     <main class="home-form">
       <form>
         <div class="form-group">
@@ -36,13 +36,29 @@
   font-size: 20px;
   color: #b7b7b7;
   font-weight: 100;
+  position: fixed;
+  top: 101px; /* header의 높이만큼 아래에 위치 */
+  bottom: 101px; /* footer의 높이만큼 위에 위치 */
+  width: 100%;
+  overflow-y: auto; /* 내용이 넘칠 경우 스크롤 표시 */
 }
 
-.header,
+.header {
+  background-color: rgba(255, 187, 6, 0.5);
+  min-height: 101px;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
 .footer {
   background-color: rgba(255, 187, 6, 0.5);
   min-height: 101px;
   width: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
 }
 
 .logo {
@@ -56,7 +72,7 @@
   max-width: 100%;
 }
 
-.login-form {
+.home-form {
   border: 1px solid rgba(217, 217, 217, 1);
   align-self: center;
   margin-top: 5px;

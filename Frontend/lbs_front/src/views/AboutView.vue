@@ -76,7 +76,7 @@ export default {
       this.isStudentIdValid = studentIdPattern.test(this.studentId);
 
       if (!this.isStudentIdValid && this.studentId.length > 0) {
-        this.errorMessage = '학번은 10자리 숫자여야 합니다.';
+        this.errorMessage = '학번은 10자리이며, 숫자여야 합니다.';
       } else {
         this.errorMessage = '';
       }
