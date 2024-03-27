@@ -5,7 +5,7 @@
     <div>
     <input v-model="username" type="text" placeholder="Username">
     <input v-model="password" type="password" placeholder="Password">
-    <button @click="login">Login</button>
+    <button @click="login">로그인</button>
     </div>
   </nav>
   <router-view/>
