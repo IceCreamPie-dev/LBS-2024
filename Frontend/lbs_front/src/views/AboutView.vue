@@ -3,7 +3,7 @@
     <header class="header"></header>
     <div class="signup-container">
       <div class="signup-form">
-    
+        <img src="../assets/logo.png" alt="logo" class="logo"/>    
         <form class="form-fields">
           <div class="form-group">
             <label for="name" class="form-label">이름</label>
@@ -35,7 +35,10 @@
             <span class="error-message" v-if="!isConfirmPasswordValid && confirmPassword"> ❌ 비밀번호가 일치하지 않습니다.</span>
             <span class="success-message" v-if="isConfirmPasswordValid && password && confirmPassword"> ✔ 비밀번호가 일치합니다.</span>
           </div>
-          <button type="submit" class="signup-button">회원가입</button>
+
+           <router-link to="/" class="btn btn-signup">
+             <button class="btn-inner">회원가입</button>
+               </router-link>
         </form>
       </div>
     </div>
@@ -109,11 +112,26 @@ export default {
   display: none;
 }
 
-.header, .footer {
+.header {
   background-color: #FFDE80; /* 원하는 배경색 지정 */
   color: #fff;
   padding: 20px;
   text-align: center;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+.footer {
+  background-color: #FFDE80; /* 원하는 배경색 지정 */
+  color: #fff;
+  padding: 20px;
+  text-align: center;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
 }
 
 .signup-container {
@@ -133,7 +151,6 @@ export default {
   max-width: 800px; /* 최대 너비 설정 */
   margin-right: 6vw; /* 상대적인 단위로 변경 */
 }
-
 
 .logo {
   width: 384px;
@@ -174,21 +191,21 @@ export default {
   margin-bottom: 15px;
 }
 
-.signup-button {
+.btn-inner {
   border-radius: 9px;
   border: none;
   background-color: #ffde80;
-  width: 60%; /* 상대적인 단위로 변경 */
+  width: 30vw; /* 상대적인 단위로 변경 */
   max-width: 100%;
   font-size: 1.5vw; /* 상대적인 단위로 변경 */
   font-weight: bold;
   color: #484848;
-  margin-top: 3vw; /* 상대적인 단위로 변경 */
-  margin-right: 1vw; /* 상대적인 단위로 변경 */
-  padding: 3vw; /* 상대적인 단위로 변경 */
+  margin-top: 1vw; /* 상대적인 단위로 변경 */
+  margin-left: 10vw; /* 상대적인 단위로 변경 */
+  padding: 4vw; /* 상대적인 단위로 변경 */
   cursor: pointer;
 }
-.signup-button:hover {
+.btn-inner:hover {
   background-color: #ffd56c;
   color: rgb(56, 39, 0);
   font-weight: bold;
