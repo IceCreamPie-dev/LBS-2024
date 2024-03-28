@@ -36,9 +36,11 @@
             <span class="success-message" v-if="isConfirmPasswordValid && password && confirmPassword"> ✔ 비밀번호가 일치합니다.</span>
           </div>
 
-           <router-link to="/" class="btn btn-signup">
-             <button class="btn-inner">회원가입</button>
-               </router-link>
+             <router-link to="/" class="btn btn-signup1">
+              <button class="btn-inner1">회원가입</button>
+                </router-link>
+               
+                <button @click="login" class="btn-inner">Login</button>
         </form>
       </div>
     </div>
@@ -47,6 +49,8 @@
 </template>
 
 <script>
+import axios from 'axios';
+import { API_URL } from './config.js'; // config.js 파일 경로 수정
 export default {
   data() {
     return {
@@ -64,6 +68,16 @@ export default {
     };
   },
   methods: {
+    async login() {
+      try {
+        const response = await axios.post(`${API_URL}/login`, {
+          username: this.name,
+          password: this.password
+        });
+      } catch (error) {
+        console.error(error);
+      }
+    },
     validateName() {
       // 이름이 비어 있는지 확인
       if (this.name.trim() === '') {
