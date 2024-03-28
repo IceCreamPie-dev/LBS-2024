@@ -25,7 +25,39 @@
   </div>
 </template>
 
-
+<script>
+import axios from 'axios';
+import { API_URL } from './config.js';
+export default {
+  data() {
+    return {
+      email: '',
+      password: ''
+    };
+  },
+  methods:{
+    // 로그인 요청을 보내는 메서드
+    login(){
+      // 로그인 요청을 보냄 name, password를 body에 담아서
+      axios.post(`${API_URL}/login`, {
+        email: this.email,
+        password: this.password
+      })
+      .then(response => {
+        console.log(response);
+        // 응답으로 받은 토큰을 localStorage에 저장
+        const token = response.data.accessToken;
+        localStorage.setItem('token', token);
+        // 로그인 성공 시 / 페이지로 이동
+        this.$router.push('/');
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    }
+  }
+}
+</script>
 
 <style scoped>
 
