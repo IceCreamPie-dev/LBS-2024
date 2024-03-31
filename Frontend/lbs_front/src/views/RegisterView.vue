@@ -1,52 +1,52 @@
 <template>
-  <div class="page-container">
-    <header class="header"></header>
-    <div class="signup-container">
-      <div class="signup-form">
-        <img src="../assets/logo.png" alt="logo" class="logo"/>    
-        <form class="form-fields">
-          <div class="form-group">
-            <label for="name" class="form-label">이름</label>
-            <input type="text" id="name" class="form-input" v-model="name" @input="validateName" />
-            <span class="error-message" v-if="!isNameValid && name"> ❌ 올바르지 않은 이름입니다.</span>
-            <span class="success-message" v-if="isNameValid && name"> ✔</span>
-          </div>
-          <div class="form-group">
-            <label for="studentId" class="form-label">학번</label>
-            <input type="text" id="studentId" class="form-input" v-model="studentId" @input="validateStudentId" />
-            <span class="error-message" v-if="errorMessage"> ❌ {{ errorMessage }}</span>
-            <span class="success-message" v-if="isStudentIdValid && studentId"> ✔</span>
-          </div>
-          <div class="form-group">
-            <label for="email" class="form-label">이메일</label>
-            <input type="email" id="email" class="form-input" v-model="email" @input="validateEmail" />
-            <span class="error-message" v-if="!isEmailValid && email"> ❌ 이메일 형식이 맞지 않습니다.</span>
-            <span class="success-message" v-if="isEmailValid && email"> ✔ </span>
-          </div>
-          <div class="form-group">
-            <label for="password" class="form-label">비밀번호</label>
-            <input type="password" id="password" class="form-input" v-model="password" @input="validatePassword" />
-            <span class="error-message" v-if="!isPasswordValid && password && confirmPassword"> ❌ 비밀번호가 일치하지 않습니다.</span>
-            <span class="success-message" v-if="isPasswordValid && password && confirmPassword"> ✔ 비밀번호가 일치합니다.</span>
-          </div>
-          <div class="form-group">
-            <label for="confirmPassword" class="form-label">비밀번호 확인</label>
-            <input type="password" id="confirmPassword" class="form-input" v-model="confirmPassword" @input="validateConfirmPassword" />
-            <span class="error-message" v-if="!isConfirmPasswordValid && confirmPassword"> ❌ 비밀번호가 일치하지 않습니다.</span>
-            <span class="success-message" v-if="isConfirmPasswordValid && password && confirmPassword"> ✔ 비밀번호가 일치합니다.</span>
-          </div>
-
-             <router-link to="/" class="btn btn-signup1">
-              <button class="btn-inner1">회원가입</button>
-                </router-link>
-               
-                <button @click="login" class="btn-inner">Login</button>
-        </form>
+    <div class="page-container">
+      <header class="header"></header>
+      <div class="signup-container">
+        <div class="signup-form">
+          <img src="../assets/logo.png" alt="logo" class="logo"/>    
+          <form class="form-fields">
+            <div class="form-group">
+              <label for="name" class="form-label">이름</label>
+              <input type="text" id="name" class="form-input" v-model="name" @input="validateName" />
+              <span class="error-message" v-if="!isNameValid && name"> ❌ 올바르지 않은 이름입니다.</span>
+              <span class="success-message" v-if="isNameValid && name"> ✔</span>
+            </div>
+            <div class="form-group">
+              <label for="studentId" class="form-label">학번</label>
+              <input type="text" id="studentId" class="form-input" v-model="studentId" @input="validateStudentId" />
+              <span class="error-message" v-if="errorMessage"> ❌ {{ errorMessage }}</span>
+              <span class="success-message" v-if="isStudentIdValid && studentId"> ✔</span>
+            </div>
+            <div class="form-group">
+              <label for="email" class="form-label">이메일</label>
+              <input type="email" id="email" class="form-input" v-model="email" @input="validateEmail" />
+              <span class="error-message" v-if="!isEmailValid && email"> ❌ 이메일 형식이 맞지 않습니다.</span>
+              <span class="success-message" v-if="isEmailValid && email"> ✔ </span>
+            </div>
+            <div class="form-group">
+              <label for="password" class="form-label">비밀번호</label>
+              <input type="password" id="password" class="form-input" v-model="password" @input="validatePassword" />
+              <span class="error-message" v-if="!isPasswordValid && password && confirmPassword"> ❌ 비밀번호가 일치하지 않습니다.</span>
+              <span class="success-message" v-if="isPasswordValid && password && confirmPassword"> ✔ 비밀번호가 일치합니다.</span>
+            </div>
+            <div class="form-group">
+              <label for="confirmPassword" class="form-label">비밀번호 확인</label>
+              <input type="password" id="confirmPassword" class="form-input" v-model="confirmPassword" @input="validateConfirmPassword" />
+              <span class="error-message" v-if="!isConfirmPasswordValid && confirmPassword"> ❌ 비밀번호가 일치하지 않습니다.</span>
+              <span class="success-message" v-if="isConfirmPasswordValid && password && confirmPassword"> ✔ 비밀번호가 일치합니다.</span>
+            </div>
+  
+               <router-link to="/" class="btn btn-signup1">
+                <button class="btn-inner1">회원가입</button>
+                  </router-link>
+                 
+                  <button @click="login" class="btn-inner">Login</button>
+          </form>
+        </div>
       </div>
+      <footer class="footer"></footer>
     </div>
-    <footer class="footer"></footer>
-  </div>
-</template>
+  </template>
 
 <script>
 import axios from 'axios';
@@ -74,9 +74,14 @@ export default {
           username: this.name,
           password: this.password
         });
+        if (response.status === 200) {
+          this.$router.push('/about');
+        } else if (response.status === 400) {
+          alert('아이디 또는 비밀번호가 일치하지 않습니다.');
+        }
       } catch (error) {
         console.error(error);
-      }
+      } 
     },
     validateName() {
       // 이름이 비어 있는지 확인
