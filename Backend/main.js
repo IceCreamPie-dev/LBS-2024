@@ -45,6 +45,7 @@ app.post('/login', (req, res) => {
     res.json({ token });
   });
 });
+
 // 회원가입 요청 - 이름, 이메일, 비밀번호
 app.post('/register', (req, res) => {
   const { email, password, name, student_id, type } = req.body;
@@ -58,6 +59,7 @@ app.post('/register', (req, res) => {
     res.json({ success: true });
   });
 });
+
 // 성적 계산 요청 프론트에서 xlsx 보내줌 
 app.post('/calgradexlsx', (req, res) => {
   // 엑셀 파일을 읽어서 성적을 계산
@@ -66,6 +68,7 @@ app.post('/calgradexlsx', (req, res) => {
   const data = exel.utils.sheet_to_json(sheet, { header: 'A' });
   // 성적 계산
 });
+
 // 게시물 조회
 app.get('/board/QnA/{post_id}', authenticateToken, (req, res) => {
   // 게시물 조회
@@ -78,6 +81,7 @@ app.get('/board/QnA/{post_id}', authenticateToken, (req, res) => {
     res.json(results[0]);
   });
 });
+
 // 게시물 생성
 app.post('/board/QnA', authenticateToken, (req, res) => {
   // 게시물 작성자 이메일, 제목, 내용을 받음
@@ -93,6 +97,7 @@ app.post('/board/QnA', authenticateToken, (req, res) => {
     res.json({ success: true });
   });
 });
+
 // 게시물 수정
 app.put('/board/:id', authenticateToken, (req, res) => {
   // 게시물 수정자 이메일, 제목, 내용을 받음
@@ -108,6 +113,7 @@ app.put('/board/:id', authenticateToken, (req, res) => {
     res.json({ success: true });
   });
 });
+
 // 게시물 삭제
 app.delete('/board/:id', authenticateToken, (req, res) => {
   // 게시물 삭제 역할이 관리자이거나 게시물 작성자인 경우에만 삭제 가능
@@ -120,6 +126,7 @@ app.delete('/board/:id', authenticateToken, (req, res) => {
     res.json({ success: true });
   });
 });
+
 // 게시물 목록 조회
 app.get('/board/:board_type', authenticateToken, (req, res) => {
   const { board_type } = req.params;
@@ -137,6 +144,7 @@ app.get('/board/:board_type', authenticateToken, (req, res) => {
     res.json(results);
   });
 });
+
 // 게시물 댓글 조회
 app.get('/board/:board_type/:post_id/comments', authenticateToken, (req, res) => {
   const { post_id } = req.params;
@@ -150,6 +158,7 @@ app.get('/board/:board_type/:post_id/comments', authenticateToken, (req, res) =>
     res.json(results);
   });
 });
+
 // 게시물 댓글 생성
 app.post('/board/:board_type/:post_id/comments', authenticateToken, (req, res) => {
   const { content } = req.body;
@@ -165,6 +174,7 @@ app.post('/board/:board_type/:post_id/comments', authenticateToken, (req, res) =
     res.json({ success: true });
   });
 });
+
 // 게시물 댓글 수정
 app.put('/board/:board_type/:post_id/comments/:comment_id', authenticateToken, (req, res) => {
   const { content } = req.body;
@@ -180,6 +190,7 @@ app.put('/board/:board_type/:post_id/comments/:comment_id', authenticateToken, (
     res.json({ success: true });
   });
 });
+
 // 게시물 댓글 삭제
 app.delete('/board/:board_type/:post_id/comments/:comment_id', authenticateToken, (req, res) => {
   const { comment_id } = req.params;
@@ -193,6 +204,7 @@ app.delete('/board/:board_type/:post_id/comments/:comment_id', authenticateToken
     res.json({ success: true });
   });
 });
+
 // 졸업요건 생성
 app.post('/admin/graduation-requirements', authenticateToken, (req, res) => {
   // year(기수),type(학생 유형),dk_score(동국 소양 졸업학점),cm_score(공통 기초교육 학점),sub_score(계열 기초교육 학점),liberal_score(교양교육 학점),single_score(단수전공 학점),total_score(총 졸업학점)
@@ -207,6 +219,7 @@ app.post('/admin/graduation-requirements', authenticateToken, (req, res) => {
     res.json({ success: true });
   });
 });
+
 // 졸업요건 수정
 app.put('/admin/graduation-requirements/:id', authenticateToken, (req, res) => {
   const { year, type, dk_score, cm_score, sub_score, liberal_score, single_score, total_score } = req.body;
@@ -221,6 +234,7 @@ app.put('/admin/graduation-requirements/:id', authenticateToken, (req, res) => {
     res.json({ success: true });
   });
 });
+
 // 졸업요건 삭제
 app.delete('/admin/graduation-requirements/:id', authenticateToken, (req, res) => {
   const { id } = req.params;
@@ -234,6 +248,7 @@ app.delete('/admin/graduation-requirements/:id', authenticateToken, (req, res) =
     res.json({ success: true });
   });
 });
+
 // 졸업요건 목록 조회
 app.get('/admin/graduation-requirements', authenticateToken, (req, res) => {
   const { page = 1, limit = 10 } = req.query;
@@ -248,6 +263,7 @@ app.get('/admin/graduation-requirements', authenticateToken, (req, res) => {
     res.json(results);
   });
 });
+
 // 졸업요건 조회
 app.get('/admin/graduation-requirements/:id', authenticateToken, (req, res) => {
   const { id } = req.params;
@@ -261,6 +277,7 @@ app.get('/admin/graduation-requirements/:id', authenticateToken, (req, res) => {
     res.json(results[0]);
   });
 });
+
 // 필수과목 생성
 app.post('/admin/required-courses', authenticateToken, (req, res) => {
   const { course_type, course_name } = req.body;
@@ -274,6 +291,7 @@ app.post('/admin/required-courses', authenticateToken, (req, res) => {
     res.json({ success: true });
   });
 });
+
 // 필수과목 수정
 app.put('/admin/required-courses/:id', authenticateToken, (req, res) => {
   const { course_type, course_name } = req.body;
@@ -288,6 +306,7 @@ app.put('/admin/required-courses/:id', authenticateToken, (req, res) => {
     res.json({ success: true });
   });
 });
+
 // 필수과목 삭제
 app.delete('/admin/required-courses/:id', authenticateToken, (req, res) => {
   const { id } = req.params;
@@ -301,6 +320,7 @@ app.delete('/admin/required-courses/:id', authenticateToken, (req, res) => {
     res.json({ success: true });
   });
 });
+
 // 필수과목 목록 조회
 app.get('/admin/required-courses', authenticateToken, (req, res) => {
   const { page = 1, limit = 10 } = req.query;
@@ -315,6 +335,7 @@ app.get('/admin/required-courses', authenticateToken, (req, res) => {
     res.json(results);
   });
 });
+
 // 필수과목 조회
 app.get('/admin/required-courses/:id', authenticateToken, (req, res) => {
   const { id } = req.params;
@@ -328,6 +349,7 @@ app.get('/admin/required-courses/:id', authenticateToken, (req, res) => {
     res.json(results[0]);
   });
 });
+
 // 필수요건 집합 생성
 app.post('/admin/requirement-course-relations', authenticateToken, (req, res) => {
   const { rid, course_id } = req.body;
@@ -341,6 +363,7 @@ app.post('/admin/requirement-course-relations', authenticateToken, (req, res) =>
     res.json({ success: true });
   });
 });
+
 // 필수요건 집합 수정
 app.put('/admin/requirement-course-relations/:id', authenticateToken, (req, res) => {
   const { rid, course_id } = req.body;
@@ -355,6 +378,7 @@ app.put('/admin/requirement-course-relations/:id', authenticateToken, (req, res)
     res.json({ success: true });
   });
 });
+
 // 필수요건 집합 삭제
 app.delete('/admin/requirement-course-relations/:id', authenticateToken, (req, res) => {
   const { id } = req.params;
@@ -368,6 +392,7 @@ app.delete('/admin/requirement-course-relations/:id', authenticateToken, (req, r
     res.json({ success: true });
   });
 });
+
 // 필수요건 집합 목록 조회
 app.get('/admin/requirement-course-relations', authenticateToken, (req, res) => {
   const { page = 1, limit = 10 } = req.query;
@@ -382,6 +407,7 @@ app.get('/admin/requirement-course-relations', authenticateToken, (req, res) => 
     res.json(results);
   });
 });
+
 // 필수요건 집합 조회
 app.get('/admin/requirement-course-relations/:id', authenticateToken, (req, res) => {
   const { id } = req.params;
@@ -395,6 +421,7 @@ app.get('/admin/requirement-course-relations/:id', authenticateToken, (req, res)
     res.json(results[0]);
   });
 });
+
 // 내정보 조회
 app.get('/user/profile', authenticateToken, (req, res) => {
   // 사용자 정보 조회
@@ -407,6 +434,7 @@ app.get('/user/profile', authenticateToken, (req, res) => {
     res.json(results[0]);
   });
 });
+
 // 내정보 수정
 app.put('/user/profile', authenticateToken, (req, res) => {
   const { name, password, type, student_id, } = req.body;
@@ -420,6 +448,7 @@ app.put('/user/profile', authenticateToken, (req, res) => {
     res.json({ success: true });
   });
 });
+
 // CORS 설정
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
