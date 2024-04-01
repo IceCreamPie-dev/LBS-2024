@@ -5,42 +5,51 @@
         <div class="signup-form">
           <img src="../assets/logo.png" alt="logo" class="logo"/>    
           <form class="form-fields">
+
             <div class="form-group">
               <label for="name" class="form-label">이름</label>
               <input type="text" id="name" class="form-input" v-model="name" @input="validateName" />
-              <span class="error-message" v-if="!isNameValid && name"> ❌ 올바르지 않은 이름입니다.</span>
               <span class="success-message" v-if="isNameValid && name"> ✔</span>
-            </div>
+           </div>
+            <div>
+            <span class="error-message" v-if="!isNameValid && name"> ❌ 올바르지 않은 이름입니다.</span>
+              </div>
+
             <div class="form-group">
               <label for="studentId" class="form-label">학번</label>
               <input type="text" id="studentId" class="form-input" v-model="studentId" @input="validateStudentId" />
-              <span class="error-message" v-if="errorMessage"> ❌ {{ errorMessage }}</span>
               <span class="success-message" v-if="isStudentIdValid && studentId"> ✔</span>
+           </div>
+            <div>
+              <span class="error-message" v-if="errorMessage"> ❌ {{ errorMessage }}</span>
             </div>
             <div class="form-group">
               <label for="email" class="form-label">이메일</label>
               <input type="email" id="email" class="form-input" v-model="email" @input="validateEmail" />
-              <span class="error-message" v-if="!isEmailValid && email"> ❌ 이메일 형식이 맞지 않습니다.</span>
-              <span class="success-message" v-if="isEmailValid && email"> ✔ </span>
-            </div>
+              <span class="success-message" v-if="isEmailValid && email"> ✔</span>
+           </div>
+            <div>
+            <span class="error-message" v-if="!isEmailValid && email"> ❌ 이메일 형식이 맞지 않습니다.</span>
+              </div>
             <div class="form-group">
               <label for="password" class="form-label">비밀번호</label>
               <input type="password" id="password" class="form-input" v-model="password" @input="validatePassword" />
-              <span class="error-message" v-if="!isPasswordValid && password && confirmPassword"> ❌ 비밀번호가 일치하지 않습니다.</span>
-              <span class="success-message" v-if="isPasswordValid && password && confirmPassword"> ✔ 비밀번호가 일치합니다.</span>
-            </div>
+              <span class="success-message" v-if="isPasswordValid && password && confirmPassword"> ✔</span>
+           </div>
+            <div>
+            <span class="error-message" v-if="!isPasswordValid && password && confirmPassword"> ❌ 비밀번호가 일치하지 않습니다.</span>
+              </div>
             <div class="form-group">
               <label for="confirmPassword" class="form-label">비밀번호 확인</label>
               <input type="password" id="confirmPassword" class="form-input" v-model="confirmPassword" @input="validateConfirmPassword" />
-              <span class="error-message" v-if="!isConfirmPasswordValid && confirmPassword"> ❌ 비밀번호가 일치하지 않습니다.</span>
-              <span class="success-message" v-if="isConfirmPasswordValid && password && confirmPassword"> ✔ 비밀번호가 일치합니다.</span>
-            </div>
-  
-               <router-link to="/" class="btn btn-signup1">
-                <button class="btn-inner1">회원가입</button>
-                  </router-link>
-                 
-                  <button @click="login" class="btn-inner">Login</button>
+              <span class="success-message" v-if="isConfirmPasswordValid && confirmPassword"> ✔</span>
+           </div>
+            <div>
+            <span class="error-message" v-if="!isConfirmPasswordValid && confirmPassword"> ❌ 비밀번호가 일치하지 않습니다.</span>
+              </div>
+               <router-link to="/" class="btn-register">회원가입</router-link>
+                
+          
           </form>
         </div>
       </div>
@@ -49,8 +58,9 @@
   </template>
 
 <script>
+/*
 import axios from 'axios';
-import { API_URL } from './config.js'; // config.js 파일 경로 수정
+import { API_URL } from './config.js'; // config.js 파일 경로 수정*/
 export default {
   data() {
     return {
@@ -68,7 +78,7 @@ export default {
     };
   },
   methods: {
-    async login() {
+/*    async login() {
       try {
         const response = await axios.post(`${API_URL}/login`, {
           username: this.name,
@@ -82,7 +92,7 @@ export default {
       } catch (error) {
         console.error(error);
       } 
-    },
+    },*/
     validateName() {
       // 이름이 비어 있는지 확인
       if (this.name.trim() === '') {
@@ -210,7 +220,7 @@ export default {
   margin-bottom: 15px;
 }
 
-.btn-inner {
+.btn-register {
   border-radius: 9px;
   border: none;
   background-color: #ffde80;
@@ -220,16 +230,21 @@ export default {
   font-weight: bold;
   color: #484848;
   margin-top: 1vw; /* 상대적인 단위로 변경 */
-  margin-left: 10vw; /* 상대적인 단위로 변경 */
-  padding: 4vw; /* 상대적인 단위로 변경 */
+  margin-left: 7vw; /* 상대적인 단위로 변경 */
+  padding: 1vw; /* 상대적인 단위로 변경 */
   cursor: pointer;
+    position: relative;
 }
-.btn-inner:hover {
+.btn-register:hover {
   background-color: #ffd56c;
   color: rgb(56, 39, 0);
   font-weight: bold;
 }
-
+.btn-register {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
 .error-message {
   color: #FA5C87;
   margin-left: 1vw; /* 상대적인 단위로 변경 */

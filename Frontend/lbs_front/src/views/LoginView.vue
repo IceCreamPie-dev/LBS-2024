@@ -13,11 +13,13 @@
             <input type="password" id="password" class="form-input" />
           </div>
           <div class="form-actions">
-      <router-link to="/about" class="btn btn-signup">
+      <router-link to="/register" class="btn btn-signup">
       <button class="btn-inner">회원가입</button>
       </router-link>
+      <router-link to="/mypage" class="btn btn-login">
+      <button class="btn-inner">로그인</button>
+      </router-link>
   
-      <button type="submit" class="btn btn-login">로그인</button>
           </div>
         </form>
       </main>
@@ -26,15 +28,16 @@
   </template>
   
   <script>
+  /*
   import axios from 'axios';
-  import { API_URL } from './config.js';
+  import { API_URL } from './config.js';*/
   export default {
     data() {
       return {
         email: '',
         password: ''
       };
-    },
+    }/*,
     methods:{
       // 로그인 요청을 보내는 메서드
       login(){
@@ -59,7 +62,7 @@
           console.log(error);
         });
       }
-    }
+    }*/
   }
   </script>
   
