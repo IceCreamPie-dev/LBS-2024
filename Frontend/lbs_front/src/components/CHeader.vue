@@ -1,23 +1,25 @@
 <template>
   <div class="header">
     <div class="logo">
-      <img src="../assets/logo.png" alt="logo" class="logo" />
+      <img src="../assets/main-logo.png" alt="logo" class="logo" />
     </div>
   </div>
 </template>
 
 <style scoped>
 .header {
+  width: 100%;
   display: flex;
-  align-items: center;
-  padding: 20px;
+  justify-content: center;
+  padding: 10px;
 }
 
 .logo {
-  margin-right: auto;
+  align-items: center;
+  display: flex;
 }
 
-.logo img {
-  height: 100px;
+.logo img{
 }
+
 </style>
