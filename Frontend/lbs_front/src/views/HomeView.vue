@@ -17,6 +17,7 @@
     <CFooter />
   </footer>
 </template>
+
 <script>
 import SideBar from '../components/SideBar.vue';
 import MyPage from '../components/MyPage.vue';
@@ -120,6 +121,7 @@ export default {
   justify-content: space-between;
   flex: 1;
   padding-top: 10px;
+  min-width: 300px;
 }
 
 .side {
