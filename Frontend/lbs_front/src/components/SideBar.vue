@@ -1,5 +1,4 @@
 <template>
-    <div class="page-container">
       <div class="main-container">
         <div class="signup-container">
           <div class="signup-form">
@@ -35,7 +34,6 @@
           </div>
         </div>
       </div>
-    </div>
   </template>
   
   <script>
