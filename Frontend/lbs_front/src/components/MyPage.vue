@@ -1,5 +1,9 @@
-<template>  
-        <form class="form-fields">
+<template>
+            <div class = "title-group">
+              <label for="title" class="title-label">마이페이지</label>
+            </div> 
+            <div class="yellow-line"></div>
+        <form >
 
           <div class="form-group">
             <label for="name" class="form-label">이름</label>
@@ -127,51 +131,17 @@ export default {
   display: none;
 }
 
-.header {
-  background-color: #FFDE80; /* 원하는 배경색 지정 */
-  color: #fff;
-  padding: 20px;
-  text-align: center;
-  width: 100%;
-  position: fixed;
-  top: 0;
-  left: 0;
-}
-
-.footer {
-  background-color: #FFDE80; /* 원하는 배경색 지정 */
-  color: #fff;
-  padding: 20px;
-  text-align: center;
-  width: 100%;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-}
-
-.signup-container {
-  background-color: #fff;
+.title-group {
   display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #aeaeae;
-  padding: 4vw 3vw; /* 상대적인 단위로 변경 */
+  justify-content: left;
+  margin-top: 2vw;
 }
 
-
-.signup-form {
-  display: flex;
-  flex-direction: column;
-  width: 100%; /* 화면 크기에 관계없이 부모 요소에 따라 동적으로 조절 */
-  max-width: 800px; /* 최대 너비 설정 */
-  margin-right: 6vw; /* 상대적인 단위로 변경 */
-}
-
-.logo {
-  width: 384px;
-  margin-left: 70px;
-  max-width: 100%;
-  align-self: center;
+.title-label {
+  font-size: 2vw; /* 상대적인 단위로 변경 */
+  font-weight: bold;
+  color: #484848;
+  margin-left: 1vw; /* 상대적인 단위로 변경 */
 }
 
 .form-fields {

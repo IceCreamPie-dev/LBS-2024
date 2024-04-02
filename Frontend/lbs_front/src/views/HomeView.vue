@@ -118,7 +118,8 @@ export default {
 .content {
   display: flex;
   justify-content: space-between;
-  flex: 1; 
+  flex: 1;
+  padding-top: 10px;
 }
 
 .side {
@@ -137,7 +138,7 @@ export default {
 }
 
 .yellow-line {
-  height: 5px;
-  background-color: #FFC107;
+  height: 1.5px;
+  background-color: rgba(255, 222, 128, 1);
 }
 </style>
