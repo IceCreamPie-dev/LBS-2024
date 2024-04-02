@@ -1,5 +1,5 @@
 <template>
     <div>
-        test
+        푸터 테스트용
     </div>
 </template>

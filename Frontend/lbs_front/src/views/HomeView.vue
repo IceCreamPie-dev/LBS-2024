@@ -2,6 +2,7 @@
   <header class="header">
     <CHeader />
   </header>
+  <div class="yellow-line"></div>
   <div class="content">
     <aside class="side">
     </aside>
@@ -109,9 +110,9 @@ export default {
 }
 
 .header {
-  flex: 0 0 60px; 
-  background-color: #f8f9fa;
-  border-bottom: 1px solid #e9ecef;
+  display: flex;
+  align-items: center;
+  padding: 20px;
 }
 
 .content {
@@ -133,5 +134,10 @@ export default {
 }
 
 .footer {
+}
+
+.yellow-line {
+  height: 5px;
+  background-color: #FFC107;
 }
 </style>
