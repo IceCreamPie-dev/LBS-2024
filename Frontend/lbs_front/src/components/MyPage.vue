@@ -3,8 +3,7 @@
               <label for="title" class="title-label">마이페이지</label>
             </div> 
             <div class="yellow-line"></div>
-        <form >
-
+        <form class = "form-page">
           <div class="form-group">
             <label for="name" class="form-label">이름</label>
             <input type="text" id="name" class="form-input" v-model="name" @input="validateName" />
@@ -231,5 +230,9 @@ justify-content: center;
   .form-input {
     width: 60%; /* 입력 필드의 너비를 축소 */
   }
+}
+
+.form-page {
+  margin-top: 35px;
 }
 </style>
