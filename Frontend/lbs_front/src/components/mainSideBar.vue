@@ -130,7 +130,7 @@ ul{
   margin-bottom:2px ;
   border-bottom: 3px solid rgba(96, 85, 72, 0.7); /*선 요소에 대한 불투명도 조절 : 시각적 요소를 위해 넣었음 ! */
   opacity: 0.85;
-  cursor: pointer;
+  
 }
 
 .guid-modal {

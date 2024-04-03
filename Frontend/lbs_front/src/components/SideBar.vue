@@ -187,7 +187,6 @@
     margin-bottom:2px ;
     border-bottom: 3px solid rgba(96, 85, 72, 0.7); /*선 요소에 대한 불투명도 조절 : 시각적 요소를 위해 넣었음 ! */
     opacity: 0.85;
-    cursor: pointer;
     
   }
   
@@ -212,13 +211,12 @@
   .menu-list li:hover{
     border: rgb(96, 85, 72, 0.8) 1px solid;
     border-right: 20px solid #605548;
-    box-shadow: 0px 3px 2px rgba(0, 0, 0, 0.3);
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
   }
   
   .show-modal {
     display: block;
     transform: translateY(0);
-    
   }
   
   .logout-button:hover{
