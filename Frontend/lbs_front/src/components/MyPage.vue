@@ -137,10 +137,11 @@ export default {
 }
 
 .title-label {
-  font-size: 2vw; /* 상대적인 단위로 변경 */
+  font-size: 25px; /* 상대적인 단위로 변경 */
   font-weight: bold;
   color: #484848;
   margin-left: 1vw; /* 상대적인 단위로 변경 */
+  margin-bottom: 15px ;
 }
 
 .form-fields {
@@ -189,16 +190,15 @@ export default {
   padding: 7px; /* 상대적인 단위로 변경 */
   cursor: pointer;
   position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration:none;
 }
 .btn-save:hover {
   background-color: #ffd56c;
   color: rgb(56, 39, 0);
   font-weight: bold;
-}
-.btn-save {
-display: inline-flex;
-align-items: center;
-justify-content: center;
 }
 .error-message {
   color: #FA5C87;
@@ -227,7 +227,7 @@ justify-content: center;
     width: 40%; /* 레이블의 너비를 확장 */
   }
 
-  .form-input {
+  .form-input {    
     width: 60%; /* 입력 필드의 너비를 축소 */
   }
 }
