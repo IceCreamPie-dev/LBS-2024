@@ -6,11 +6,10 @@
   <div class="content">
     <aside class="side">
     </aside>
-    <main class="main">
-      <MyPage />
+    <main class="main" @mypage="handleMenuClick">
     </main>
     <nav class="nav">
-      <sideBar />
+      <SideBar />
     </nav>
   </div>
   <footer class="footer">
@@ -18,18 +17,28 @@
   </footer>
 </template>
 
-<script>
+<script>/*
+import EventBus from '../EventBus.js';*/
 import SideBar from '../components/SideBar.vue';
 import CHeader from '../components/CHeader.vue';
 import CFooter from '../components/CFooter.vue';
+
 /*
 import axios from 'axios';
 import { API_URL } from './config.js'; // config.js 파일 경로 수정
 */
 export default {
+  /*created() {
+    // 'showMyPage' 이벤트를 수신하여 handleShowMyPage 메서드를 호출합니다.
+    EventBus.$on('mypage', this.handleMenuClick);
+  },
+  // unmounted 훅에서 이벤트 리스너를 해제합니다.
+  unmounted() {
+    // 컴포넌트가 소멸될 때 이벤트 리스너를 제거합니다.
+    EventBus.$off('mypage', this.handleMenuClick);
+  },*/
   components: {
     SideBar,
-    MyPage,
     CHeader,
     CFooter
   },
@@ -58,6 +67,11 @@ export default {
       } catch (error) {
         console.error(error);
       }
+    },*//*
+    handleMenuClick() {
+      // SideBar에서 메뉴 클릭 시 실행할 동작
+      console.log('메뉴 클릭됨');
+      this.dynamicComponent = 'MyPage'; // 동적 컴포넌트 변경
     },*/
     validateName() {
       // 이름이 비어 있는지 확인

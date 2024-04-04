@@ -1,55 +1,68 @@
 <template>
-      <div class="main-container">
-        <div class="signup-container">
-          <div class="signup-form">
-          </div>
+  <div class="main-container">
+    <div class="signup-container">
+      <div class="signup-form">
+      </div>
+    </div>
+    <div class="menu-container">
+      <div class="user-profile">
+        <div class="profile-image">
+          <a href="#"><img src="../assets/user.png" alt="사용자 이미지"></a>
         </div>
-        <div class="menu-container">
-          <div class="user-profile">
-            <div class="profile-image">
-            <a href="#"><img src="../assets/user.png" alt="사용자 이미지"></a>
-            </div>
-            <div class="profile-details">
-              <div class="user-info">
-                <label class="username">홍길동님</label>
-                <label for="no">|</label>
-                <label class="user-role">교직이수</label>
-              </div>
-              <div class="user-email">abc22@gmail.com</div>
-              <button class="logout-button">로그아웃</button>
-            </div>
+        <div class="profile-details">
+          <div class="user-info">
+            <label class="username">홍길동님</label>
+            <label for="no">|</label>
+            <label class="user-role">교직이수</label>
           </div>
-          <ul class="menu-list">
-            <li><a href="#">공지사항</a></li>
-            <li><a href="#">마이페이지</a></li>
-            <li><a href="#">Q&A 게시판</a></li>
-          </ul>
-          <div class="guid">
-            <ul class="guid-menu">
-            <li>
-              <img src="../assets/guid.png" alt="졸업알리미 사용설명서" @click="toggleModal" class="loading-icon">
-              <div class="guid-modal" v-if="showModal"><img src="../assets/doumi-guid.png" alt="도우미 가이드"></div>
-            </li>
-            </ul>
-          </div>
+          <div class="user-email">abc22@gmail.com</div>
+          <button class="logout-button">로그아웃</button>
         </div>
       </div>
-  </template>
-  
-  <script>
-  export default {
-    data() {
-      return {
-        showModal: false,
-      };
+      <ul class="menu-list">
+        <li><a href="#">공지사항</a></li>
+        <li><a href="#" @click="showMyPage">마이페이지</a></li>
+        <li><a href="#">Q&A 게시판</a></li>
+      </ul>
+      <div class="guid">
+        <ul class="guid-menu">
+          <li>
+            <img src="../assets/guid.png" alt="졸업알리미 사용설명서" @click="toggleModal" class="loading-icon">
+            <div class="guid-modal" v-if="showModal"><img src="../assets/doumi-guid.png" alt="도우미 가이드"></div>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="main">
+      <!-- Main 영역 -->
+      <component :is="dynamicComponent"></component>
+    </div>
+  </div>
+</template>
+
+<script>
+import MyPage from './MyPage.vue'; // MyPage 컴포넌트 import
+
+export default {
+  data() {
+    return {
+      showModal: false,
+      dynamicComponent: null,
+    };
+  },
+  components: {
+    MyPage,
+  },
+  methods: {
+    toggleModal() {
+      this.showModal = !this.showModal;
     },
-    methods: {
-      toggleModal() {
-        this.showModal = !this.showModal;
-      }
+    showMyPage() {
+      this.dynamicComponent = 'MyPage'; // MyPage 컴포넌트를 동적으로 로드
     }
-  };
-  </script>
+  }
+};
+</script>
   
   
   <style scoped>
@@ -59,11 +72,33 @@
     align-items: center;
   }
   .main-container {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-  }
-  
+  display: flex;
+  flex-direction: row-reverse; /* 메뉴가 오른쪽에서 왼쪽으로 이동하도록 설정 */
+  justify-content: space-between;
+  width: 100%;
+}
+
+.menu-container {
+  width: 280px; /* 메뉴 컨테이너의 너비 지정 */
+}
+
+.main {
+  flex-grow: 1; /* 메인 영역이 남은 공간을 차지하도록 설정 */
+}
+
+.main-component {
+  transition: transform 0.5s ease; /* 동적 컴포넌트의 이동 애니메이션 설정 */
+}
+
+.main-component-enter-active,
+.main-component-leave-active {
+  transition: transform 0.5s ease; /* 동적 컴포넌트의 이동 애니메이션 설정 */
+}
+
+.main-component-enter,
+.main-component-leave-to {
+  transform: translateX(100%); /* 컴포넌트가 오른쪽에서 왼쪽으로 이동하도록 설정 */
+}
   /*---------------------------------------------------------------------------------------- */
   
   .user-profile {
