@@ -24,12 +24,6 @@ const routes = [
     path: '/sidebartest',
     name: 'sidebartest',
     component: SideBarTestView
-  },
-  {
-    path: '/mypage',
-    name: 'mypage',
-    component: import('../components/MyPage.vue') ,
-    meta: { requiresAuth: true }
   }
 ]
 

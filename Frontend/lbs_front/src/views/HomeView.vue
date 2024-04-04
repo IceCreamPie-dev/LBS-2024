@@ -6,7 +6,10 @@
   <div class="content">
     <aside class="side">
     </aside>
-    <main class="main" @mypage="handleMenuClick">
+    <main class="main">
+      <MyPage v-if="currentPage === 'MyPage'" /> 
+      <QnAMonit v-if="currentPage === 'QnA'" /> 
+      <GonggiMonit v-if="currentPage === 'Gonggi'" /> 
     </main>
     <nav class="nav">
       <SideBar />
@@ -17,11 +20,13 @@
   </footer>
 </template>
 
-<script>/*
-import EventBus from '../EventBus.js';*/
+<script>
 import SideBar from '../components/SideBar.vue';
 import CHeader from '../components/CHeader.vue';
 import CFooter from '../components/CFooter.vue';
+import MyPage from '../components/MyPageMonit.vue';
+import QnAMonit from '../components/qnaMonit.vue'; //QnA
+import GonggiMonit from '../components/gonggiMonit.vue'; //공지사항
 
 /*
 import axios from 'axios';
@@ -40,7 +45,10 @@ export default {
   components: {
     SideBar,
     CHeader,
-    CFooter
+    CFooter,
+    MyPage,
+    GonggiMonit,
+    QnAMonit
   },
   data() {
     return {
@@ -54,10 +62,22 @@ export default {
       isEmailValid: true,
       isPasswordValid: true,
       isConfirmPasswordValid: true,
-      errorMessage: ''
+      errorMessage: '',
+      currentPage: 'NULL' // 동적 컴포넌트를 저장할 데이터
     };
   },
+  created() {
+    this.emitter.on('change-page', this.onChangePage);
+  },
+  unmounted() {
+    this.emitter.off('change-page', this.onChangePage);
+  },
   methods: {
+    // 동적 컴포넌트를 변경하는 메서드
+    onChangePage(page) {
+      this.currentPage = page;
+      console.log(page);
+    },
     /*async login() {
       try {
         const response = await axios.post(`${API_URL}/login`, {

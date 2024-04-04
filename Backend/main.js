@@ -101,7 +101,7 @@ app.post('/calgradexlsx', (req, res) => {
   const is_dk_score = std_dk_score >= rq_dk_score; // 소양 합격여부
   const is_cm_score = std_cm_score >= rq_cm_score; // 공통 합격여부
   const is_sub_score = std_sub_score >= rq_sub_score; // 계열 합격여부
-  const is_liberal_score = std_sub_score >= rq_liberal_score; // 교양 합격여부
+  const is_liberal_score = std_liberal_score >= rq_liberal_score; // 교양 합격여부
   const is_single_score = std_single_score >= rq_single_score; // 단수전공 합격여부
   const is_total_score = std_total_score >= rq_total_score; // 총 합격여부
 
@@ -147,6 +147,24 @@ app.post('/calgradexlsx', (req, res) => {
   const std_type_9 = data.filter((row) => row['이수구분영역'] === '공통교육');
   // 추출한 데이터를 비교해서 학생이 이수한 과목과 필수과목을 비교해서
   // 영역별 변수에 과목 이름과 이수한 경우 true 안한경우 false 로 분류해 저장
+  const is_type_1 = type_1.map((row) => std_type_1.some((std_row) => std_row['과목명'] === row.course_name));
+  const is_type_2 = type_2.map((row) => std_type_2.some((std_row) => std_row['과목명'] === row.course_name));
+  const is_type_3 = type_3.map((row) => std_type_3.some((std_row) => std_row['과목명'] === row.course_name));
+  const is_type_4 = type_4.map((row) => std_type_4.some((std_row) => std_row['과목명'] === row.course_name));
+  const is_type_5 = type_5.map((row) => std_type_5.some((std_row) => std_row['과목명'] === row.course_name));
+  const is_type_6 = type_6.map((row) => std_type_6.some((std_row) => std_row['과목명'] === row.course_name));
+  const is_type_7 = type_7.map((row) => std_type_7.some((std_row) => std_row['과목명'] === row.course_name));
+  const is_type_8 = type_8.map((row) => std_type_8.some((std_row) => std_row['과목명'] === row.course_name));
+  const is_type_9 = type_9.map((row) => std_type_9.some((std_row) => std_row['과목명'] === row.course_name));
+
+  // 결과를 반환
+  // 졸업 요건 학점들, 현재 학점들, 영역별 이수여부를 반환
+  res.json({
+    std_dk_score, std_cm_score, std_sub_score, std_liberal_score, std_single_score, std_total_score, 
+    rq_dk_score, rq_cm_score, rq_sub, rq_liberal_score, rq_single_score, rq_total_score,
+    is_type_1, is_type_2, is_type_3, is_type_4, is_type_5, is_type_6, is_type_7, is_type_8, is_type_9
+  });
+
 });
 
 // 게시물 조회

@@ -20,9 +20,9 @@
         </div>
       </div>
       <ul class="menu-list">
-        <li><a href="#">공지사항</a></li>
-        <li><a href="#" @click="showMyPage">마이페이지</a></li>
-        <li><a href="#">Q&A 게시판</a></li>
+        <li><a href="#" @click="changePage('Gonggi')">공지사항</a></li>
+        <li><a href="#" @click="changePage('MyPage')">마이페이지</a></li>
+        <li><a href="#" @click="changePage('QnA')">Q&A 게시판</a></li>
       </ul>
       <div class="guid">
         <ul class="guid-menu">
@@ -33,32 +33,22 @@
         </ul>
       </div>
     </div>
-    <div class="main">
-      <!-- Main 영역 -->
-      <component :is="dynamicComponent"></component>
-    </div>
   </div>
 </template>
 
 <script>
-import MyPage from './MyPage.vue'; // MyPage 컴포넌트 import
-
 export default {
   data() {
     return {
       showModal: false,
-      dynamicComponent: null,
     };
-  },
-  components: {
-    MyPage,
   },
   methods: {
     toggleModal() {
       this.showModal = !this.showModal;
     },
-    showMyPage() {
-      this.dynamicComponent = 'MyPage'; // MyPage 컴포넌트를 동적으로 로드
+    changePage(page) {
+      this.emitter.emit('change-page', page);
     }
   }
 };
