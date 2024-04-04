@@ -1,0 +1,58 @@
+@startuml
+participant User
+participant Client
+participant Server
+participant Database
+
+User -> Client: 로그인 요청 (이메일, 비밀번호)
+activate Client
+Client -> Server: POST /auth/login
+activate Server
+Server -> Database: 사용자 정보 조회
+activate Database
+Database --> Server: 사용자 정보
+deactivate Database
+
+alt 유효한 사용자
+    Server -> Server: 비밀번호 검증
+    alt 비밀번호 일치
+        Server -> Server: JWT 토큰 생성
+        Server --> Client: 200 OK, JWT 토큰
+        deactivate Server
+        Client --> User: 로그인 성공, 토큰 저장
+        deactivate Client
+    else 비밀번호 불일치
+        Server --> Client: 401 Unauthorized
+        deactivate Server
+        Client --> User: 로그인 실패, 비밀번호 불일치 메시지 표시
+        deactivate Client
+    end
+else 유효하지 않은 사용자
+    Server --> Client: 401 Unauthorized
+    deactivate Server
+    Client --> User: 로그인 실패, 유효하지 않은 사용자 메시지 표시
+    deactivate Client
+end
+
+User -> Client: 인증이 필요한 요청 (JWT 토큰 포함)
+activate Client
+Client -> Server: GET /protected-resource
+activate Server
+Server -> Server: JWT 토큰 검증
+
+alt 유효한 토큰
+    Server -> Database: 데이터 조회
+    activate Database
+    Database --> Server: 요청된 데이터
+    deactivate Database
+    Server --> Client: 200 OK, 요청된 데이터
+    deactivate Server
+    Client --> User: 요청 결과 표시
+    deactivate Client
+else 유효하지 않은 토큰
+    Server --> Client: 401 Unauthorized
+    deactivate Server
+    Client --> User: 인증 실패 메시지 표시
+    deactivate Client
+end
+@enduml
