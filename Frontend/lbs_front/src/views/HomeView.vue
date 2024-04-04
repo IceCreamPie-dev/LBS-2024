@@ -20,7 +20,6 @@
 
 <script>
 import SideBar from '../components/SideBar.vue';
-import MyPage from '../components/MyPage.vue';
 import CHeader from '../components/CHeader.vue';
 import CFooter from '../components/CFooter.vue';
 /*
