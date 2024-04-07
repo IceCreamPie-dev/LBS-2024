@@ -19,6 +19,4 @@
   display: flex;
 }
 
-.logo img{
-}
 </style>
