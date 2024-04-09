@@ -40,5 +40,16 @@ export default {
 </script>
 
 <style scoped>
-@import url('@/styles/MypageMonit.css');
+.title-group {
+  display: flex;
+  justify-content: left;
+  margin-top: 2vw;
+}
+
+.title-label {
+  font-size: 2vw; /* 상대적인 단위로 변경 */
+  font-weight: bold;
+  color: #484848;
+  margin-left: 1vw; /* 상대적인 단위로 변경 */
+}
 </style>

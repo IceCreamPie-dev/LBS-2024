@@ -236,8 +236,18 @@ app.put('/board/:id', (req, res) => {
   });
 });
 
-// 게시물 삭제
-
+// QnA게시물 삭제
+app.delete('/board/QnA/:id', (req, res) => {
+  // 게시물 삭제 역할이 관리자이거나 게시물 작성자인 경우에만 삭제 가능
+  tomysql.query('DELETE FROM QnA WHERE id = ?', [req.params.id], (err, results) => {
+    if (err) {
+      console.error('[오류] 게시물 삭제중 오류 발생:', err);
+      res.status(500).json({ error: '내부 서버 오류' });
+      return;
+    }
+    res.json({ success: true });
+  });
+});
 
 // QnA 게시물 목록 조회 
 app.get('/board/QnA', (req, res) => {
@@ -257,7 +267,7 @@ app.get('/board/QnA', (req, res) => {
   });
 });
 
-// 게시물 댓글 조회
+// QnA 게시물 댓글 조회
 app.get('/board/:board_type/:post_id/comments', (req, res) => {
   const { post_id } = req.params;
   // 게시물 댓글 조회
@@ -271,7 +281,7 @@ app.get('/board/:board_type/:post_id/comments', (req, res) => {
   });
 });
 
-// 게시물 댓글 생성
+// QnA 게시물 댓글 생성
 app.post('/board/:board_type/:post_id/comments', (req, res) => {
   const { content } = req.body;
   const email = req.user.email;
@@ -287,7 +297,7 @@ app.post('/board/:board_type/:post_id/comments', (req, res) => {
   });
 });
 
-// 게시물 댓글 수정
+// QnA 게시물 댓글 수정
 app.put('/board/:board_type/:post_id/comments/:comment_id', (req, res) => {
   const { content } = req.body;
   const email = req.user.email;
@@ -303,7 +313,7 @@ app.put('/board/:board_type/:post_id/comments/:comment_id', (req, res) => {
   });
 });
 
-// 게시물 댓글 삭제
+// QnA 게시물 댓글 삭제
 app.delete('/board/:board_type/:post_id/comments/:comment_id', (req, res) => {
   const { comment_id } = req.params;
   // 게시물 댓글 삭제
