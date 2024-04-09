@@ -96,19 +96,26 @@ export default {
   flex: 0 0 20%; 
 }
 
-.body {
-  flex: 1; 
+.main {
+  flex: 1;
+  padding: 20px;
 }
 
-.menu {
+
+
+.nav {
   flex: 0 0 20%; 
 }
 
 .footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
 
 .yellow-line {
-  height: 1.5px;
+  height: 2.5px;
   background-color: rgba(255, 222, 128, 1);
 }
 </style>
