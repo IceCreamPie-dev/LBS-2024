@@ -256,7 +256,7 @@ app.get('/board/QnA', (req, res) => {
   const offset = (page - 1) * limit;
 
   // QnA게시물 목록 조회
-  tomysql.query(`SELECT * FROM QnA LIMIT ? OFFSET ?`, [ +limit, offset], (err, results) => {
+  tomysql.query(`SELECT qid, title, created_at FROM QnA ORDER BY created_at DESC LIMIT ? OFFSET ?`, [ +limit, offset], (err, results) => {
     if (err) {
       console.error('[오류] 게시물 조회중 오류 발생:', err);
       res.status(500).json({ error: '내부 서버 오류' });
