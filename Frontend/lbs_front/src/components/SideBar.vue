@@ -5,7 +5,7 @@
       </div>
     </div>
     <div class="menu-container">
-      <div class="user-profile">
+      <div class="user-profile" v-if="isLogin">
         <div class="profile-image">
           <a href="#"><img src="../assets/user.png" alt="사용자 이미지"></a>
         </div>
@@ -19,9 +19,14 @@
           <button class="logout-button">로그아웃</button>
         </div>
       </div>
+      <div class="user-profile" v-else>
+        <router-link to="/login" class="login-button">
+          <img class="test" src="../assets/doumi-login.png" alt="사용자 이미지">
+        </router-link>
+      </div>
       <ul class="menu-list">
         <li><a href="#" @click="changePage('Gonggi')">공지사항</a></li>
-        <li><a href="#" @click="changePage('MyPage')">마이페이지</a></li>
+        <li v-if="isLogin"><a href="#" @click="changePage('MyPage')">마이페이지</a></li>
         <li><a href="#" @click="changePage('QnA')">Q&A 게시판</a></li>
       </ul>
       <div class="guid">
@@ -41,6 +46,7 @@ export default {
   data() {
     return {
       showModal: false,
+      isLogin: false,
     };
   },
   methods: {
@@ -53,7 +59,12 @@ export default {
   }
 };
 </script>
-  
-  <style scoped>
-  @import url('@/styles/SideBar.css');
-  </style>
+
+<style scoped>
+@import url('@/styles/SideBar.css');
+.test {
+  background-color: black;
+  width: 100%;
+  height: 100%;
+}
+</style>
