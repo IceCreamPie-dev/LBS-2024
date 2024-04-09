@@ -142,15 +142,15 @@ app.post('/calgradexlsx', upload.single('file'), (req, res) => {
           const type_9 = requiredCourses.filter((row) => row.course_type === '공통교육');
 
           // 엑셀 데이터에서 학생의 type별 리스트 추출 "이수구분영역"
-          const std_type_1 = data.filter((row) => row['이수구분영역'] === '제1영역:문학/역사/철학');
-          const std_type_2 = data.filter((row) => row['이수구분영역'] === '제2영역:정치/사회/심리');
-          const std_type_3 = data.filter((row) => row['이수구분영역'] === '제3영역:과학/기술/생명');
-          const std_type_4 = data.filter((row) => row['이수구분영역'] === '제4영역:예술/문화');
-          const std_type_5 = data.filter((row) => row['이수구분영역'] === '기초');
-          const std_type_6 = data.filter((row) => row['이수구분영역'] === '전문');
-          const std_type_7 = data.filter((row) => row['이수구분영역'] === '인성');
-          const std_type_8 = data.filter((row) => row['이수구분영역'] === '자기계발');
-          const std_type_9 = data.filter((row) => row['이수구분영역'] === '공통교육');
+          const std_type_1 = data.filter((row) => row['F'] === '제1영역:문학/역사/철학');
+          const std_type_2 = data.filter((row) => row['F'] === '제2영역:정치/사회/심리');
+          const std_type_3 = data.filter((row) => row['F'] === '제3영역:과학/기술/생명');
+          const std_type_4 = data.filter((row) => row['F'] === '제4영역:예술/문화');
+          const std_type_5 = data.filter((row) => row['F'] === '기초');
+          const std_type_6 = data.filter((row) => row['F'] === '전문');
+          const std_type_7 = data.filter((row) => row['F'] === '인성');
+          const std_type_8 = data.filter((row) => row['F'] === '자기계발');
+          const std_type_9 = data.filter((row) => row['F'] === '공통교육');
 
           // 추출한 데이터를 비교해서 학생이 이수한 과목과 필수과목을 비교해서
           // 영역별 변수에 과목 이름과 이수한 경우 true 안한경우 false 로 분류해 저장
@@ -184,21 +184,28 @@ app.post('/calgradexlsx', upload.single('file'), (req, res) => {
   });
 });
 
-// 게시물 조회
-app.get('/board/QnA/{post_id}', authenticateToken, (req, res) => {
-  // 게시물 조회
-  tomysql.query('SELECT * FROM QnA WHERE id = ?', [req.params.id], (err, results) => {
+// QnA게시물 상세 조회
+app.get('/board/QnA/:postId', (req, res) => {
+  const postId = req.params.postId;
+
+  tomysql.query('SELECT * FROM QnA WHERE qid = ?', [postId], (err, results) => {
     if (err) {
-      console.error('[오류] 게시물 조회중 오류 발생:', err);
-      res.status(500).json({ error: '내부 서버 오류' });
+      console.error('[오류] 게시글 조회 중 오류 발생:', err);
+      res.status(500).json({ error: '게시글 조회 중 오류가 발생했습니다.' });
       return;
     }
+
+    if (results.length === 0) {
+      res.status(404).json({ error: '해당 게시글을 찾을 수 없습니다.' });
+      return;
+    }
+
     res.json(results[0]);
   });
 });
 
-// 게시물 생성
-app.post('/board/QnA', authenticateToken, (req, res) => {
+// QnA게시물 생성
+app.post('/board/QnA', (req, res) => {
   // 게시물 작성자 이메일, 제목, 내용을 받음
   const { title, content } = req.body;
   const email = req.user.email;
@@ -213,8 +220,8 @@ app.post('/board/QnA', authenticateToken, (req, res) => {
   });
 });
 
-// 게시물 수정
-app.put('/board/:id', authenticateToken, (req, res) => {
+// QnA게시물 수정
+app.put('/board/:id', (req, res) => {
   // 게시물 수정자 이메일, 제목, 내용을 받음
   const { title, content } = req.body;
   const email = req.user.email;
@@ -230,38 +237,28 @@ app.put('/board/:id', authenticateToken, (req, res) => {
 });
 
 // 게시물 삭제
-app.delete('/board/:id', authenticateToken, (req, res) => {
-  // 게시물 삭제 역할이 관리자이거나 게시물 작성자인 경우에만 삭제 가능
-  tomysql.query('DELETE FROM QnA WHERE id = ?', [req.params.id], (err, results) => {
-    if (err) {
-      console.error('[오류] 게시물 삭제중 오류 발생:', err);
-      res.status(500).json({ error: '내부 서버 오류' });
-      return;
-    }
-    res.json({ success: true });
-  });
-});
 
-// 게시물 목록 조회
-app.get('/board/:board_type', authenticateToken, (req, res) => {
-  const { board_type } = req.params;
-  const { page = 1, limit = 10 } = req.query;
+
+// QnA 게시물 목록 조회 
+app.get('/board/QnA', (req, res) => {
+  const { page = 1, limit = 5 } = req.query;
 
   const offset = (page - 1) * limit;
 
-  // 게시물 목록 조회
-  tomysql.query(`SELECT * FROM ?? LIMIT ? OFFSET ?`, [board_type, +limit, offset], (err, results) => {
+  // QnA게시물 목록 조회
+  tomysql.query(`SELECT * FROM QnA LIMIT ? OFFSET ?`, [ +limit, offset], (err, results) => {
     if (err) {
       console.error('[오류] 게시물 조회중 오류 발생:', err);
       res.status(500).json({ error: '내부 서버 오류' });
       return;
     }
+    console.log(results);
     res.json(results);
   });
 });
 
 // 게시물 댓글 조회
-app.get('/board/:board_type/:post_id/comments', authenticateToken, (req, res) => {
+app.get('/board/:board_type/:post_id/comments', (req, res) => {
   const { post_id } = req.params;
   // 게시물 댓글 조회
   tomysql.query('SELECT * FROM comments WHERE post_id = ?', [post_id], (err, results) => {
@@ -275,7 +272,7 @@ app.get('/board/:board_type/:post_id/comments', authenticateToken, (req, res) =>
 });
 
 // 게시물 댓글 생성
-app.post('/board/:board_type/:post_id/comments', authenticateToken, (req, res) => {
+app.post('/board/:board_type/:post_id/comments', (req, res) => {
   const { content } = req.body;
   const email = req.user.email;
   const { post_id } = req.params;
@@ -291,7 +288,7 @@ app.post('/board/:board_type/:post_id/comments', authenticateToken, (req, res) =
 });
 
 // 게시물 댓글 수정
-app.put('/board/:board_type/:post_id/comments/:comment_id', authenticateToken, (req, res) => {
+app.put('/board/:board_type/:post_id/comments/:comment_id', (req, res) => {
   const { content } = req.body;
   const email = req.user.email;
   const { comment_id } = req.params;
@@ -307,7 +304,7 @@ app.put('/board/:board_type/:post_id/comments/:comment_id', authenticateToken, (
 });
 
 // 게시물 댓글 삭제
-app.delete('/board/:board_type/:post_id/comments/:comment_id', authenticateToken, (req, res) => {
+app.delete('/board/:board_type/:post_id/comments/:comment_id', (req, res) => {
   const { comment_id } = req.params;
   // 게시물 댓글 삭제
   tomysql.query('DELETE FROM comments WHERE id = ?', [comment_id], (err, results) => {
@@ -321,7 +318,7 @@ app.delete('/board/:board_type/:post_id/comments/:comment_id', authenticateToken
 });
 
 // 졸업요건 생성
-app.post('/admin/graduation-requirements', authenticateToken, (req, res) => {
+app.post('/admin/graduation-requirements', (req, res) => {
   // year(기수),type(학생 유형),dk_score(동국 소양 졸업학점),cm_score(공통 기초교육 학점),sub_score(계열 기초교육 학점),liberal_score(교양교육 학점),single_score(단수전공 학점),total_score(총 졸업학점)
   const { year, type, dk_score, cm_score, sub_score, liberal_score, single_score, total_score } = req.body;
   // SQL 쿼리를 이용하여 졸업요건 생성
@@ -336,7 +333,7 @@ app.post('/admin/graduation-requirements', authenticateToken, (req, res) => {
 });
 
 // 졸업요건 수정
-app.put('/admin/graduation-requirements/:id', authenticateToken, (req, res) => {
+app.put('/admin/graduation-requirements/:id', (req, res) => {
   const { year, type, dk_score, cm_score, sub_score, liberal_score, single_score, total_score } = req.body;
   const { id } = req.params;
   // SQL 쿼리를 이용하여 졸업요건 수정
@@ -351,7 +348,7 @@ app.put('/admin/graduation-requirements/:id', authenticateToken, (req, res) => {
 });
 
 // 졸업요건 삭제
-app.delete('/admin/graduation-requirements/:id', authenticateToken, (req, res) => {
+app.delete('/admin/graduation-requirements/:id', (req, res) => {
   const { id } = req.params;
   // SQL 쿼리를 이용하여 졸업요건 삭제
   tomysql.query('DELETE FROM GraduationRequire WHERE id = ?', [id], (err, results) => {
@@ -365,7 +362,7 @@ app.delete('/admin/graduation-requirements/:id', authenticateToken, (req, res) =
 });
 
 // 졸업요건 목록 조회
-app.get('/admin/graduation-requirements', authenticateToken, (req, res) => {
+app.get('/admin/graduation-requirements', (req, res) => {
   const { page = 1, limit = 10 } = req.query;
   const offset = (page - 1) * limit;
   // SQL 쿼리를 이용하여 졸업요건 조회
@@ -380,7 +377,7 @@ app.get('/admin/graduation-requirements', authenticateToken, (req, res) => {
 });
 
 // 졸업요건 조회
-app.get('/admin/graduation-requirements/:id', authenticateToken, (req, res) => {
+app.get('/admin/graduation-requirements/:id', (req, res) => {
   const { id } = req.params;
   // SQL 쿼리를 이용하여 졸업요건 조회
   tomysql.query('SELECT * FROM GraduationRequire WHERE id = ?', [id], (err, results) => {
@@ -394,7 +391,7 @@ app.get('/admin/graduation-requirements/:id', authenticateToken, (req, res) => {
 });
 
 // 필수과목 생성
-app.post('/admin/required-courses', authenticateToken, (req, res) => {
+app.post('/admin/required-courses', (req, res) => {
   const { course_type, course_name } = req.body;
   // SQL 쿼리를 이용하여 필수과목 생성
   tomysql.query('INSERT INTO RCourse (course_type, course_name) VALUES (?, ?)', [course_type, course_name], (err, results) => {
@@ -408,7 +405,7 @@ app.post('/admin/required-courses', authenticateToken, (req, res) => {
 });
 
 // 필수과목 수정
-app.put('/admin/required-courses/:id', authenticateToken, (req, res) => {
+app.put('/admin/required-courses/:id', (req, res) => {
   const { course_type, course_name } = req.body;
   const { id } = req.params;
   // SQL 쿼리를 이용하여 필수과목 수정
@@ -423,7 +420,7 @@ app.put('/admin/required-courses/:id', authenticateToken, (req, res) => {
 });
 
 // 필수과목 삭제
-app.delete('/admin/required-courses/:id', authenticateToken, (req, res) => {
+app.delete('/admin/required-courses/:id', (req, res) => {
   const { id } = req.params;
   // SQL 쿼리를 이용하여 필수과목 삭제
   tomysql.query('DELETE FROM RCourse WHERE id = ?', [id], (err, results) => {
@@ -437,7 +434,7 @@ app.delete('/admin/required-courses/:id', authenticateToken, (req, res) => {
 });
 
 // 필수과목 목록 조회
-app.get('/admin/required-courses', authenticateToken, (req, res) => {
+app.get('/admin/required-courses', (req, res) => {
   const { page = 1, limit = 10 } = req.query;
   const offset = (page - 1) * limit;
   // SQL 쿼리를 이용하여 필수과목 조회
@@ -452,7 +449,7 @@ app.get('/admin/required-courses', authenticateToken, (req, res) => {
 });
 
 // 필수과목 조회
-app.get('/admin/required-courses/:id', authenticateToken, (req, res) => {
+app.get('/admin/required-courses/:id', (req, res) => {
   const { id } = req.params;
   // SQL 쿼리를 이용하여 필수과목 조회
   tomysql.query('SELECT * FROM RCourse WHERE id = ?', [id], (err, results) => {
@@ -466,7 +463,7 @@ app.get('/admin/required-courses/:id', authenticateToken, (req, res) => {
 });
 
 // 필수요건 집합 생성
-app.post('/admin/requirement-course-relations', authenticateToken, (req, res) => {
+app.post('/admin/requirement-course-relations', (req, res) => {
   const { rid, course_id } = req.body;
   // SQL 쿼리를 이용하여 필수요건 집합 생성
   tomysql.query('INSERT INTO RCR (rid, course_id) VALUES (?, ?)', [rid, course_id], (err, results) => {
@@ -480,7 +477,7 @@ app.post('/admin/requirement-course-relations', authenticateToken, (req, res) =>
 });
 
 // 필수요건 집합 수정
-app.put('/admin/requirement-course-relations/:id', authenticateToken, (req, res) => {
+app.put('/admin/requirement-course-relations/:id', (req, res) => {
   const { rid, course_id } = req.body;
   const { id } = req.params;
   // SQL 쿼리를 이용하여 필수요건 집합 수정
@@ -495,7 +492,7 @@ app.put('/admin/requirement-course-relations/:id', authenticateToken, (req, res)
 });
 
 // 필수요건 집합 삭제
-app.delete('/admin/requirement-course-relations/:id', authenticateToken, (req, res) => {
+app.delete('/admin/requirement-course-relations/:id', (req, res) => {
   const { id } = req.params;
   // SQL 쿼리를 이용하여 필수요건 집합 삭제
   tomysql.query('DELETE FROM RCR WHERE id = ?', [id], (err, results) => {
@@ -509,7 +506,7 @@ app.delete('/admin/requirement-course-relations/:id', authenticateToken, (req, r
 });
 
 // 필수요건 집합 목록 조회
-app.get('/admin/requirement-course-relations', authenticateToken, (req, res) => {
+app.get('/admin/requirement-course-relations', (req, res) => {
   const { page = 1, limit = 10 } = req.query;
   const offset = (page - 1) * limit;
   // SQL 쿼리를 이용하여 필수요건 집합 조회
@@ -524,7 +521,7 @@ app.get('/admin/requirement-course-relations', authenticateToken, (req, res) => 
 });
 
 // 필수요건 집합 조회
-app.get('/admin/requirement-course-relations/:id', authenticateToken, (req, res) => {
+app.get('/admin/requirement-course-relations/:id', (req, res) => {
   const { id } = req.params;
   // SQL 쿼리를 이용하여 필수요건 집합 조회
   tomysql.query('SELECT * FROM RCR WHERE id = ?', [id], (err, results) => {
@@ -538,7 +535,7 @@ app.get('/admin/requirement-course-relations/:id', authenticateToken, (req, res)
 });
 
 // 내정보 조회
-app.get('/user/profile', authenticateToken, (req, res) => {
+app.get('/user/profile', (req, res) => {
   // 사용자 정보 조회
   tomysql.query('SELECT * FROM Users WHERE email = ?', [req.email], (err, results) => {
     if (err) {
@@ -551,7 +548,7 @@ app.get('/user/profile', authenticateToken, (req, res) => {
 });
 
 // 내정보 수정
-app.put('/user/profile', authenticateToken, (req, res) => {
+app.put('/user/profile', (req, res) => {
   const { name, password, type, student_id, } = req.body;
   // 사용자 정보 수정
   tomysql.query('UPDATE Users SET name = ?, password = ?, type = ?, student_id = ? WHERE email = ?', [name, password, type, student_id, req.email], (err, results) => {
