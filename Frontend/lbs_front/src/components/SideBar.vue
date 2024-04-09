@@ -11,12 +11,12 @@
         </div>
         <div class="profile-details">
           <div class="user-info">
-            <label class="username">홍길동님</label>
+            <label class="username">{{ username }}</label>
             <label for="no">|</label>
-            <label class="user-role">교직이수</label>
+            <label class="role">{{ role }}</label>
           </div>
-          <div class="user-email">abc22@gmail.com</div>
-          <button class="logout-button">로그아웃</button>
+          <div class="user-email">{{ email }}</div>
+          <button class="logout-button" @click="Logout">로그아웃</button>
         </div>
       </div>
       <div class="user-profile" v-else>
@@ -43,12 +43,26 @@
 </template>
 
 <script>
+import { jwtDecode } from 'jwt-decode';
 export default {
   data() {
     return {
       showModal: false,
       isLogin: false,
+      username: '',
+      email: '',
+      role: ''
     };
+  },
+  created() {
+    const token = localStorage.getItem('token');
+    if (token) {
+      this.isLogin = true;
+      const decoded = jwtDecode(token);
+      this.username = decoded.name;
+      this.email = decoded.email;
+      this.role = decoded.role.toString() === '1' ? '관리자' : '유저';
+    }
   },
   methods: {
     toggleModal() {
@@ -56,6 +70,14 @@ export default {
     },
     changePage(page) {
       this.emitter.emit('change-page', page);
+    },
+    async Logout() {
+      await this.$store.dispatch('logout');
+      this.isLogin = false;
+      this.username = '';
+      this.email = '';
+      this.role = '';
+      this.$router.push('/');
     }
   }
 };

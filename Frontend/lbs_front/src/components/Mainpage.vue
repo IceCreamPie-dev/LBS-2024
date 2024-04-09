@@ -1,6 +1,10 @@
 <template>
   <div>
-    <h1>졸업 요건 확인</h1> <input type="file" @change="handleFileUpload" accept=".xlsx" /> 
+    <div class = "title-group">
+    <label for="title" class="title-label">졸업요건확인</label>
+  </div> 
+  <div class="yellow-line"></div>
+   <input type="file" @change="handleFileUpload" accept=".xlsx" /> 
     <input type="text" v-model="year" placeholder="연도를 입력하세요" />
     <select v-model="type">
       <option value="일반">일반</option>
@@ -146,6 +150,18 @@ export default {
 </script>
 
 <style scoped>
+.title-group {
+  display: flex;
+  justify-content: left;
+  margin-top: 2vw;
+}
+
+.title-label {
+  font-size: 2vw; /* 상대적인 단위로 변경 */
+  font-weight: bold;
+  color: #484848;
+  margin-left: 1vw; /* 상대적인 단위로 변경 */
+}
 /*.v-application {
   font-family: 'NanumBarunGothic', sans-serif !important;
 }

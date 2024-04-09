@@ -3,21 +3,20 @@
     <header class="header"></header>
     <img src="../assets/logo.png" alt="Vue logo" class="logo" />
     <main class="home-form">
-      <form>
+      <form @submit.prevent="Login">
         <div class="form-group">
           <label for="email" class="form-label">이메일</label>
-          <input type="email" id="email" class="form-input" />
+          <input v-model="email" type="text" placeholder="email" class="form-input" />
         </div>
         <div class="form-group">
           <label for="password" class="form-label">비밀번호</label>
-          <input type="password" id="password" class="form-input" />
+          <input v-model="password" type="password" placeholder="Password" class="form-input" />
         </div>
         <div class="form-actions">
+          <button class="btn-inner" type="submit">로그인</button>
           <router-link to="/register" class="btn btn-signup">
             <button class="btn-inner">회원가입</button>
           </router-link>
-            <button class="btn-inner" @click="Login">로그인</button>
-
         </div>
       </form>
     </main>
@@ -27,22 +26,45 @@
 
 <script>
 export default {
+  beforeRouteEnter(to, from, next) {
+    if (localStorage.getItem('token')) {
+      next('/');
+    } else {
+      next();
+    }
+  },
   data() {
     return {
       email: '',
       password: ''
     };
   },
+  start() {
+    this.$store.dispatch('checkLogin');
+  },
   methods: {
     // 로그인 버튼 클릭 시 호출되는 함수 vuex를 이용하여 로그인 처리
     async Login() {
-      // 로그인 시도
-      await this.$store.dispatch('login', {
-        email: this.email,
-        password: this.password
-      });
-      // 로그인 성공 시 홈 화면으로 이동
-      this.$router.push('/');
+      if (!this.email || !this.password) {
+        alert('이메일과 비밀번호를 입력하세요.');
+        return;
+      }
+
+      if (!this.email.includes('@')) {
+        alert('유효한 이메일을 입력하세요.');
+        return;
+      }
+
+      try {
+        await this.$store.dispatch('login', {
+          email: this.email,
+          password: this.password
+        });
+        this.$router.push('/');
+      } catch (error) {
+        console.error(error);
+        alert('로그인에 실패했습니다. 다시 시도하세요.');
+      }
     }
   }
 }

@@ -98,8 +98,7 @@ export default {
 
 .main {
   flex: 1;
-  margin-right: 20px;
-  margin-left: 20px;
+  padding: 20px;
 }
 
 
@@ -109,6 +108,10 @@ export default {
 }
 
 .footer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
 }
 
 .yellow-line {

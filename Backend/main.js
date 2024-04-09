@@ -28,12 +28,13 @@ tomysql.connect((err) => {
   }
   console.log('[연결됨] 데이터 베이스에 연결됨');
 });
-
+app.use(express.json());
 // 로그인 요청
 app.post('/login', (req, res) => {
+  console.log(req.body);
   const { email, password } = req.body;
   // 이메일과 비밀번호로 사용자 조회
-  tomysql.query('SELECT * FROM users WHERE email = ? AND password = ?', [email, password], (err, results) => {
+  tomysql.query('SELECT * FROM Users WHERE email = ? AND pwd = ?', [email, password], (err, results) => {
     if (err) {
       console.error('[오류] 사용자 조회중 오류 발생:', err);
       res.status(401).json({ error: '내부 서버 오류' });
@@ -44,8 +45,25 @@ app.post('/login', (req, res) => {
       return;
     }
     // JWT 토큰 생성 성공시 토큰 전송
-    const token = jwt.sign({ email, name: results[0].name, role }, secretKey, { expiresIn: '1h' });
+    const token = jwt.sign({ email, name: results[0].name, role: results[0].role }, secretKey, { expiresIn: '1h' });
     res.json({ token });
+    console.log(token);
+  });
+});
+
+app.get('/checklogin', (req, res) => {
+  const token = req.headers.authorization;
+  if (!token) {
+    res.status(401).json({ error: '로그인이 필요합니다.' });
+    return;
+  }
+  // JWT 토큰 검증
+  jwt.verify(token, secretKey, (err, decoded) => {
+    if (err) {
+      res.status(401).json({ error: '로그인이 필요합니다.' });
+      return;
+    }
+    res.json({ email: decoded.email, name: decoded.name });
   });
 });
 
