@@ -3,6 +3,9 @@ const express = require('express');
 const app = express();
 const exel = require('xlsx');
 const jwt = require('jsonwebtoken');
+const multer = require('multer');
+const upload = multer({ storage: multer.memoryStorage() });
+const cors = require('cors');
 
 // 비밀키 설정
 const secretKey = 'lbs20240001';
@@ -61,25 +64,29 @@ app.post('/register', (req, res) => {
 });
 
 // 성적 계산 요청 프론트에서 xlsx 파일과, year(입학년도), type(학생 유형)을 받음
-app.post('/calgradexlsx', (req, res) => {
+app.post('/calgradexlsx', upload.single('file'), (req, res) => {
   // 엑셀 파일을 읽어서 데이터를 추출
-  const workbook = exel.read(req.body);
+  const workbook = exel.read(req.file.buffer);
   const sheet = workbook.Sheets[workbook.SheetNames[0]];
   const data = exel.utils.sheet_to_json(sheet, { header: 'A' });
   const { year, type } = req.body;
-  // 엑셀에서 학생의 동국 소양 현재 학점 추출 "이수구분"이 소양인 학점을 추출
-  const std_dk_score = data.filter((row) => row['이수구분'] === '소양').reduce((acc, row) => acc + row['학점'], 0);
-  // 엑셀에서 학생의 공통 기초교육 현재 학점 추출 "이수구분"이 공통인 학점을 추출
-  const std_cm_score = data.filter((row) => row['이수구분'] === '공통').reduce((acc, row) => acc + row['학점'], 0);
-  // 엑셀에서 학생의 계열 기초교육 현재 학점 추출 "이수구분"이 계열인 학점을 추출
-  const std_sub_score = data.filter((row) => row['이수구분'] === '계열').reduce((acc, row) => acc + row['학점'], 0);
-  // 엑셀에서 학생의 교양교육 현재 학점 추출 "이수구분"이 교양인 학점을 추출
-  const std_liberal_score = data.filter((row) => row['이수구분'] === '교양').reduce((acc, row) => acc + row['학점'], 0);
-  // 엑셀에서 학생의 단수전공 현재 학점 추출 "이수구분"이 단수전공인 학점을 추출
-  const std_single_score = data.filter((row) => row['이수구분'] === '단수전공').reduce((acc, row) => acc + row['학점'], 0);
-  // 엑셀에서 학생의 총 졸업학점 추출
-  const std_total_score = data.reduce((acc, row) => acc + row['학점'], 0);
+  //exel 파일이 잘 읽어 졌는지 확인 콘솔 출력 코드
+  // console.log('잘 읽어짐', data);
 
+  // 엑셀에서 학생의 동국 소양 현재 학점 추출 "이수구분"이 소양인 학점을 추출 등급이 F가 아닌것만 추출 재수강 구분이 OLD재수강이 아닌 학점을 추출
+  const std_dk_score = data.filter((row) => row['E'] === '소양' && row['L'] !== 'F' && row['N'] !== 'OLD재수강').reduce((acc, row) => acc + row['K'], 0);
+  // 학생의 공통 교육
+  const std_cm_score = data.filter((row) => row['E'] === '공통'&& row['L'] !== 'F' && row['N'] !== 'OLD재수강').reduce((acc, row) => acc + row['K'], 0);
+  // 학생의 계열 교육
+  const std_sub_score = data.filter((row) => row['E'] === '계열'&& row['L'] !== 'F' && row['N'] !== 'OLD재수강').reduce((acc, row) => acc + row['K'], 0);
+  // 학생의 교양
+  const std_liberal_score = data.filter((row) => row['E'] === '교양'&& row['L'] !== 'F' && row['N'] !== 'OLD재수강').reduce((acc, row) => acc + row['K'], 0);
+  // 학생의 단수 전공
+  const std_single_score = data.filter((row) => row['E'] === '전공'&& row['L'] !== 'F' && row['N'] !== 'OLD재수강').reduce((acc, row) => acc + row['K'], 0);
+  // 학생의 총 점수 acc는 2번째 줄부터
+  const std_total_score = data.filter((row) => row['L'] !== 'F' && row['N'] !== 'OLD재수강' && row['K'] !== '학점').reduce((acc, row) => acc + row['K'], 0);
+
+  // 사용할 변수들 선언
   // DB에서 졸업 요건을 조회
   tomysql.query('SELECT * FROM GraduationRequire WHERE year = ? AND type = ?', [year, type], (err, results) => {
     if (err) {
@@ -87,6 +94,8 @@ app.post('/calgradexlsx', (req, res) => {
       res.status(500).json({ error: '내부 서버 오류' });
       return;
     }
+
+    // 졸업 요건을 조회한 결과를 저장
     const graduationRequire = results[0];
     // DB의 졸업 요건을 데이터를 저장
     const rq_dk_score = graduationRequire.dk_score; // 동국 소양 졸업학점
@@ -95,76 +104,84 @@ app.post('/calgradexlsx', (req, res) => {
     const rq_liberal_score = graduationRequire.liberal_score; // 교양교육 학점
     const rq_single_score = graduationRequire.single_score; // 단수전공 학점
     const rq_total_score = graduationRequire.total_score; // 총 졸업학점
-  });
-  // DB 에서 받은 데이터와 학새으이 현재 데이터를 비교 해서 졸업 여부를 판단 낮으면 false 높으면 true
-  // 각 요건별로 계산
-  const is_dk_score = std_dk_score >= rq_dk_score; // 소양 합격여부
-  const is_cm_score = std_cm_score >= rq_cm_score; // 공통 합격여부
-  const is_sub_score = std_sub_score >= rq_sub_score; // 계열 합격여부
-  const is_liberal_score = std_liberal_score >= rq_liberal_score; // 교양 합격여부
-  const is_single_score = std_single_score >= rq_single_score; // 단수전공 합격여부
-  const is_total_score = std_total_score >= rq_total_score; // 총 합격여부
-
-  // DB에서 졸업 과목 데이터를 조회 및 저장 RCR 테이블에서 rid를 이용하여 course_id 해당하는 course_id들을 찾고
-  // RCourse 테이블에서 course_id를 이용하여 course_type, course_name을 찾아서 저장
-  tomysql.query('SELECT * FROM RCR WHERE rid = ?', [graduationRequire.id], (err, results) => {
-    if (err) {
-      console.error('[오류] 졸업요건 조회중 오류 발생:', err);
-      res.status(500).json({ error: '내부 서버 오류' });
-      return;
-    }
-    const requiredCourses = results.map((row) => row.course_id);
-    tomysql.query('SELECT * FROM RCourse WHERE id IN (?)', [requiredCourses], (err, results) => {
+    
+    // 졸업 요건의 id를 이용하여 필수과목을 조회
+    tomysql.query('SELECT * FROM RCR WHERE rid = ?', [graduationRequire.rid], (err, results) => {
       if (err) {
-        console.error('[오류] 필수과목 조회중 오류 발생:', err);
+        console.error('[오류] 졸업요건 조회중 오류 발생:', err);
         res.status(500).json({ error: '내부 서버 오류' });
         return;
       }
-      const requiredCourses = results;
+      const requiredCourses = results.map((row) => row.course_id);
+      //디버깅
+      console.log('필수과목 이상무');
+      // requiredCourses 에 데이터가 없다면 필수과목이 없다는 뜻이므로 바로 반환
+      if (requiredCourses.length == 0)
+        return;
+      else {
+        // 필수과목 데이터를 조회 rid 와 course_id 를 이용
+        tomysql.query('SELECT * FROM RCourse WHERE course_id IN (?)', [requiredCourses], (err, results) =>{
+          if (err) {
+            console.error('[오류] 필수과목 조회중 오류 발생:', err);
+            res.status(500).json({ error: '내부 서버 오류' });
+            return;
+          }
+          const requiredCourses = results;
+
+          // requiredCourses에서 데이터를 정제 course_type별로 리스트로 묶어서 학생의 엑셀과 비교할 것임
+          // "제1영역:문학/역사/철학","제2영역:정치/사회/심리", "제3영역:과학/기술/생명","제4영역:예술/문화", "기초", "전문", "인성", "자기계발", "공통교육" 으로나뉨
+          // 이에 맞게 데이터를 정제
+          const type_1 = requiredCourses.filter((row) => row.course_type === '제1영역:문학/역사/철학');
+          const type_2 = requiredCourses.filter((row) => row.course_type === '제2영역:정치/사회/심리');
+          const type_3 = requiredCourses.filter((row) => row.course_type === '제3영역:과학/기술/생명');
+          const type_4 = requiredCourses.filter((row) => row.course_type === '제4영역:예술/문화');
+          const type_5 = requiredCourses.filter((row) => row.course_type === '기초');
+          const type_6 = requiredCourses.filter((row) => row.course_type === '전문');
+          const type_7 = requiredCourses.filter((row) => row.course_type === '인성');
+          const type_8 = requiredCourses.filter((row) => row.course_type === '자기계발');
+          const type_9 = requiredCourses.filter((row) => row.course_type === '공통교육');
+
+          // 엑셀 데이터에서 학생의 type별 리스트 추출 "이수구분영역"
+          const std_type_1 = data.filter((row) => row['이수구분영역'] === '제1영역:문학/역사/철학');
+          const std_type_2 = data.filter((row) => row['이수구분영역'] === '제2영역:정치/사회/심리');
+          const std_type_3 = data.filter((row) => row['이수구분영역'] === '제3영역:과학/기술/생명');
+          const std_type_4 = data.filter((row) => row['이수구분영역'] === '제4영역:예술/문화');
+          const std_type_5 = data.filter((row) => row['이수구분영역'] === '기초');
+          const std_type_6 = data.filter((row) => row['이수구분영역'] === '전문');
+          const std_type_7 = data.filter((row) => row['이수구분영역'] === '인성');
+          const std_type_8 = data.filter((row) => row['이수구분영역'] === '자기계발');
+          const std_type_9 = data.filter((row) => row['이수구분영역'] === '공통교육');
+
+          // 추출한 데이터를 비교해서 학생이 이수한 과목과 필수과목을 비교해서
+          // 영역별 변수에 과목 이름과 이수한 경우 true 안한경우 false 로 분류해 저장
+          const is_type_1 = type_1.map((row) => std_type_1.some((std_row) => std_row['과목명'] === row.course_name));
+          const is_type_2 = type_2.map((row) => std_type_2.some((std_row) => std_row['과목명'] === row.course_name));
+          const is_type_3 = type_3.map((row) => std_type_3.some((std_row) => std_row['과목명'] === row.course_name));
+          const is_type_4 = type_4.map((row) => std_type_4.some((std_row) => std_row['과목명'] === row.course_name));
+          const is_type_5 = type_5.map((row) => std_type_5.some((std_row) => std_row['과목명'] === row.course_name));
+          const is_type_6 = type_6.map((row) => std_type_6.some((std_row) => std_row['과목명'] === row.course_name));
+          const is_type_7 = type_7.map((row) => std_type_7.some((std_row) => std_row['과목명'] === row.course_name));
+          const is_type_8 = type_8.map((row) => std_type_8.some((std_row) => std_row['과목명'] === row.course_name));
+          const is_type_9 = type_9.map((row) => std_type_9.some((std_row) => std_row['과목명'] === row.course_name));
+
+          // 결과를 반환
+          // 졸업 요건 학점들, 현재 학점들, 영역별 이수여부를 반환
+          res.json({
+            success: true,
+            data: {
+            std_dk_score, std_cm_score, std_sub_score, std_liberal_score, std_single_score, std_total_score,
+            rq_dk_score, rq_cm_score, rq_sub_score, rq_liberal_score, rq_single_score, rq_total_score,
+            is_type_1, is_type_2, is_type_3, is_type_4, is_type_5, is_type_6, is_type_7, is_type_8, is_type_9
+            }
+          });
+          // 디버깅
+          console.log( std_dk_score, std_cm_score, std_sub_score, std_liberal_score, std_single_score, std_total_score,
+            rq_dk_score, rq_cm_score, rq_sub_score, rq_liberal_score, rq_single_score, rq_total_score,
+            is_type_1, is_type_2, is_type_3, is_type_4, is_type_5, is_type_6, is_type_7, is_type_8, is_type_9);
+        });
+      }
     });
   });
-  // requiredCourses에서 데이터를 정제 course_type별로 리스트로 묶어서 학생의 엑셀과 비교할 것임
-  // "제1영역:문학/역사/철학","제2영역:정치/사회/심리", "제3영역:과학/기술/생명","제4영역:예술/문화", "기초", "전문", "인성", "자기계발", "공통교육" 으로나뉨
-  // 이에 맞게 데이터를 정제
-  const type_1 = requiredCourses.filter((row) => row.course_type === '제1영역:문학/역사/철학');
-  const type_2 = requiredCourses.filter((row) => row.course_type === '제2영역:정치/사회/심리');
-  const type_3 = requiredCourses.filter((row) => row.course_type === '제3영역:과학/기술/생명');
-  const type_4 = requiredCourses.filter((row) => row.course_type === '제4영역:예술/문화');
-  const type_5 = requiredCourses.filter((row) => row.course_type === '기초');
-  const type_6 = requiredCourses.filter((row) => row.course_type === '전문');
-  const type_7 = requiredCourses.filter((row) => row.course_type === '인성');
-  const type_8 = requiredCourses.filter((row) => row.course_type === '자기계발');
-  const type_9 = requiredCourses.filter((row) => row.course_type === '공통교육');
-  // 엑셀 데이터에서 학생의 type별 리스트 추출 "이수구분영역"
-  const std_type_1 = data.filter((row) => row['이수구분영역'] === '제1영역:문학/역사/철학');
-  const std_type_2 = data.filter((row) => row['이수구분영역'] === '제2영역:정치/사회/심리');
-  const std_type_3 = data.filter((row) => row['이수구분영역'] === '제3영역:과학/기술/생명');
-  const std_type_4 = data.filter((row) => row['이수구분영역'] === '제4영역:예술/문화');
-  const std_type_5 = data.filter((row) => row['이수구분영역'] === '기초');
-  const std_type_6 = data.filter((row) => row['이수구분영역'] === '전문');
-  const std_type_7 = data.filter((row) => row['이수구분영역'] === '인성');
-  const std_type_8 = data.filter((row) => row['이수구분영역'] === '자기계발');
-  const std_type_9 = data.filter((row) => row['이수구분영역'] === '공통교육');
-  // 추출한 데이터를 비교해서 학생이 이수한 과목과 필수과목을 비교해서
-  // 영역별 변수에 과목 이름과 이수한 경우 true 안한경우 false 로 분류해 저장
-  const is_type_1 = type_1.map((row) => std_type_1.some((std_row) => std_row['과목명'] === row.course_name));
-  const is_type_2 = type_2.map((row) => std_type_2.some((std_row) => std_row['과목명'] === row.course_name));
-  const is_type_3 = type_3.map((row) => std_type_3.some((std_row) => std_row['과목명'] === row.course_name));
-  const is_type_4 = type_4.map((row) => std_type_4.some((std_row) => std_row['과목명'] === row.course_name));
-  const is_type_5 = type_5.map((row) => std_type_5.some((std_row) => std_row['과목명'] === row.course_name));
-  const is_type_6 = type_6.map((row) => std_type_6.some((std_row) => std_row['과목명'] === row.course_name));
-  const is_type_7 = type_7.map((row) => std_type_7.some((std_row) => std_row['과목명'] === row.course_name));
-  const is_type_8 = type_8.map((row) => std_type_8.some((std_row) => std_row['과목명'] === row.course_name));
-  const is_type_9 = type_9.map((row) => std_type_9.some((std_row) => std_row['과목명'] === row.course_name));
-
-  // 결과를 반환
-  // 졸업 요건 학점들, 현재 학점들, 영역별 이수여부를 반환
-  res.json({
-    std_dk_score, std_cm_score, std_sub_score, std_liberal_score, std_single_score, std_total_score, 
-    rq_dk_score, rq_cm_score, rq_sub, rq_liberal_score, rq_single_score, rq_total_score,
-    is_type_1, is_type_2, is_type_3, is_type_4, is_type_5, is_type_6, is_type_7, is_type_8, is_type_9
-  });
-
 });
 
 // 게시물 조회
@@ -547,12 +564,10 @@ app.put('/user/profile', authenticateToken, (req, res) => {
   });
 });
 
-// CORS 설정
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
-  next();
-});
+// CORS 설정 
+app.use(cors({
+  origin: '*',
+}));
 
 // 보안기능
 function authenticateToken(req, res, next) {

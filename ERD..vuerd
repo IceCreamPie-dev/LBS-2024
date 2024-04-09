@@ -3,8 +3,8 @@
     "version": "2.2.13",
     "width": 2000,
     "height": 2000,
-    "scrollTop": -534.4306000000004,
-    "scrollLeft": -459.0203,
+    "scrollTop": -160.43060000000037,
+    "scrollLeft": -228,
     "zoomLevel": 0.8,
     "show": {
       "tableComment": true,
@@ -19,7 +19,7 @@
     },
     "database": "MySQL",
     "databaseName": "lbs",
-    "canvasType": "ERD",
+    "canvasType": "@vuerd/builtin-sql-ddl",
     "language": "GraphQL",
     "tableCase": "pascalCase",
     "columnCase": "camelCase",
@@ -366,7 +366,7 @@
             "id": "ce1e348e-5f23-46c7-bc6e-dcff9e549b26",
             "name": "total_score",
             "comment": "총 졸업학점",
-            "dataType": "TINYINT",
+            "dataType": "INT",
             "default": "",
             "option": {
               "autoIncrement": false,
@@ -390,7 +390,7 @@
           "active": false,
           "left": 150.1943,
           "top": 254.6831,
-          "zIndex": 7,
+          "zIndex": 12,
           "widthName": 118.37588500976562,
           "widthComment": 60
         },
@@ -589,7 +589,7 @@
             "id": "8d4ab7ca-187b-403a-b71a-32eb08ae6473",
             "name": "total_score",
             "comment": "총학점",
-            "dataType": "TINYINT",
+            "dataType": "INT",
             "default": "",
             "option": {
               "autoIncrement": false,
@@ -636,7 +636,7 @@
           "active": false,
           "left": 156.996,
           "top": 668.667,
-          "zIndex": 3,
+          "zIndex": 15,
           "widthName": 60,
           "widthComment": 60
         },
@@ -790,7 +790,7 @@
           "active": false,
           "left": 802.9703,
           "top": 1094.3701,
-          "zIndex": 54,
+          "zIndex": 7,
           "widthName": 60,
           "widthComment": 70.37998962402344
         },
@@ -944,7 +944,7 @@
           "active": false,
           "left": 1445.8217,
           "top": 1044.2211,
-          "zIndex": 9,
+          "zIndex": 6,
           "widthName": 60,
           "widthComment": 60
         },
@@ -1118,10 +1118,10 @@
           }
         ],
         "ui": {
-          "active": true,
+          "active": false,
           "left": 1496.9612,
           "top": 646.7073,
-          "zIndex": 59,
+          "zIndex": 8,
           "widthName": 60,
           "widthComment": 60
         },
@@ -1206,7 +1206,7 @@
           "active": false,
           "left": 1274.5,
           "top": 316.0864,
-          "zIndex": 8,
+          "zIndex": 5,
           "widthName": 60,
           "widthComment": 60
         },

@@ -24,6 +24,11 @@ const routes = [
     path: '/sidebartest',
     name: 'sidebartest',
     component: SideBarTestView
+  },
+  {
+    path: '/test',
+    name: 'test',
+    component: import('../views/TestView.vue')
   }
 ]
 
