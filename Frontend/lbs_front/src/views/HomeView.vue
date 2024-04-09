@@ -96,11 +96,15 @@ export default {
   flex: 0 0 20%; 
 }
 
-.body {
-  flex: 1; 
+.main {
+  flex: 1;
+  margin-right: 20px;
+  margin-left: 20px;
 }
 
-.menu {
+
+
+.nav {
   flex: 0 0 20%; 
 }
 
@@ -108,7 +112,7 @@ export default {
 }
 
 .yellow-line {
-  height: 1.5px;
+  height: 2.5px;
   background-color: rgba(255, 222, 128, 1);
 }
 </style>
