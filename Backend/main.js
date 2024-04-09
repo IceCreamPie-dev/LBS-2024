@@ -74,9 +74,9 @@ app.post('/calgradexlsx', upload.single('file'), (req, res) => {
   // 엑셀에서 학생의 동국 소양 현재 학점 추출 "이수구분"이 소양인 학점을 추출 등급이 F가 아닌것만 추출 재수강 구분이 OLD재수강이 아닌 학점을 추출
   const std_dk_score = data.filter((row) => row['E'] === '소양' && row['L'] !== 'F' && row['N'] !== 'OLD재수강').reduce((acc, row) => acc + row['K'], 0);
   // 학생의 공통 교육
-  const std_cm_score = data.filter((row) => row['E'] === '공통'&& row['L'] !== 'F' && row['N'] !== 'OLD재수강').reduce((acc, row) => acc + row['K'], 0);
+  const std_cm_score = data.filter((row) => row['E'] === '공교'&& row['L'] !== 'F' && row['N'] !== 'OLD재수강').reduce((acc, row) => acc + row['K'], 0);
   // 학생의 계열 교육
-  const std_sub_score = data.filter((row) => row['E'] === '계열'&& row['L'] !== 'F' && row['N'] !== 'OLD재수강').reduce((acc, row) => acc + row['K'], 0);
+  const std_sub_score = data.filter((row) => row['E'] === '학기'&& row['L'] !== 'F' && row['N'] !== 'OLD재수강').reduce((acc, row) => acc + row['K'], 0);
   // 학생의 교양
   const std_liberal_score = data.filter((row) => row['E'] === '교양'&& row['L'] !== 'F' && row['N'] !== 'OLD재수강').reduce((acc, row) => acc + row['K'], 0);
   // 학생의 단수 전공
@@ -111,8 +111,7 @@ app.post('/calgradexlsx', upload.single('file'), (req, res) => {
         return;
       }
       const requiredCourses = results.map((row) => row.course_id);
-      //디버깅
-      console.log('필수과목 이상무');
+
       // requiredCourses 에 데이터가 없다면 필수과목이 없다는 뜻이므로 바로 반환
       if (requiredCourses.length == 0)
         return;
@@ -128,7 +127,7 @@ app.post('/calgradexlsx', upload.single('file'), (req, res) => {
 
           // requiredCourses에서 데이터를 정제 course_type별로 리스트로 묶어서 학생의 엑셀과 비교할 것임
           // "제1영역:문학/역사/철학","제2영역:정치/사회/심리", "제3영역:과학/기술/생명","제4영역:예술/문화", "기초", "전문", "인성", "자기계발", "공통교육" 으로나뉨
-          // 이에 맞게 데이터를 정제
+          // 이에 맞게 데이터를 정제 전공은 기초와 전문으로 나뉨, 교양은 제1~4영역으로 나뉨, 기초는 공통교육과 계열교육으로 나뉨, 소양은 인성과 자기계발으로 나뉨
           const type_1 = requiredCourses.filter((row) => row.course_type === '제1영역:문학/역사/철학');
           const type_2 = requiredCourses.filter((row) => row.course_type === '제2영역:정치/사회/심리');
           const type_3 = requiredCourses.filter((row) => row.course_type === '제3영역:과학/기술/생명');
