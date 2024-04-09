@@ -25,6 +25,7 @@
         </router-link>
       </div>
       <ul class="menu-list">
+        <li><a herf="#" @click="changePage('NULL')">졸업계산기</a></li>
         <li><a href="#" @click="changePage('Gonggi')">공지사항</a></li>
         <li v-if="isLogin"><a href="#" @click="changePage('MyPage')">마이페이지</a></li>
         <li><a href="#" @click="changePage('QnA')">Q&A 게시판</a></li>
