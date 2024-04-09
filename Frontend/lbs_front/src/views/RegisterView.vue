@@ -47,7 +47,7 @@
             <div>
             <span class="error-message" v-if="!isConfirmPasswordValid && confirmPassword"> ❌ 비밀번호가 일치하지 않습니다.</span>
               </div>
-               <router-link to="/" class="btn-register">회원가입</router-link>
+               <router-link to="/login" class="btn-register">회원가입</router-link>
                 
           
           </form>

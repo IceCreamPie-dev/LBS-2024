@@ -3,8 +3,19 @@
     <label for="title" class="title-label">공지사항</label>
   </div> 
   <div class="yellow-line"></div>
+  <div>
+    <QnABoardItem/>
+  </div>
 </template>
+<script>
 
+import QnABoardItem from '@/components/QnABoardItem.vue';
+export default {
+    components: {
+        QnABoardItem,
+    },
+};
+</script>
 <style scoped>
 .title-group {
   display: flex;

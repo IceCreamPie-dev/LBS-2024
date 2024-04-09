@@ -4,19 +4,27 @@
             <label for="title" class="title-label">Q&A 게시판</label>
         </div>
         <div class="yellow-line"></div>
+        <div>
+            <QnAPostDetail />
+        </div>
         <div v-for="post in posts" :key="post.id">
-            <BoardItem :post-id="post.qid" :title="post.title" :created-at="post.createdAt" :content="post.content"></BoardItem>
+            <QnABoardItem :post-id="post.qid" :title="post.title" :created-at="post.createdAt" :content="post.content"></QnABoardItem>
         </div>
     </div>
 </template>
 
 <script>
-import BoardItem from '@/components/QnABoardItem.vue';
+
+import QnABoardItem from '@/components/QnABoardItem.vue';
+import QnAPostDetail from '@/components/QnABoardItem.vue';
+
+
 import axios from 'axios';
 
 export default {
     components: {
-        BoardItem,
+        QnABoardItem,
+        QnAPostDetail,
     },
     data() {
         return {

@@ -16,8 +16,8 @@
           <router-link to="/register" class="btn btn-signup">
             <button class="btn-inner">회원가입</button>
           </router-link>
-            <button class="btn-inner" @click="Login">로그인</button>
-
+            <router-link to="/" class="btn-inner">로그인</router-link>
+                
         </div>
       </form>
     </main>
@@ -165,8 +165,8 @@ export default {
   font-weight: initial;
 }
 
-.btn-signup,
-.btn-login {
+.btn,
+.btn-inner {
   display: inline-flex;
   align-items: center;
   justify-content: center;

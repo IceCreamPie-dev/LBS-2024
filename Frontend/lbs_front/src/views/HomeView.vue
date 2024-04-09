@@ -8,7 +8,7 @@
     </aside>
     <main class="main">
       <MyPage v-if="currentPage === 'MyPage'" /> 
-      <QnAMonit v-if="currentPage === 'QnA'" /> 
+      <QnaMonit v-if="currentPage === 'QnA'" /> 
       <GonggiMonit v-if="currentPage === 'Gonggi'" /> 
       <MainPage v-if="currentPage === 'NULL'" />
     </main>
@@ -26,7 +26,7 @@ import SideBar from '../components/SideBar.vue';
 import CHeader from '../components/CHeader.vue';
 import CFooter from '../components/CFooter.vue';
 import MyPage from '../components/MyPageMonit.vue';
-import QnAMonit from '../components/qnaMonit.vue'; //QnA
+import QnaMonit from '../components/QnaMonit.vue'; //QnA
 import GonggiMonit from '../components/gonggiMonit.vue'; //공지사항
 import MainPage from '../components/MainPage.vue';
 
@@ -37,7 +37,7 @@ export default {
     CFooter,
     MyPage,
     GonggiMonit,
-    QnAMonit,
+    QnaMonit,
     MainPage
   },
   data() {
