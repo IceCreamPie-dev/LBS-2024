@@ -30,6 +30,7 @@
         <p>인성: {{ result.data.is_type_7 }}</p>
         <p>자기계발: {{ result.data.is_type_8 }}</p>
         <p>공통교육: {{ result.data.is_type_9 }}</p>
+        <p>직필: {{ result.data.is_type_10 }}</p>
       </div>
     </div>
   </template>

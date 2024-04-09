@@ -70,8 +70,6 @@ app.post('/calgradexlsx', upload.single('file'), (req, res) => {
   const sheet = workbook.Sheets[workbook.SheetNames[0]];
   const data = exel.utils.sheet_to_json(sheet, { header: 'A' });
   const { year, type } = req.body;
-  //exel 파일이 잘 읽어 졌는지 확인 콘솔 출력 코드
-  // console.log('잘 읽어짐', data);
 
   // 엑셀에서 학생의 동국 소양 현재 학점 추출 "이수구분"이 소양인 학점을 추출 등급이 F가 아닌것만 추출 재수강 구분이 OLD재수강이 아닌 학점을 추출
   const std_dk_score = data.filter((row) => row['E'] === '소양' && row['L'] !== 'F' && row['N'] !== 'OLD재수강').reduce((acc, row) => acc + row['K'], 0);
@@ -140,6 +138,7 @@ app.post('/calgradexlsx', upload.single('file'), (req, res) => {
           const type_7 = requiredCourses.filter((row) => row.course_type === '인성');
           const type_8 = requiredCourses.filter((row) => row.course_type === '자기계발');
           const type_9 = requiredCourses.filter((row) => row.course_type === '공통교육');
+          const type_10 = requiredCourses.filter((row) => row.course_type === '직필');
 
           // 엑셀 데이터에서 학생의 type별 리스트 추출 "이수구분영역"
           const std_type_1 = data.filter((row) => row['F'] === '제1영역:문학/역사/철학');
@@ -151,18 +150,22 @@ app.post('/calgradexlsx', upload.single('file'), (req, res) => {
           const std_type_7 = data.filter((row) => row['F'] === '인성');
           const std_type_8 = data.filter((row) => row['F'] === '자기계발');
           const std_type_9 = data.filter((row) => row['F'] === '공통교육');
+          const std_type_10 = data.filter((row) => row['F'] === '직필');
 
           // 추출한 데이터를 비교해서 학생이 이수한 과목과 필수과목을 비교해서
-          // 영역별 변수에 과목 이름과 이수한 경우 true 안한경우 false 로 분류해 저장
-          const is_type_1 = type_1.map((row) => std_type_1.some((std_row) => std_row['과목명'] === row.course_name));
-          const is_type_2 = type_2.map((row) => std_type_2.some((std_row) => std_row['과목명'] === row.course_name));
-          const is_type_3 = type_3.map((row) => std_type_3.some((std_row) => std_row['과목명'] === row.course_name));
-          const is_type_4 = type_4.map((row) => std_type_4.some((std_row) => std_row['과목명'] === row.course_name));
-          const is_type_5 = type_5.map((row) => std_type_5.some((std_row) => std_row['과목명'] === row.course_name));
-          const is_type_6 = type_6.map((row) => std_type_6.some((std_row) => std_row['과목명'] === row.course_name));
-          const is_type_7 = type_7.map((row) => std_type_7.some((std_row) => std_row['과목명'] === row.course_name));
-          const is_type_8 = type_8.map((row) => std_type_8.some((std_row) => std_row['과목명'] === row.course_name));
-          const is_type_9 = type_9.map((row) => std_type_9.some((std_row) => std_row['과목명'] === row.course_name));
+          // 영역별 변수에 과목 이름과 이수한 경우 true 안한경우 false 로 분류해 저장(과목이름, 이수여부)
+          // 학생의 데이터에 아무것도 없다면 false로 저장
+          const is_type_1 = type_1.map((row) => [row.course_name, std_type_1.some((std_row) => std_row['I'] === row.course_name)]);
+          const is_type_2 = type_2.map((row) => [row.course_name, std_type_2.some((std_row) => std_row['I'] === row.course_name)]);
+          const is_type_3 = type_3.map((row) => [row.course_name, std_type_3.some((std_row) => std_row['I'] === row.course_name)]);
+          const is_type_4 = type_4.map((row) => [row.course_name, std_type_4.some((std_row) => std_row['I'] === row.course_name)]);
+          const is_type_5 = type_5.map((row) => [row.course_name, std_type_5.some((std_row) => std_row['I'] === row.course_name)]);
+          const is_type_6 = type_6.map((row) => [row.course_name, std_type_6.some((std_row) => std_row['I'] === row.course_name)]);
+          const is_type_7 = type_7.map((row) => [row.course_name, std_type_7.some((std_row) => std_row['I'] === row.course_name)]);
+          const is_type_8 = type_8.map((row) => [row.course_name, std_type_8.some((std_row) => std_row['I'] === row.course_name)]);
+          const is_type_9 = type_9.map((row) => [row.course_name, std_type_9.some((std_row) => std_row['I'] === row.course_name)]);
+          const is_type_10 = type_10.map((row) => [row.course_name, std_type_10.some((std_row) => std_row['I'] === row.course_name)]);
+          
 
           // 결과를 반환
           // 졸업 요건 학점들, 현재 학점들, 영역별 이수여부를 반환
@@ -171,13 +174,9 @@ app.post('/calgradexlsx', upload.single('file'), (req, res) => {
             data: {
             std_dk_score, std_cm_score, std_sub_score, std_liberal_score, std_single_score, std_total_score,
             rq_dk_score, rq_cm_score, rq_sub_score, rq_liberal_score, rq_single_score, rq_total_score,
-            is_type_1, is_type_2, is_type_3, is_type_4, is_type_5, is_type_6, is_type_7, is_type_8, is_type_9
+            is_type_1, is_type_2, is_type_3, is_type_4, is_type_5, is_type_6, is_type_7, is_type_8, is_type_9, is_type_10
             }
           });
-          // 디버깅
-          console.log( std_dk_score, std_cm_score, std_sub_score, std_liberal_score, std_single_score, std_total_score,
-            rq_dk_score, rq_cm_score, rq_sub_score, rq_liberal_score, rq_single_score, rq_total_score,
-            is_type_1, is_type_2, is_type_3, is_type_4, is_type_5, is_type_6, is_type_7, is_type_8, is_type_9);
         });
       }
     });
