@@ -84,12 +84,26 @@ app.post('/calgradexlsx', upload.single('file'), (req, res) => {
   // 학생의 총 점수 acc는 2번째 줄부터
   const std_total_score = data.filter((row) => row['L'] !== 'F' && row['N'] !== 'OLD재수강' && row['K'] !== '학점').reduce((acc, row) => acc + row['K'], 0);
 
+  // 학생의 1영역 ~ 4영역 점수 추출
+  const std_lib_1 = data.filter((row) => row['F'] === '제1영역:문학/역사/철학').reduce((acc, row) => acc + row['K'], 0);
+  const std_lib_2 = data.filter((row) => row['F'] === '제2영역:정치/경제/사회/심리').reduce((acc, row) => acc + row['K'], 0);
+  const std_lib_3 = data.filter((row) => row['F'] === '제3영역:과학/기술/생명').reduce((acc, row) => acc + row['K'], 0);
+  const std_lib_4 = data.filter((row) => row['F'] === '제4영역:예술/문화').reduce((acc, row) => acc + row['K'], 0);
+
+  // 학생이 들은 모든 강의의 이름 추출 row N에 OLD재수강이 아닌것, F가 아닌것 학점이 0이 아닌것
+  const std_all_title = data.filter((row) => row['N'] !== 'OLD재수강' && row['L'] !== 'F' && row['K'] !== 0).map((row) => row['I']);
   // 사용할 변수들 선언
   // DB에서 졸업 요건을 조회
   tomysql.query('SELECT * FROM GraduationRequire WHERE year = ? AND type = ?', [year, type], (err, results) => {
+    // type과 year로 조회한 결과가 없다면 졸업요건이 없다는 뜻이므로 바로 반환
     if (err) {
       console.error('[오류] 졸업요건 조회중 오류 발생:', err);
       res.status(500).json({ error: '내부 서버 오류' });
+      return;
+    }
+    if (results.length === 0) {
+      console.error('[오류] 졸업요건 조회중 오류 발생:', err);
+      res.status(500).json({ error: '해당 요건이 없습니다.' });
       return;
     }
 
@@ -102,6 +116,10 @@ app.post('/calgradexlsx', upload.single('file'), (req, res) => {
     const rq_liberal_score = graduationRequire.liberal_score; // 교양교육 학점
     const rq_single_score = graduationRequire.single_score; // 단수전공 학점
     const rq_total_score = graduationRequire.total_score; // 총 졸업학점
+    const rq_lib_1 = graduationRequire.lib_1; // 제1영역 필요 점수
+    const rq_lib_2 = graduationRequire.lib_2; // 제2영역 필요 점수
+    const rq_lib_3 = graduationRequire.lib_3; // 제3영역 필요 점수
+    const rq_lib_4 = graduationRequire.lib_4; // 제4영역 필요 점수
     
     // 졸업 요건의 id를 이용하여 필수과목을 조회
     tomysql.query('SELECT * FROM RCR WHERE rid = ?', [graduationRequire.rid], (err, results) => {
@@ -126,54 +144,28 @@ app.post('/calgradexlsx', upload.single('file'), (req, res) => {
           const requiredCourses = results;
 
           // requiredCourses에서 데이터를 정제 course_type별로 리스트로 묶어서 학생의 엑셀과 비교할 것임
-          // "제1영역:문학/역사/철학","제2영역:정치/사회/심리", "제3영역:과학/기술/생명","제4영역:예술/문화", "기초", "전문", "인성", "자기계발", "공통교육" 으로나뉨
-          // 이에 맞게 데이터를 정제 전공은 기초와 전문으로 나뉨, 교양은 제1~4영역으로 나뉨, 기초는 공통교육과 계열교육으로 나뉨, 소양은 인성과 자기계발으로 나뉨
-          const type_1 = requiredCourses.filter((row) => row.course_type === '제1영역:문학/역사/철학');
-          const type_2 = requiredCourses.filter((row) => row.course_type === '제2영역:정치/사회/심리');
-          const type_3 = requiredCourses.filter((row) => row.course_type === '제3영역:과학/기술/생명');
-          const type_4 = requiredCourses.filter((row) => row.course_type === '제4영역:예술/문화');
-          const type_5 = requiredCourses.filter((row) => row.course_type === '기초');
-          const type_6 = requiredCourses.filter((row) => row.course_type === '전문');
-          const type_7 = requiredCourses.filter((row) => row.course_type === '인성');
-          const type_8 = requiredCourses.filter((row) => row.course_type === '자기계발');
-          const type_9 = requiredCourses.filter((row) => row.course_type === '공통교육');
-          const type_10 = requiredCourses.filter((row) => row.course_type === '직필');
+          // 전문, 소양, 공교, 학기
+          const rq_professional = requiredCourses.filter((row) => row.course_type === '전문').map((row) => row.course_name);
+          const rq_soyang = requiredCourses.filter((row) => row.course_type === '소양').map((row) => row.course_name);
+          const rq_common = requiredCourses.filter((row) => row.course_type === '공교').map((row) => row.course_name);
+          const rq_semester = requiredCourses.filter((row) => row.course_type === '학기').map((row) => row.course_name);
 
-          // 엑셀 데이터에서 학생의 type별 리스트 추출 "이수구분영역"
-          const std_type_1 = data.filter((row) => row['F'] === '제1영역:문학/역사/철학');
-          const std_type_2 = data.filter((row) => row['F'] === '제2영역:정치/사회/심리');
-          const std_type_3 = data.filter((row) => row['F'] === '제3영역:과학/기술/생명');
-          const std_type_4 = data.filter((row) => row['F'] === '제4영역:예술/문화');
-          const std_type_5 = data.filter((row) => row['F'] === '기초');
-          const std_type_6 = data.filter((row) => row['F'] === '전문');
-          const std_type_7 = data.filter((row) => row['F'] === '인성');
-          const std_type_8 = data.filter((row) => row['F'] === '자기계발');
-          const std_type_9 = data.filter((row) => row['F'] === '공통교육');
-          const std_type_10 = data.filter((row) => row['F'] === '직필');
-
-          // 추출한 데이터를 비교해서 학생이 이수한 과목과 필수과목을 비교해서
-          // 영역별 변수에 과목 이름과 이수한 경우 true 안한경우 false 로 분류해 저장(과목이름, 이수여부)
-          // 학생의 데이터에 아무것도 없다면 false로 저장
-          const is_type_1 = type_1.map((row) => [row.course_name, std_type_1.some((std_row) => std_row['I'] === row.course_name)]);
-          const is_type_2 = type_2.map((row) => [row.course_name, std_type_2.some((std_row) => std_row['I'] === row.course_name)]);
-          const is_type_3 = type_3.map((row) => [row.course_name, std_type_3.some((std_row) => std_row['I'] === row.course_name)]);
-          const is_type_4 = type_4.map((row) => [row.course_name, std_type_4.some((std_row) => std_row['I'] === row.course_name)]);
-          const is_type_5 = type_5.map((row) => [row.course_name, std_type_5.some((std_row) => std_row['I'] === row.course_name)]);
-          const is_type_6 = type_6.map((row) => [row.course_name, std_type_6.some((std_row) => std_row['I'] === row.course_name)]);
-          const is_type_7 = type_7.map((row) => [row.course_name, std_type_7.some((std_row) => std_row['I'] === row.course_name)]);
-          const is_type_8 = type_8.map((row) => [row.course_name, std_type_8.some((std_row) => std_row['I'] === row.course_name)]);
-          const is_type_9 = type_9.map((row) => [row.course_name, std_type_9.some((std_row) => std_row['I'] === row.course_name)]);
-          const is_type_10 = type_10.map((row) => [row.course_name, std_type_10.some((std_row) => std_row['I'] === row.course_name)]);
-          
+          // std_all_title에 있는 강의명과 rq_professional, rq_soyang, rq_common, rq_semester을 비교하여 각각의 강의를 들었는지 확인 후 들었으면 ture, 안들었으면 false 이름과 같이 저장
+          // 이름, true or false 형식
+          const std_professional = rq_professional.map((row) => [row, std_all_title.includes(row)]);
+          const std_soyang = rq_soyang.map((row) => [row, std_all_title.includes(row)]);
+          const std_common = rq_common.map((row) => [row, std_all_title.includes(row)]);
+          const std_semester = rq_semester.map((row) => [row, std_all_title.includes(row)]);
 
           // 결과를 반환
           // 졸업 요건 학점들, 현재 학점들, 영역별 이수여부를 반환
           res.json({
             success: true,
             data: {
+            std_professional, std_soyang, std_common, std_semester,
             std_dk_score, std_cm_score, std_sub_score, std_liberal_score, std_single_score, std_total_score,
             rq_dk_score, rq_cm_score, rq_sub_score, rq_liberal_score, rq_single_score, rq_total_score,
-            is_type_1, is_type_2, is_type_3, is_type_4, is_type_5, is_type_6, is_type_7, is_type_8, is_type_9, is_type_10
+            rq_lib_1, rq_lib_2, rq_lib_3, rq_lib_4, std_lib_1, std_lib_2, std_lib_3, std_lib_4
             }
           });
         });
