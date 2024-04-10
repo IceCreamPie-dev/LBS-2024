@@ -1,4 +1,5 @@
 <template>
+    <link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css" rel="stylesheet">
     <div>
         <div class="title-group">
             <label for="title" class="title-label">Q&A 게시판</label>
@@ -52,6 +53,7 @@ export default {
   display: flex;
   justify-content: left;
   margin-top: 2vw;
+  font-family: 'NanumSquareNeo';
 }
 
 .title-label {

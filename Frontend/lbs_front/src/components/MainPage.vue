@@ -1,10 +1,12 @@
 <template>
+  <link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css" rel="stylesheet">
   <div>
     <div class = "title-group">
-    <label for="title" class="title-label">졸업요건확인</label>
+    <label for="title" class="title-label">졸업요건 확인</label>
   </div> 
   <div class="yellow-line"></div>
-   <input type="file" @change="handleFileUpload" accept=".xlsx" /> 
+  <div class="main-style">
+  <input type="file" @change="handleFileUpload" accept=".xlsx" /> 
     <input type="text" v-model="year" placeholder="연도를 입력하세요" />
     <select v-model="type">
       <option value="일반">일반</option>
@@ -14,7 +16,7 @@
     </select>
     <button
       @click="checkGraduation">졸업 요건 확인</button>
-    
+  </div>
       <div v-if="result">
       <table class="table">
         <thead>
@@ -150,10 +152,52 @@ export default {
 </script>
 
 <style scoped>
+
+.main-style {
+  background-color: rgb(255, 222, 128, 0.7);
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 10px;
+  gap:10px;
+  display: flex;
+  align-items: center;
+}
+
+input[type="file"] {
+    border-radius: 5px;
+    width: 200px;
+    margin-right: 35%;
+  }
+
+input{
+  padding: 8px;
+}
+
+select {
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 8px;
+}
+
+
+button {
+  background-color: rgb(134, 117, 95);
+  width: 130px;
+  color: #fffcf4;
+  border: none;
+  border-radius: 3px;
+  padding: 10px;
+  margin-left: 20px;
+  cursor: pointer;
+  font-family: 'NanumSquareNeobold';
+  font-size: 15px;
+}
+
 .title-group {
   display: flex;
   justify-content: left;
   margin-top: 2vw;
+  font-family: 'NanumSquareNeobold';
 }
 
 .title-label {
@@ -162,25 +206,9 @@ export default {
   color: #484848;
   margin-left: 1vw; /* 상대적인 단위로 변경 */
 }
-/*.v-application {
-  font-family: 'NanumBarunGothic', sans-serif !important;
+.result{
+  font-family: 'NanumSquareNeo';
 }
-@font-face {
-  font-family:'NanumBarunGothic';
-  src: url('assets/fonts/NanumBarunGothic.ttf') format('truetype');
-  font-weight: 400;
-}
-@font-face {
-  font-family:'NanumBarunGothic';
-  src: url('assets/fonts/NanumBarunGothicLight.ttf') format('truetype');
-  font-weight: 300;
-}
-@font-face {
-  font-family:'NanumBarunGothic';
-  src: url('assets/fonts/NanumBarunGothicBold.ttf') format('truetype');
-  font-weight: 700;
-}
-*/
 
 .table,
 .table2,

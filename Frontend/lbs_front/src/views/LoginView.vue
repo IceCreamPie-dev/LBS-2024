@@ -1,4 +1,5 @@
 <template>
+  <link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css" rel="stylesheet">
   <div class="home-account">
     <header class="header"></header>
     <img src="../assets/logo.png" alt="Vue logo" class="logo" />
@@ -86,12 +87,13 @@ export default {
   /* footer의 높이만큼 위에 위치 */
   width: 100%;
   overflow-y: auto;
+  font-family: 'NanumSquareNeo';
   /* 내용이 넘칠 경우 스크롤 표시 */
 }
 
 .header {
   background-color: rgba(255, 187, 6, 0.5);
-  min-height: 101px;
+  min-height: 75px;
   width: 100%;
   position: fixed;
   top: 0;
@@ -177,7 +179,9 @@ export default {
   font-family: sans-serif;
   border: none;
   cursor: pointer;
+  text-decoration: none;
   transition: background-color 0.3s ease;
+  font-family: 'NanumSquareNeo';
   /* 배경색 변화에 애니메이션 효과 추가 */
 }
 

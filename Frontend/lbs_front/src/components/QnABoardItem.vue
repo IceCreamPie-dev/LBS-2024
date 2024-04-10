@@ -1,4 +1,5 @@
 <template>
+  <link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css" rel="stylesheet">
   <div class="card">
     <h5 class="card-title">{{ postId }}</h5>
     <p class="card-text">{{ title }}</p>
@@ -35,6 +36,7 @@ export default {
   align-items: center;
   text-align: center;
   border-bottom: rgb(96, 85, 72, 0.6) 1.5px solid;
+  font-family: 'NanumSquareNeo';
 }
 
 .card-title {

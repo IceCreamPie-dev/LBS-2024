@@ -115,6 +115,7 @@ export default {
 }
 
 .yellow-line {
+  margin-top: 5px;
   height: 2.5px;
   background-color: rgba(255, 222, 128, 1);
 }

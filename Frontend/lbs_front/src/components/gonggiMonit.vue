@@ -1,4 +1,5 @@
 <template>
+  <link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css" rel="stylesheet">
   <div class = "title-group">
     <label for="title" class="title-label">공지사항</label>
   </div> 
@@ -21,6 +22,7 @@ export default {
   display: flex;
   justify-content: left;
   margin-top: 2vw;
+  font-family: 'NanumSquareNeo';
 }
 
 .title-label {

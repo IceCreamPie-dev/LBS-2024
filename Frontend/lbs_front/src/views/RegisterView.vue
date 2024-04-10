@@ -1,4 +1,5 @@
 <template>
+  <link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css" rel="stylesheet">
   <div class="page-container">
     <header class="header"></header>
     <div class="signup-container">
@@ -163,8 +164,6 @@ export default {
 
 .header {
   background-color: #FFDE80;
-  /* 원하는 배경색 지정 */
-  color: #fff;
   padding: 20px;
   text-align: center;
   width: 100%;
@@ -175,7 +174,6 @@ export default {
 
 .footer {
   background-color: #FFDE80;
-  /* 원하는 배경색 지정 */
   color: #fff;
   padding: 20px;
   text-align: center;
@@ -192,6 +190,7 @@ export default {
   justify-content: center;
   color: #aeaeae;
   padding: 4vw 3vw;
+  font-family: 'NanumSquareNeo';
   /* 상대적인 단위로 변경 */
 }
 
@@ -282,6 +281,7 @@ export default {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  font-family: 'NanumSquareNeo';
 }
 
 .error-message {
