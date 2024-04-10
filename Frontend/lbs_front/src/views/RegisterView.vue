@@ -50,8 +50,6 @@
             <span class="error-message" v-if="!isConfirmPasswordValid && confirmPassword"> ❌ 비밀번호가 일치하지 않습니다.</span>
           </div>
           <button class="btn-register" @click="Register">회원가입</button>
-
-
         </form>
       </div>
     </div>
