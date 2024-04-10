@@ -46,6 +46,6 @@ export default createStore({
                 commit('setToken', '');
                 localStorage.removeItem('token');
             }
-        }
+        },
     },
 })

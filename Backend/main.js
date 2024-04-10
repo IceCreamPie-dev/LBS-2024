@@ -46,8 +46,7 @@ app.post('/login', (req, res) => {
     }
     // JWT 토큰 생성 성공시 토큰 전송
     const token = jwt.sign({ email, name: results[0].name, role: results[0].role }, secretKey, { expiresIn: '1h' });
-    res.json({ token });
-    console.log(token);
+    res.status(200).json({ token });
   });
 });
 
@@ -69,15 +68,18 @@ app.get('/checklogin', (req, res) => {
 
 // 회원가입 요청 - 이름, 이메일, 비밀번호
 app.post('/register', (req, res) => {
-  const { email, password, name, student_id, type } = req.body;
+  const { email, pwd, name, studentId, type } = req.body;
   // 사용자 생성
-  tomysql.query('INSERT INTO Users (email, password, name, student_id, type) VALUES (?, ?, ?, ?, ?)', [email, password, name, student_id, type], (err, results) => {
+  tomysql.query('INSERT INTO Users (email, pwd, name, student_id, role) VALUES (?, ?, ?, ?, ?)', [email, pwd, name, studentId, type], (err, results) => {
+    // email이 중복되는 경우 에러 발생 400 에러
     if (err) {
       console.error('[오류] 사용자 생성중 오류 발생:', err);
-      res.status(500).json({ error: '내부 서버 오류' });
+      res.status(409).json({ error: '이미 사용중인 이메일입니다.' });
       return;
     }
-    res.json({ success: true });
+    // 성공 응답 및 토큰 전송
+    const token = jwt.sign({ email, name, role: type }, secretKey, { expiresIn: '1h' });
+    res.status(201).json({ token });
   });
 });
 
@@ -334,6 +336,16 @@ app.delete('/board/:board_type/:post_id/comments/:comment_id', (req, res) => {
     res.json({ success: true });
   });
 });
+
+// 공지 게시물 목록 조회
+
+// 공지 게시물 상세 조회
+
+// 공지 게시물 생성
+
+// 공지 게시물 수정
+
+// 공지 게시물 삭제
 
 // 졸업요건 생성
 app.post('/admin/graduation-requirements', (req, res) => {

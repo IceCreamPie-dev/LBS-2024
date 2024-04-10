@@ -1,67 +1,74 @@
 <template>
-    <div class="page-container">
-      <header class="header"></header>
-      <div class="signup-container">
-        <div class="signup-form">
-          <img src="../assets/logo.png" alt="logo" class="logo"/>    
-          <form class="form-fields">
+  <div class="page-container">
+    <header class="header"></header>
+    <div class="signup-container">
+      <div class="signup-form">
+        <img src="../assets/logo.png" alt="logo" class="logo" />
+        <form class="form-fields">
 
-            <div class="form-group">
-              <label for="name" class="form-label">이름</label>
-              <input type="text" id="name" class="form-input" v-model="name" @input="validateName" />
-              <span class="success-message" v-if="isNameValid && name"> ✔</span>
-           </div>
-            <div>
+          <div class="form-group">
+            <label for="name" class="form-label">이름</label>
+            <input type="text" id="name" class="form-input" v-model="name" @input="validateName" />
+            <span class="success-message" v-if="isNameValid && name"> ✔</span>
+          </div>
+          <div>
             <span class="error-message" v-if="!isNameValid && name"> ❌ 올바르지 않은 이름입니다.</span>
-              </div>
+          </div>
 
-            <div class="form-group">
-              <label for="studentId" class="form-label">학번</label>
-              <input type="text" id="studentId" class="form-input" v-model="studentId" @input="validateStudentId" />
-              <span class="success-message" v-if="isStudentIdValid && studentId"> ✔</span>
-           </div>
-            <div>
-              <span class="error-message" v-if="errorMessage"> ❌ {{ errorMessage }}</span>
-            </div>
-            <div class="form-group">
-              <label for="email" class="form-label">이메일</label>
-              <input type="email" id="email" class="form-input" v-model="email" @input="validateEmail" />
-              <span class="success-message" v-if="isEmailValid && email"> ✔</span>
-           </div>
-            <div>
+          <div class="form-group">
+            <label for="studentId" class="form-label">학번</label>
+            <input type="text" id="studentId" class="form-input" v-model="studentId" @input="validateStudentId" />
+            <span class="success-message" v-if="isStudentIdValid && studentId"> ✔</span>
+          </div>
+          <div>
+            <span class="error-message" v-if="errorMessage"> ❌ {{ errorMessage }}</span>
+          </div>
+          <div class="form-group">
+            <label for="email" class="form-label">이메일</label>
+            <input type="email" id="email" class="form-input" v-model="email" @input="validateEmail" />
+            <span class="success-message" v-if="isEmailValid && email"> ✔</span>
+          </div>
+          <div>
             <span class="error-message" v-if="!isEmailValid && email"> ❌ 이메일 형식이 맞지 않습니다.</span>
-              </div>
-            <div class="form-group">
-              <label for="password" class="form-label">비밀번호</label>
-              <input type="password" id="password" class="form-input" v-model="password" @input="validatePassword" />
-              <span class="success-message" v-if="isPasswordValid && password && confirmPassword"> ✔</span>
-           </div>
-            <div>
-            <span class="error-message" v-if="!isPasswordValid && password && confirmPassword"> ❌ 비밀번호가 일치하지 않습니다.</span>
-              </div>
-            <div class="form-group">
-              <label for="confirmPassword" class="form-label">비밀번호 확인</label>
-              <input type="password" id="confirmPassword" class="form-input" v-model="confirmPassword" @input="validateConfirmPassword" />
-              <span class="success-message" v-if="isConfirmPasswordValid && confirmPassword"> ✔</span>
-           </div>
-            <div>
+          </div>
+          <div class="form-group">
+            <label for="password" class="form-label">비밀번호</label>
+            <input type="password" id="password" class="form-input" v-model="password" @input="validatePassword" />
+            <span class="success-message" v-if="isPasswordValid && password && confirmPassword"> ✔</span>
+          </div>
+          <div>
+            <span class="error-message" v-if="!isPasswordValid && password && confirmPassword"> ❌ 비밀번호가 일치하지
+              않습니다.</span>
+          </div>
+          <div class="form-group">
+            <label for="confirmPassword" class="form-label">비밀번호 확인</label>
+            <input type="password" id="confirmPassword" class="form-input" v-model="confirmPassword"
+              @input="validateConfirmPassword" />
+            <span class="success-message" v-if="isConfirmPasswordValid && confirmPassword"> ✔</span>
+          </div>
+          <div>
             <span class="error-message" v-if="!isConfirmPasswordValid && confirmPassword"> ❌ 비밀번호가 일치하지 않습니다.</span>
-              </div>
-               <router-link to="/" class="btn-register">회원가입</router-link>
-                
-          
-          </form>
-        </div>
+          </div>
+          <button class="btn-register" @click="Register">회원가입</button>
+
+
+        </form>
       </div>
-      <footer class="footer"></footer>
     </div>
-  </template>
+    <footer class="footer"></footer>
+  </div>
+</template>
 
 <script>
-/*
 import axios from 'axios';
-import { API_URL } from './config.js'; // config.js 파일 경로 수정*/
 export default {
+  beforeRouteEnter(to, from, next) {
+    if (localStorage.getItem('token')) {
+      next('/');
+    } else {
+      next();
+    }
+  },
   data() {
     return {
       name: '',
@@ -74,25 +81,10 @@ export default {
       isEmailValid: true,
       isPasswordValid: true,
       isConfirmPasswordValid: true,
-      errorMessage:''
+      errorMessage: ''
     };
   },
   methods: {
-/*    async login() {
-      try {
-        const response = await axios.post(`${API_URL}/login`, {
-          username: this.name,
-          password: this.password
-        });
-        if (response.status === 200) {
-          this.$router.push('/about');
-        } else if (response.status === 400) {
-          alert('아이디 또는 비밀번호가 일치하지 않습니다.');
-        }
-      } catch (error) {
-        console.error(error);
-      } 
-    },*/
     validateName() {
       // 이름이 비어 있는지 확인
       if (this.name.trim() === '') {
@@ -131,18 +123,49 @@ export default {
     validateConfirmPassword() {
       // 비밀번호가 일치하는지 확인
       this.isConfirmPasswordValid = this.password === this.confirmPassword;
-    }
+    },
+    async Register() {
+      // 이름, 학번, 이메일, 비밀번호, 비밀번호 확인 필드가 유효한지 확인
+      if (!this.isNameValid || !this.isStudentIdValid || !this.isEmailValid || !this.isPasswordValid || !this.isConfirmPasswordValid) {
+        return;
+      }
+      // 회원가입 요청
+      try {
+        const response = await axios.post(`/api/register`, {
+          name: this.name,
+          studentId: this.studentId,
+          email: this.email,
+          pwd: this.password,
+          type: 0
+        });
+        // 회원가입 성공 시
+        // 1초 뒤에 메인 페이지로 이동
+        localStorage.setItem('token', response.data.token);
+        setTimeout(() => {
+          this.$router.replace('/');
+        }, 1000);
+      } catch (error) {
+        // 회원가입 실패 시
+        if (error.response.status === 409) {
+          alert('이미 존재하는 이메일입니다.');
+        } else {
+          alert('회원가입에 실패했습니다.');
+        }
+      }
+    },
   }
 };
 </script>
 
 <style scoped>
-.error-message, .success-message {
+.error-message,
+.success-message {
   display: none;
 }
 
 .header {
-  background-color: #FFDE80; /* 원하는 배경색 지정 */
+  background-color: #FFDE80;
+  /* 원하는 배경색 지정 */
   color: #fff;
   padding: 20px;
   text-align: center;
@@ -153,7 +176,8 @@ export default {
 }
 
 .footer {
-  background-color: #FFDE80; /* 원하는 배경색 지정 */
+  background-color: #FFDE80;
+  /* 원하는 배경색 지정 */
   color: #fff;
   padding: 20px;
   text-align: center;
@@ -169,16 +193,20 @@ export default {
   align-items: center;
   justify-content: center;
   color: #aeaeae;
-  padding: 4vw 3vw; /* 상대적인 단위로 변경 */
+  padding: 4vw 3vw;
+  /* 상대적인 단위로 변경 */
 }
 
 
 .signup-form {
   display: flex;
   flex-direction: column;
-  width: 100%; /* 화면 크기에 관계없이 부모 요소에 따라 동적으로 조절 */
-  max-width: 800px; /* 최대 너비 설정 */
-  margin-right: 6vw; /* 상대적인 단위로 변경 */
+  width: 100%;
+  /* 화면 크기에 관계없이 부모 요소에 따라 동적으로 조절 */
+  max-width: 800px;
+  /* 최대 너비 설정 */
+  margin-right: 6vw;
+  /* 상대적인 단위로 변경 */
 }
 
 .logo {
@@ -192,7 +220,8 @@ export default {
   border: 1px solid rgba(217, 217, 217, 1);
   margin-top: 2vw;
   margin-left: 1vw;
-  padding: 4vw 6vw; /* 상대적인 단위로 변경 */
+  padding: 4vw 6vw;
+  /* 상대적인 단위로 변경 */
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -200,20 +229,24 @@ export default {
 
 .form-group {
   display: flex;
-  font-size: 1.5vw; /* 상대적인 단위로 변경 */
+  font-size: 1.5vw;
+  /* 상대적인 단위로 변경 */
   margin-left: 0;
   margin: 5px;
-  width: 90%; /* 부모 요소인 form-fields에 따라 동적으로 조절 */
+  width: 90%;
+  /* 부모 요소인 form-fields에 따라 동적으로 조절 */
 }
 
 .form-label {
   text-align: center;
   margin-top: 10px;
-  width: 40%; /* 상대적인 단위로 변경 */
+  width: 40%;
+  /* 상대적인 단위로 변경 */
 }
 
 .form-input {
-  width: 60%; /* 상대적인 단위로 변경 */
+  width: 60%;
+  /* 상대적인 단위로 변경 */
   height: 41px;
   border-radius: 6px;
   border: 1px solid rgba(217, 217, 217, 1);
@@ -224,56 +257,77 @@ export default {
   border-radius: 9px;
   border: none;
   background-color: #ffde80;
-  width: 30vw; /* 상대적인 단위로 변경 */
+  width: 30vw;
+  /* 상대적인 단위로 변경 */
   max-width: 100%;
-  font-size: 1.5vw; /* 상대적인 단위로 변경 */
+  font-size: 1.5vw;
+  /* 상대적인 단위로 변경 */
   font-weight: bold;
   color: #484848;
-  margin-top: 1vw; /* 상대적인 단위로 변경 */
-  margin-left: 7vw; /* 상대적인 단위로 변경 */
-  padding: 1vw; /* 상대적인 단위로 변경 */
+  margin-top: 1vw;
+  /* 상대적인 단위로 변경 */
+  margin-left: 7vw;
+  /* 상대적인 단위로 변경 */
+  padding: 1vw;
+  /* 상대적인 단위로 변경 */
   cursor: pointer;
-    position: relative;
+  position: relative;
 }
+
 .btn-register:hover {
   background-color: #ffd56c;
   color: rgb(56, 39, 0);
   font-weight: bold;
 }
+
 .btn-register {
   display: inline-flex;
   align-items: center;
   justify-content: center;
 }
+
 .error-message {
   color: #FA5C87;
-  margin-left: 1vw; /* 상대적인 단위로 변경 */
-  margin-top: 1.3vw; /* 상대적인 단위로 변경 */
+  margin-left: 1vw;
+  /* 상대적인 단위로 변경 */
+  margin-top: 1.3vw;
+  /* 상대적인 단위로 변경 */
   display: block;
-  font-size: 1.3vw; /* 상대적인 단위로 변경 */
-  font-weight: 400; /* 올바른 값으로 변경 */
+  font-size: 1.3vw;
+  /* 상대적인 단위로 변경 */
+  font-weight: 400;
+  /* 올바른 값으로 변경 */
 }
+
 .success-message {
   color: #00D26A;
-  margin-left: 1vw; /* 상대적인 단위로 변경 */
-  margin-top: 1.3vw; /* 상대적인 단위로 변경 */
+  margin-left: 1vw;
+  /* 상대적인 단위로 변경 */
+  margin-top: 1.3vw;
+  /* 상대적인 단위로 변경 */
   display: block;
-  font-size: 1.3vw; /* 상대적인 단위로 변경 */
-  font-weight: 400; /* 올바른 값으로 변경 */
+  font-size: 1.3vw;
+  /* 상대적인 단위로 변경 */
+  font-weight: 400;
+  /* 올바른 값으로 변경 */
 }
 
 @media screen and (max-width: 768px) {
   .signup-form {
-    width: 90%; /* 화면이 작을 때는 전체 너비의 90%를 차지하도록 설정 */
-    margin-right: 0; /* 오른쪽 여백을 제거하여 너비를 조정 */
+    width: 90%;
+    /* 화면이 작을 때는 전체 너비의 90%를 차지하도록 설정 */
+    margin-right: 0;
+    /* 오른쪽 여백을 제거하여 너비를 조정 */
   }
 
   .form-label {
-    width: 40%; /* 레이블의 너비를 확장 */
+    width: 40%;
+    /* 레이블의 너비를 확장 */
   }
 
   .form-input {
-    width: 60%; /* 입력 필드의 너비를 축소 */
+    width: 60%;
+    /* 입력 필드의 너비를 축소 */
   }
 }
 </style>

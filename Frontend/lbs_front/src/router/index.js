@@ -13,12 +13,12 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    component: import('../views/LoginView.vue')
+    component: () => import('../views/LoginView.vue')
   },
   {
     path: '/register',
     name: 'register',
-    component: import('../views/RegisterView.vue')
+    component: () => import('../views/RegisterView.vue')
   },
   {
     path: '/sidebartest',
@@ -28,7 +28,7 @@ const routes = [
   {
     path: '/test',
     name: 'test',
-    component: import('../views/TestView.vue')
+    component: () => import('../views/TestView.vue')
   },
 ]
 
