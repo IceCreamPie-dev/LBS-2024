@@ -61,7 +61,11 @@ export default {
           email: this.email,
           password: this.password
         });
-        this.$router.push('/');
+        if (this.$store.state.auth) {
+          this.$router.push('/');
+        } else {
+          alert('로그인에 실패했습니다. 다시 시도하세요.');
+        }
       } catch (error) {
         console.error(error);
         alert('로그인에 실패했습니다. 다시 시도하세요.');
