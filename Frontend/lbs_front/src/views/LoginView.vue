@@ -17,7 +17,6 @@
           <router-link to="/register" class="btn btn-signup">
             <button class="btn-inner">회원가입</button>
           </router-link>
-            <router-link to="/" class="btn-inner">로그인</router-link>
                 
         </div>
       </form>
