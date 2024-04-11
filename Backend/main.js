@@ -272,7 +272,6 @@ app.get('/board/QnA', (req, res) => {
       res.status(500).json({ error: '내부 서버 오류' });
       return;
     }
-    console.log(results);
     res.json(results);
   });
 });
@@ -338,6 +337,19 @@ app.delete('/board/:board_type/:post_id/comments/:comment_id', (req, res) => {
 });
 
 // 공지 게시물 목록 조회
+app.get('/board/info', (req, res) => {
+  const { page = 1, limit = 5 } = req.query;
+  const offset = (page - 1) * limit;
+  // 공지 게시물 목록 조회
+  tomysql.query('SELECT iid, title, created_at FROM Info ORDER BY created_at DESC LIMIT ? OFFSET ?', [limit, offset], (err, results) => {
+    if (err) {
+      console.error('[오류] 게시물 조회중 오류 발생:', err);
+      res.status(500).json({ error: '내부 서버 오류' });
+      return;
+    }
+    res.json(results);
+  });
+});
 
 // 공지 게시물 상세 조회
 
