@@ -5,9 +5,6 @@
             <label for="title" class="title-label">Q&A 게시판</label>
         </div>
         <div class="yellow-line"></div>
-        <div>
-            <QnAPostDetail />
-        </div>
         <div v-for="post in posts" :key="post.id">
             <QnABoardItem :post-id="post.qid" :title="post.title" :createdAt="post.created_at" :content="post.content"></QnABoardItem>
         </div>
@@ -17,15 +14,12 @@
 <script>
 
 import QnABoardItem from '@/components/QnABoardItem.vue';
-import QnAPostDetail from '@/components/QnABoardItem.vue';
-
 
 import axios from 'axios';
 
 export default {
     components: {
         QnABoardItem,
-        QnAPostDetail,
     },
     data() {
         return {

@@ -4,7 +4,7 @@
     <label for="title" class="title-label">공지사항</label>
   </div> 
   <div class="yellow-line"></div>
-  <div>
+  <div v-for="post in post" :key="post.iid">
     <GoggiBoardItem :post-id="post.iid" :title="post.title" :created-at="post.createdAt" :content="post.content" />
   </div>
 </template>
