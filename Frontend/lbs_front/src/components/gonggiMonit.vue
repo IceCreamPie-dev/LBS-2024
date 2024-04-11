@@ -5,15 +5,15 @@
   </div> 
   <div class="yellow-line"></div>
   <div>
-    <QnABoardItem/>
+    <GoggiBoardItem/>
   </div>
 </template>
 <script>
 
-import QnABoardItem from '@/components/QnABoardItem.vue';
+import GoggiBoardItem from '@/components/GoggiBoardItem.vue';
 export default {
     components: {
-        QnABoardItem,
+      GoggiBoardItem,
     },
 };
 </script>
