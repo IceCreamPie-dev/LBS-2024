@@ -3,7 +3,7 @@
   <div class="card">
     <h5 class="card-title">{{ postId }}</h5>
     <p class="card-text">{{ title }}</p>
-    <p class="text-muted">{{ createdAt }}</p>
+    <p class="text-muted">{{ formattedDate }}</p>
   </div>
 </template>
 
@@ -19,9 +19,25 @@ export default {
       required: true,
     },
     createdAt: {
-      type: [String, Date, Number],
+      type: String,
     },
   },
+  Data () {
+    return {
+      formattedDate: '',
+    };
+  },
+  computed: {
+  formattedDate() {
+    const created_at = new Date(this.createdAt);
+    const year = created_at.getFullYear();
+    const month = String(created_at.getMonth() + 1).padStart(2, '0');
+    const day = String(created_at.getDate()).padStart(2, '0');
+
+    const formattedDate = `${year}-${month}-${day}`;
+    return formattedDate;
+  }
+}
 };
 </script>
 

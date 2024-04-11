@@ -5,16 +5,35 @@
   </div> 
   <div class="yellow-line"></div>
   <div>
-    <GoggiBoardItem/>
+    <GoggiBoardItem :post-id="post.iid" :title="post.title" :created-at="post.createdAt" :content="post.content" />
   </div>
 </template>
 <script>
-
+import axios from 'axios';
 import GoggiBoardItem from '@/components/GoggiBoardItem.vue';
 export default {
     components: {
       GoggiBoardItem,
     },
+    data() {
+        return {
+            post: [],
+        };
+    },
+    created() {
+        this.fetchPosts();
+    },
+    methods: {
+        async fetchPosts() {
+            try {
+                const response = await axios.get('/api/board/info');
+                this.post = response.data;
+            } catch (error) {
+                console.error(error);
+            }
+        },
+    },
+    
 };
 </script>
 <style scoped>

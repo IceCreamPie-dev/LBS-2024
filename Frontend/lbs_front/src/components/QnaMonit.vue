@@ -9,7 +9,7 @@
             <QnAPostDetail />
         </div>
         <div v-for="post in posts" :key="post.id">
-            <QnABoardItem :post-id="post.qid" :title="post.title" :created-at="post.createdAt" :content="post.content"></QnABoardItem>
+            <QnABoardItem :post-id="post.qid" :title="post.title" :createdAt="post.created_at" :content="post.content"></QnABoardItem>
         </div>
     </div>
 </template>
