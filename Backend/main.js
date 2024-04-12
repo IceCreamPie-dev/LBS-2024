@@ -352,12 +352,72 @@ app.get('/board/info', (req, res) => {
 });
 
 // 공지 게시물 상세 조회
+app.get('/board/info/:postId', (req, res) => {
+  const postId = req.params.postId;
+  // 공지 게시물 상세 조회
+  tomysql.query('SELECT * FROM Info WHERE iid = ?', [postId], (err, results) => {
+    if (err) {
+      console.error('[오류] 게시글 조회 중 오류 발생:', err);
+      res.status(500).json({ error: '게시글 조회 중 오류가 발생했습니다.' });
+      return;
+    }
+    if (results.length === 0) {
+      res.status(404).json({ error: '해당 게시글을 찾을 수 없습니다.' });
+      return;
+    }
+    res.json(results[0]);
+  });
+});
 
-// 공지 게시물 생성
+// 공지 게시물 생성 이미지도 받음
+app.post('/board/info', (req, res) => {
+  const { title, content } = req.body;
+  const image = req.file.buffer;
+  const email = req.user.email;
+
+  if (image === undefined) {
+    image = null;
+  }
+  // 공지 게시물 생성
+  tomysql.query('INSERT INTO Info (title, content, email, created_at, image, updated_at) VALUES (?, ?, ?, ?, NOW(), NOW())', [title, content, email, image], (err, results) => {
+    if (err) {
+      console.error('[오류] 게시물 작성중 오류 발생:', err);
+      res.status(500).json({ error: '내부 서버 오류' });
+      return;
+    }
+    res.json({ success: true });
+  });
+});
 
 // 공지 게시물 수정
+app.put('/board/info/:id', (req, res) => {
+  const { title, content } = req.body;
+  const email = req.user.email;
+  const { id } = req.params;
+  // 공지 게시물 수정
+  tomysql.query('UPDATE Info SET title = ?, content = ?, updated_at = NOW() WHERE iid = ?', [title, content, id], (err, results) => {
+    if (err) {
+      console.error('[오류] 게시물 수정중 오류 발생:', err);
+      res.status(500).json({ error: '내부 서버 오류' });
+      return;
+    }
+    res.json({ success: true });
+  });
+});
 
 // 공지 게시물 삭제
+app.delete('/board/info/:id', (req, res) => {
+  const { id } = req.params;
+  // 공지 게시물 삭제
+  tomysql.query('DELETE FROM Info WHERE iid = ?', [id], (err, results) => {
+    if (err) {
+      console.error('[오류] 게시물 삭제중 오류 발생:', err);
+      res.status(500).json({ error: '내부 서버 오류' });
+      return;
+    }
+    res.json({ success: true });
+  });
+});
 
 // 졸업요건 생성
 app.post('/admin/graduation-requirements', (req, res) => {
