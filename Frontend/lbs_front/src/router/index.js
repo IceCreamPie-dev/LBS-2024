@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import home from '../views/HomeView.vue'
 import SideBarTestView from '../views/SideBarTestView.vue'
+import QnAPostDetail from '@/components/QnAPostDetail.vue'
 
 
 
@@ -29,6 +30,11 @@ const routes = [
     path: '/test',
     name: 'test',
     component: () => import('../views/TestView.vue')
+  },
+  {
+    path: '/qna/:postId',
+    name: 'QnAPostDetail',
+    component: QnAPostDetail,
   },
 ]
 

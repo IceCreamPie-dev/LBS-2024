@@ -5,8 +5,14 @@
             <label for="title" class="title-label">Q&A 게시판</label>
         </div>
         <div class="yellow-line"></div>
+        <form @submit.prevent="createPost">
+      <input type="text" v-model="newPost.title" placeholder="제목">
+      <textarea v-model="newPost.content" placeholder="내용"></textarea>
+      <button type="submit">포스트 생성</button>
+    </form>
         <div v-for="post in posts" :key="post.id">
             <QnABoardItem :post-id="post.qid" :title="post.title" :createdAt="post.created_at" :content="post.content"></QnABoardItem>
+            <router-link :to="'/qna/' + post.id">{{  post.title }}</router-link>
         </div>
     </div>
 </template>
@@ -24,6 +30,10 @@ export default {
     data() {
         return {
             posts: [],
+            newPost: {
+                title: '',
+                content: ''
+            }
         };
     },
     created() {
@@ -32,8 +42,9 @@ export default {
     methods: {
         async fetchPosts() {
             try {
-                const response = await axios.get('/api/board/QnA');
-                this.posts = response.data;
+                const response = await axios.get('/api/board/QnA', this.newPost);
+                this.posts.push(response.data);
+                this.newPost = {title: '', content: ''};
             } catch (error) {
                 console.error(error);
             }
