@@ -165,6 +165,7 @@ app.post('/calgradexlsx', upload.single('file'), (req, res) => {
 
           // requiredCourses에서 데이터를 정제 course_type별로 리스트로 묶어서 학생의 엑셀과 비교할 것임
           // 전문, 소양, 공교, 학기
+          const rq_capston = requiredCourses.filter((row) => row.course_type === '캡스톤').map((row) => row.course_name);
           const rq_professional = requiredCourses.filter((row) => row.course_type === '전문').map((row) => row.course_name);
           const rq_soyang = requiredCourses.filter((row) => row.course_type === '소양').map((row) => row.course_name);
           const rq_common = requiredCourses.filter((row) => row.course_type === '공교').map((row) => row.course_name);
@@ -172,6 +173,7 @@ app.post('/calgradexlsx', upload.single('file'), (req, res) => {
 
           // std_all_title에 있는 강의명과 rq_professional, rq_soyang, rq_common, rq_semester을 비교하여 각각의 강의를 들었는지 확인 후 들었으면 ture, 안들었으면 false 이름과 같이 저장
           // 이름, true or false 형식
+          const std_capston = rq_capston.map((row) => [row, std_all_title.includes(row)]);
           const std_professional = rq_professional.map((row) => [row, std_all_title.includes(row)]);
           const std_soyang = rq_soyang.map((row) => [row, std_all_title.includes(row)]);
           const std_common = rq_common.map((row) => [row, std_all_title.includes(row)]);
@@ -182,7 +184,7 @@ app.post('/calgradexlsx', upload.single('file'), (req, res) => {
           res.json({
             success: true,
             data: {
-            std_professional, std_soyang, std_common, std_semester,
+            std_professional, std_soyang, std_common, std_semester, std_capston,
             std_dk_score, std_cm_score, std_sub_score, std_liberal_score, std_single_score, std_total_score,
             rq_dk_score, rq_cm_score, rq_sub_score, rq_liberal_score, rq_single_score, rq_total_score,
             rq_lib_1, rq_lib_2, rq_lib_3, rq_lib_4, std_lib_1, std_lib_2, std_lib_3, std_lib_4
