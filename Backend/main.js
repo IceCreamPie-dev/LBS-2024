@@ -231,7 +231,7 @@ app.post('/board/QnA', (req, res) => {
 });
 
 // QnA게시물 수정
-app.put('/board/:id', (req, res) => {
+app.put('/board/QnA/:id', (req, res) => {
   // 게시물 수정자 이메일, 제목, 내용을 받음
   const { title, content } = req.body;
   const email = req.user.email;
@@ -277,7 +277,7 @@ app.get('/board/QnA', (req, res) => {
 });
 
 // QnA 게시물 댓글 조회
-app.get('/board/:board_type/:post_id/comments', (req, res) => {
+app.get('/board/QnA/:post_id/comments', (req, res) => {
   const { post_id } = req.params;
   // 게시물 댓글 조회
   tomysql.query('SELECT * FROM comments WHERE post_id = ?', [post_id], (err, results) => {
@@ -291,7 +291,7 @@ app.get('/board/:board_type/:post_id/comments', (req, res) => {
 });
 
 // QnA 게시물 댓글 생성
-app.post('/board/:board_type/:post_id/comments', (req, res) => {
+app.post('/board/QnA/:post_id/comments', (req, res) => {
   const { content } = req.body;
   const email = req.user.email;
   const { post_id } = req.params;
@@ -307,7 +307,7 @@ app.post('/board/:board_type/:post_id/comments', (req, res) => {
 });
 
 // QnA 게시물 댓글 수정
-app.put('/board/:board_type/:post_id/comments/:comment_id', (req, res) => {
+app.put('/board/QnA/:post_id/comments/:comment_id', (req, res) => {
   const { content } = req.body;
   const email = req.user.email;
   const { comment_id } = req.params;
@@ -323,7 +323,7 @@ app.put('/board/:board_type/:post_id/comments/:comment_id', (req, res) => {
 });
 
 // QnA 게시물 댓글 삭제
-app.delete('/board/:board_type/:post_id/comments/:comment_id', (req, res) => {
+app.delete('/board/QnA/:post_id/comments/:comment_id', (req, res) => {
   const { comment_id } = req.params;
   // 게시물 댓글 삭제
   tomysql.query('DELETE FROM comments WHERE id = ?', [comment_id], (err, results) => {
