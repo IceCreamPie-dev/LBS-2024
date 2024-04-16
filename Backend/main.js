@@ -30,25 +30,19 @@ const tomysql = mysql.createPool({
 
 app.use(express.json());
 // 로그인 요청
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
   try {
-    console.log(req.body);
     const { email, password } = req.body;
+    const results = await query('SELECT * FROM Users WHERE email = ? AND pwd = ?', [email, password]);
     // 이메일과 비밀번호로 사용자 조회
-    tomysql.query('SELECT * FROM Users WHERE email = ? AND pwd = ?', [email, password], (err, results) => {
-      if (err) {
-        console.error('[오류] 사용자 조회중 오류 발생:', err);
-        res.status(401).json({ error: '내부 서버 오류' });
-        return;
-      }
-      if (results.length === 0) {
-        res.status(400).json({ error: '사용자를 찾을 수 없습니다.' });
-        return;
-      }
-      // JWT 토큰 생성 성공시 토큰 전송
-      const token = jwt.sign({ email, name: results[0].name, role: results[0].role }, secretKey, { expiresIn: '1h' });
-      res.status(200).json({ token });
-    });
+    if (results.length === 0) {
+      res.status(400).json({ error: '사용자를 찾을 수 없습니다.' });
+      return;
+    }
+    
+    // JWT 토큰 생성 성공시 토큰 전송
+    const token = jwt.sign({ email, name: results[0].name, role: results[0].role }, secretKey, { expiresIn: '1h' });
+    res.status(200).json({ token });
   } catch (err) {
     console.error('[오류] 로그인 중 오류 발생:', err);
     res.status(500).json({ error: '내부 서버 오류' });
