@@ -5,6 +5,7 @@
     <div class="signup-container">
       <div class="signup-form">
         <img src="../assets/logo.png" alt="logo" class="logo" />
+        <div class="small-line"></div> 
         <form class="form-fields">
 
           <div class="form-group">
@@ -22,7 +23,7 @@
             <span class="success-message" v-if="isStudentIdValid && studentId"> ✔</span>
           </div>
           <div>
-            <span class="error-message" v-if="errorMessage"> ❌ {{ errorMessage }}</span>
+            <span class="error-message" v-if="errorMessage"> &nbsp;❌ {{ errorMessage }}</span>
           </div>
           <div class="form-group">
             <label for="email" class="form-label">이메일</label>
@@ -52,8 +53,10 @@
           </div>
           <button class="btn-register" @click="Register">회원가입</button>
         </form>
+        <div class="small-line"></div> 
       </div>
     </div>
+    
     <footer class="footer"></footer>
   </div>
 </template>
@@ -157,175 +160,296 @@ export default {
 </script>
 
 <style scoped>
+
+@media screen and (max-width: 1500px) {
+
 .error-message,
 .success-message {
   display: none;
 }
 
 .header {
-  background-color: #FFDE80;
-  padding: 20px;
-  text-align: center;
-  width: 100%;
-  position: fixed;
-  top: 0;
-  left: 0;
+background-color: #FFDE80;
+padding: 40px;
+text-align: center;
+width: 100%;
+position: fixed;
+top: 0;
+left: 0;
 }
 
 .footer {
-  background-color: #FFDE80;
-  color: #fff;
-  padding: 20px;
-  text-align: center;
-  width: 100%;
-  position: fixed;
-  bottom: 0;
-  left: 0;
+background-color: #FFDE80;
+color: #fff;
+padding: 40px;
+text-align: center;
+width: 100%;
+position: fixed;
+bottom: 0;
+left: 0;
 }
-
+.small-line{
+  border: #ffde80 2px solid;
+}
 .signup-container {
-  background-color: #fff;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #aeaeae;
-  padding: 4vw 3vw;
-  font-family: 'NanumSquareNeo';
-  /* 상대적인 단위로 변경 */
-}
+display: flex;
+align-items: center;
+justify-content: center;
+color: #aeaeae;
+padding: 40px 30px;
 
+}
 
 .signup-form {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  /* 화면 크기에 관계없이 부모 요소에 따라 동적으로 조절 */
-  max-width: 800px;
-  /* 최대 너비 설정 */
-  margin-right: 6vw;
-  /* 상대적인 단위로 변경 */
+display: flex;
+flex-direction: column;
+margin-top: 50px;
+width: 100%;
+max-width: 600px;
 }
 
 .logo {
-  width: 384px;
-  margin-left: 70px;
-  max-width: 100%;
-  align-self: center;
+width: 280px;
+margin-top: 5px;
+margin-bottom: 20px;
+margin-left: 50px;
+max-width: 100%;
+align-self: center;
 }
 
-.form-fields {
-  border: 1px solid rgba(217, 217, 217, 1);
-  margin-top: 2vw;
-  margin-left: 1vw;
-  padding: 4vw 6vw;
-  /* 상대적인 단위로 변경 */
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.form-fields {  
+border: 1px solid rgba(217, 217, 217, 1);
+border-radius: 10px;
+margin-bottom: 20px;
+margin-top: 20px; /* 픽셀(px) 단위로 변경 */
+margin-left: px; /* 픽셀(px) 단위로 변경 */
+padding: 40px 40px; /* 픽셀(px) 단위로 변경 */
+display: flex;
+flex-direction: column;
+align-items: center;
 }
 
 .form-group {
-  display: flex;
-  font-size: 1.5vw;
-  /* 상대적인 단위로 변경 */
-  margin-left: 0;
-  margin: 5px;
-  width: 90%;
-  /* 부모 요소인 form-fields에 따라 동적으로 조절 */
+display: flex;
+height: 45px;
+font-size: 18px; /* 픽셀(px) 단위로 변경 */
+margin: 13px; /* 픽셀(px) 단위로 변경 */
+margin-right: 20px;
+font-family: 'NanumSquareNeo';
+
 }
 
 .form-label {
-  text-align: center;
-  margin-top: 10px;
-  width: 40%;
-  /* 상대적인 단위로 변경 */
+text-align: center;
+height: 25px;
+margin-top: 15px; /* 픽셀(px) 단위로 변경 */
+width: 130px; /* 픽셀(px) 단위로 변경 */
+margin-right: 30px;
+
 }
 
 .form-input {
-  width: 60%;
-  /* 상대적인 단위로 변경 */
-  height: 41px;
-  border-radius: 6px;
-  border: 1px solid rgba(217, 217, 217, 1);
-  margin-bottom: 15px;
+width: 260px; 
+height: 40px;
+border-radius: 6px;
+border: 1px solid rgba(217, 217, 217, 1);
+margin-bottom: 15px; /* 픽셀(px) 단위로 변경 */
 }
 
 .btn-register {
-  border-radius: 9px;
-  border: none;
-  background-color: #ffde80;
-  width: 30vw;
-  /* 상대적인 단위로 변경 */
-  max-width: 100%;
-  font-size: 1.5vw;
-  /* 상대적인 단위로 변경 */
-  font-weight: bold;
-  color: #484848;
-  margin-top: 1vw;
-  /* 상대적인 단위로 변경 */
-  margin-left: 7vw;
-  /* 상대적인 단위로 변경 */
-  padding: 1vw;
-  /* 상대적인 단위로 변경 */
-  cursor: pointer;
-  position: relative;
+border-radius: 9px;
+border: none;
+background-color: #ffde80;
+width: 85%; /* 픽셀(px) 단위로 변경 */
+max-width: 100%;
+font-size: 21px; /* 픽셀(px) 단위로 변경 */
+font-weight: bold;
+color: #484848;
+margin-top: 30px; /* 픽셀(px) 단위로 변경 */
+padding: 13px; /* 픽셀(px) 단위로 변경 */
+cursor: pointer;
+position: relative;
+font-family: 'NanumSquareNeo';
 }
 
 .btn-register:hover {
-  background-color: #ffd56c;
-  color: rgb(56, 39, 0);
-  font-weight: bold;
+background-color: #ffd56c;
+color: rgb(56, 39, 0);
+font-weight: bold;
 }
 
 .btn-register {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-family: 'NanumSquareNeo';
+display: inline-flex;
+align-items: center;
+justify-content: center;
+font-family: 'NanumSquareNeo';
 }
 
 .error-message {
-  color: #FA5C87;
-  margin-left: 1vw;
-  /* 상대적인 단위로 변경 */
-  margin-top: 1.3vw;
-  /* 상대적인 단위로 변경 */
-  display: block;
-  font-size: 1.3vw;
-  /* 상대적인 단위로 변경 */
-  font-weight: 400;
-  /* 올바른 값으로 변경 */
+display: inline-block;
+text-align:left ;
+color: #FA5C87;
+margin-left: 165px;
+font-size: 14px; /* 픽셀(px) 단위로 변경 */
+width: 280px;
 }
 
 .success-message {
-  color: #00D26A;
-  margin-left: 1vw;
-  /* 상대적인 단위로 변경 */
-  margin-top: 1.3vw;
-  /* 상대적인 단위로 변경 */
-  display: block;
-  font-size: 1.3vw;
-  /* 상대적인 단위로 변경 */
-  font-weight: 400;
-  /* 올바른 값으로 변경 */
+color: #00D26A;
+}
 }
 
-@media screen and (max-width: 768px) {
-  .signup-form {
-    width: 90%;
-    /* 화면이 작을 때는 전체 너비의 90%를 차지하도록 설정 */
-    margin-right: 0;
-    /* 오른쪽 여백을 제거하여 너비를 조정 */
-  }
+@media screen and (min-width: 1500px) {
 
-  .form-label {
-    width: 40%;
-    /* 레이블의 너비를 확장 */
-  }
-
-  .form-input {
-    width: 60%;
-    /* 입력 필드의 너비를 축소 */
-  }
+.error-message,
+.success-message {
+display: none;
 }
+
+.header {
+background-color: #FFDE80;
+padding: 40px;
+text-align: center;
+width: 100%;
+position: fixed;
+top: 0;
+left: 0;
+}
+
+.footer {
+background-color: #FFDE80;
+color: #fff;
+padding: 40px;
+text-align: center;
+width: 100%;
+position: fixed;
+bottom: 0;
+left: 0;
+}
+.small-line{
+  border: #ffde80 2px solid;
+}
+.signup-container {
+display: flex;
+align-items: center;
+justify-content: center;
+color: #aeaeae;
+padding: 40px 30px;
+
+}
+
+.signup-form {
+display: flex;
+flex-direction: column;
+margin-top: 50px;
+width: 100%;
+max-width: 600px;
+}
+
+.logo {
+width: 280px;
+margin-top: 5px;
+margin-bottom: 20px;
+margin-left: 50px;
+max-width: 100%;
+align-self: center;
+}
+
+.form-fields {  
+border: 1px solid rgba(217, 217, 217, 1);
+border-radius: 10px;
+margin-bottom: 20px;
+margin-top: 20px; /* 픽셀(px) 단위로 변경 */
+margin-left: px; /* 픽셀(px) 단위로 변경 */
+padding: 40px 40px; /* 픽셀(px) 단위로 변경 */
+display: flex;
+flex-direction: column;
+align-items: center;
+}
+
+.form-group {
+display: flex;
+height: 45px;
+font-size: 18px; /* 픽셀(px) 단위로 변경 */
+margin: 13px; /* 픽셀(px) 단위로 변경 */
+margin-right: 20px;
+font-family: 'NanumSquareNeo';
+
+}
+
+.form-label {
+text-align: center;
+height: 25px;
+margin-top: 15px; /* 픽셀(px) 단위로 변경 */
+width: 130px; /* 픽셀(px) 단위로 변경 */
+margin-right: 30px;
+
+}
+
+.form-input {
+width: 260px; 
+height: 40px;
+border-radius: 6px;
+border: 1px solid rgba(217, 217, 217, 1);
+margin-bottom: 15px; /* 픽셀(px) 단위로 변경 */
+}
+
+.btn-register {
+border-radius: 9px;
+border: none;
+background-color: #ffde80;
+width: 85%; /* 픽셀(px) 단위로 변경 */
+max-width: 100%;
+font-size: 21px; /* 픽셀(px) 단위로 변경 */
+font-weight: bold;
+color: #484848;
+margin-top: 30px; /* 픽셀(px) 단위로 변경 */
+
+padding: 13px; /* 픽셀(px) 단위로 변경 */
+cursor: pointer;
+position: relative;
+}
+
+.btn-register:hover {
+background-color: #ffd56c;
+color: rgb(56, 39, 0);
+font-weight: bold;
+}
+
+.btn-register {
+display: inline-flex;
+align-items: center;
+justify-content: center;
+font-family: 'NanumSquareNeo';
+}
+
+.error-message {
+display: inline-block;
+text-align:left ;
+color: #FA5C87;
+margin-left: 165px;
+font-size: 14px; /* 픽셀(px) 단위로 변경 */
+width: 280px;
+}
+
+.success-message {
+color: #00D26A;
+}
+}
+
+
+
+.form-fields{
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2);
+}
+
+.btn-register{
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s ease;
+}
+
+.btn-register:hover{
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+} 
+
 </style>

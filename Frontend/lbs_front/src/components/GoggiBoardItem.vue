@@ -49,11 +49,12 @@ export default {
 </script>
 
 <style scoped>
-.card {
-  background-color: #fff;
+
+@media screen and (max-width: 1500px) {
+  .card {
+  background-color: #ffffff;
   width: 100%;
-  /* 카드 너비 조정 */
-  height: 15%;
+  height: 10%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -63,18 +64,63 @@ export default {
 }
 
 .card-title {
+  
   font-size: 20px;
-  font-weight: 900;
+  font-weight: 600;
   color: #FFBB06;
   width: 70px;
+  height: 5%px;
+  line-height: 2.5;
+}
+
+.card-text {
+  
+  font-size: 16px;
+  font-weight: bold;
+  width: 75%;
+  height: 5%;
+  color: #605548;
+  line-height: 3;
+  cursor: pointer;
+}
+
+.text-muted {
+  
+  color: #605548;
+  font-size: 14px;
+  width: 120px;
+  height: 5%;
+  line-height: 3.3;
+}
+}
+
+@media screen and (min-width: 1500px) {
+  .card {
+  background-color: #ffffff;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border-bottom: rgb(96, 85, 72, 0.6) 1.5px solid;
+  font-family: 'NanumSquareNeo';
+}
+
+.card-title {
+  
+  font-size: 20px;
+  font-weight: 600;
+  color: #FFBB06;
+  width: 100px;
   height: 45px;
   line-height: 2.5;
 }
 
 .card-text {
+  
   font-size: 16px;
   font-weight: bold;
-  width: 500px;
+  width: 75%;
   height: 45px;
   color: #605548;
   line-height: 3;
@@ -82,10 +128,13 @@ export default {
 }
 
 .text-muted {
+  
   color: #605548;
   font-size: 14px;
   width: 120px;
   height: 45px;
   line-height: 3.3;
 }
+}
+
 </style>

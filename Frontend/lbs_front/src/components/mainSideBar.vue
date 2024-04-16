@@ -54,36 +54,7 @@ export default {
     width: 100%;
     font-family: 'NanumSquareNeo';
   }
-  
-  /*---------------------------------------------------------------------------------------- */
-  
-  .Non-member-login{
-    display: flex;
-    align-items: center; /* 수직 가운데 정렬 */
-    justify-content: center; /* 수평 가운데 정렬 */
-    max-width: 330px;
-    height: 40px;
-    padding: 15px;
-    margin-top: 50px;
-    border-radius: 5px;
-    background-color: #ffd152;
-    transition: box-shadow 0.3s ease;
-    cursor: pointer;
-  }
-  
-  .Non-member-login img{
-    align-items: center;
-    width :220px;
-    height: 50px; 
-  }
-  
-  .Non-member-login:hover{
-    background-color:#ffc320;
-    box-shadow: 0px 3px 2px rgba(0, 0, 0, 0.2);
-  
-  }
-  
-  /*---------------------------------------------------------------------------------------- */
+
   a{
     text-decoration: none;
     color: #605548;

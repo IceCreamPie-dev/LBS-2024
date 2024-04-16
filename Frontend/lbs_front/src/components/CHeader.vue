@@ -17,7 +17,7 @@
 .logo {
   align-items: center;
   display: flex;
-  width: 20vw;
+  width: 250px;
 }
 
 </style>

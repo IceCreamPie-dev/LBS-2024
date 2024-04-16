@@ -3,6 +3,7 @@
   <div class="home-account">
     <header class="header"></header>
     <img src="../assets/logo.png" alt="Vue logo" class="logo" />
+    <div class="small-line"></div> 
     <main class="home-form">
       <form @submit.prevent="Login">
         <div class="form-group">
@@ -22,6 +23,7 @@
         </div>
       </form>
     </main>
+    <div class="small-line"></div> 
     <footer class="footer"></footer>
   </div>
 </template>
@@ -81,7 +83,7 @@ export default {
   color: #b7b7b7;
   font-weight: 100;
   position: fixed;
-  top: 101px;
+  top: 140px;
   /* header의 높이만큼 아래에 위치 */
   bottom: 101px;
   /* footer의 높이만큼 위에 위치 */
@@ -93,7 +95,7 @@ export default {
 
 .header {
   background-color: rgba(255, 187, 6, 0.5);
-  min-height: 75px;
+  min-height: 60px;
   width: 100%;
   position: fixed;
   top: 0;
@@ -102,7 +104,7 @@ export default {
 
 .footer {
   background-color: rgba(255, 187, 6, 0.5);
-  min-height: 101px;
+  min-height: 60px;
   width: 100%;
   position: fixed;
   bottom: 0;
@@ -115,25 +117,43 @@ export default {
   object-position: center;
   align-self: center;
   margin-top: 25px;
-  margin-bottom: 20px;
   margin-left: 40px;
+  width:20%;
+  height: 20%;
   max-width: 100%;
+}
+
+.small-line{
+  border: #ffde80 2px solid;
+  width: 500px;
+  margin: 0 auto;
 }
 
 .home-form {
   border: 1px solid rgba(217, 217, 217, 1);
   align-self: center;
-  margin-top: 5px;
+  margin-top: 10px;
+  margin-bottom: 10px;
   width: 430px;
   max-width: 100%;
   padding: 50px 35px;
-  border-radius: 5px;
+  border-radius: 20px;
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
+  transition: box-shadow 0.3s ease;
+  
+}
+
+.home-form:hover{
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2);
 }
 
 .form-group {
   display: flex;
-  gap: 20px;
+  gap: 30px;
   margin-top: 18px;
+
+
+
 }
 
 .form-label {
@@ -142,6 +162,8 @@ export default {
   text-align: center;
   font-size: 17px;
   margin: 1px;
+  margin-top: 12px;
+  
 
 
 }
@@ -149,17 +171,18 @@ export default {
 .form-input {
   border-radius: 5px;
   border: 1px solid rgba(225, 225, 225, 1);
-  width: 280px;
+  width: 285px;
   max-width: 100%;
-  margin-right: 22px;
+  margin-right: 20px;
   height: 40px;
+
 }
 
 .form-actions {
   display: flex;
   justify-content: flex-end;
   /* 버튼을 오른쪽으로 정렬합니다. */
-  gap: 10px;
+  gap: 12px;
   /* 버튼 사이의 간격 조정 */
   color: #848484;
   margin: 18px 0 35px;
@@ -170,7 +193,7 @@ export default {
 .btn-inner {
   border-radius: 5px;
   padding: 0;
-  background-color: #ff9d00;
+  background-color: #FFBB06;
   /* 호버 상태에서 배경색 변경 */
   color: rgb(255, 255, 255);
   width: 140px;
@@ -180,8 +203,10 @@ export default {
   border: none;
   cursor: pointer;
   text-decoration: none;
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.2);
   transition: background-color 0.3s ease;
   font-family: 'NanumSquareNeo';
+  
   /* 배경색 변화에 애니메이션 효과 추가 */
 }
 
@@ -189,6 +214,7 @@ export default {
 .btn-inner:hover {
   background-color: #ff8000;
   color: rgb(255, 255, 255);
+  box-shadow: 0px 3px 5px rgba(0, 0, 0, 0.2);
   font-weight: initial;
 }
 

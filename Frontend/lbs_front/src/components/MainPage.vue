@@ -152,21 +152,86 @@ export default {
 </script>
 
 <style scoped>
-
-.main-style {
+/*최대 1700px까지 적용*/
+@media screen and (max-width: 1500px) {
+  .main-style {
   background-color: rgb(255, 222, 128, 0.7);
   padding: 10px;
   border-radius: 5px;
+  gap: 10px;
   margin-top: 10px;
-  gap:10px;
   display: flex;
   align-items: center;
+  margin-bottom: 10px;
 }
 
 input[type="file"] {
     border-radius: 5px;
-    width: 200px;
-    margin-right: 35%;
+    width: 220px;
+
+  
+  }
+
+input{
+  padding: 8px;
+}
+
+select {
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  padding: 8px;
+}
+
+
+button {
+  background-color: rgb(134, 117, 95);
+  width: 130px;
+  color: #fffcf4;
+  border: none;
+  border-radius: 3px;
+  margin-right: 5px;
+  padding: 10px;
+  cursor: pointer;
+  font-family: 'NanumSquareNeobold';
+  font-size: 15px;
+}
+
+.title-group {
+  display: flex;
+  justify-content: left;
+  margin-top: 20px;
+  font-family: 'NanumSquareNeo';
+}
+    
+.title-label {
+  font-size: 27px; /* 상대적인 단위로 변경 */
+  font-weight: bold;
+  color: #484848;
+  margin-left: 25px; /* 상대적인 단위로 변경 */
+  margin-bottom: 5px ;
+}
+ }
+
+.result{
+  font-family: 'NanumSquareNeo';
+}
+
+@media screen and (min-width:1500px){
+  .main-style {
+  background-color: rgb(255, 222, 128, 0.7);
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 10px;
+  gap:px;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+input[type="file"] {
+    border-radius: 5px;
+    width: 15vw;
+    margin-right: 15%;
   }
 
 input{
@@ -196,18 +261,17 @@ button {
 .title-group {
   display: flex;
   justify-content: left;
-  margin-top: 2vw;
-  font-family: 'NanumSquareNeobold';
+  margin-top: 20px;
+  font-family: 'NanumSquareNeo';
 }
-
+    
 .title-label {
-  font-size: 2vw; /* 상대적인 단위로 변경 */
+  font-size: 27px; /* 상대적인 단위로 변경 */
   font-weight: bold;
   color: #484848;
-  margin-left: 1vw; /* 상대적인 단위로 변경 */
+  margin-left: 25px; /* 상대적인 단위로 변경 */
+  margin-bottom: 5px ;
 }
-.result{
-  font-family: 'NanumSquareNeo';
 }
 
 .table,
@@ -216,6 +280,8 @@ button {
 .table4,
 .table5 {
   width: 100%;
+  font-family: 'NanumSquareNeo';
+  margin-top: 2%;
   border-collapse: collapse;
   border-left: 1px solid rgb(255, 222, 128, 0.9);
   border-right: 1px solid rgb(255, 222, 128, 0.9);
@@ -270,15 +336,10 @@ button {
 
 }
 
-/*.table2 td span{
-  border: #4b4238 solid 1px;
-  padding: 10px;
-  width: 200px;
-}
-*/
 
 .red-background {
-  background-color: red;
+  background-color: rgb(255, 99, 99);
+  font-family: 'NanumSquareNeobold';
   color: white;
   border: none;
   padding: 10px;

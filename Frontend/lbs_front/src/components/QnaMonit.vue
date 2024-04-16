@@ -46,14 +46,15 @@ export default {
 .title-group {
   display: flex;
   justify-content: left;
-  margin-top: 2vw;
+  margin-top: 20px;
   font-family: 'NanumSquareNeo';
 }
-
+    
 .title-label {
-  font-size: 2vw; /* 상대적인 단위로 변경 */
+  font-size: 27px; /* 상대적인 단위로 변경 */
   font-weight: bold;
   color: #484848;
-  margin-left: 1vw; /* 상대적인 단위로 변경 */
+  margin-left: 25px; /* 상대적인 단위로 변경 */
+  margin-bottom: 5px ;
 }
 </style>
