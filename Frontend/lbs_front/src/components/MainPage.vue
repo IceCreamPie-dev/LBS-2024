@@ -91,6 +91,11 @@
           </tr>
         </thead>
         <tbody>
+          <tr v-for="(subject, index) in result.data.std_capston" :key="index">
+            <td>캡스톤</td>
+            <td>{{ subject[0] }}</td>
+            <td :class="{ 'red-background': !subject[1] }">{{ subject[1] ? '이수' : '미이수' }}</td>
+          </tr>
           <tr v-for="(subject, index) in result.data.std_professional" :key="index">
             <td>전공</td>
             <td>{{ subject[0] }}</td>

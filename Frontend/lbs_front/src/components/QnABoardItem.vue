@@ -4,10 +4,12 @@
     <h5 class="card-title">{{ postId }}</h5>
     <p class="card-text">{{ title }}</p>
     <p class="text-muted">{{ formattedDate }}</p>
+    <button @click="deletePost(postId)">삭제</button>
   </div>
 </template>
 
 <script>
+/*import axios from 'axios';*/
 export default {
   props: {
     postId: {
@@ -21,7 +23,20 @@ export default {
     createdAt: {
       type: String,
     },
-  },
+  },/*
+  methods: {
+    // 기존 메서드
+    
+    async deletePost(postId) {
+      try {
+        await axios.delete(`/api/board/QnA/${postId}`);
+        // 삭제한 포스트를 화면에서 제거
+        this.$emit('delete', postId);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+  },*/
   Data () {
     return {
       formattedDate: '',

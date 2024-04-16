@@ -6,6 +6,7 @@ const jwt = require('jsonwebtoken');
 const multer = require('multer');
 const upload = multer({ storage: multer.memoryStorage() });
 const cors = require('cors');
+require('dotenv').config();
 
 // 비밀키 설정
 const secretKey = 'lbs20240001';
@@ -13,21 +14,18 @@ const secretKey = 'lbs20240001';
 // 데이터 베이스에 연결
 // 원래 이러한 정보는 환경 변수로 설정해야 합니다. ex) process.env.DB_HOST
 // 이 예제에서는 편의상 하드코딩하였습니다.
-const tomysql = mysql.createConnection({
-  host: '158.179.174.75',
-  user: 'gohomehelper',
-  password: 'lbs20240313',
-  database: 'lbs'
+
+// 데이터베이스 연결 .env 파일에서 정보를 가져옴
+const tomysql = mysql.createPool({
+  host: process.env.DB_HOST,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_DATABASE,
+  connectionLimit: 10,
+  waitForConnections: true,
+  queueLimit: 0
 });
 
-// 데이터 베이스 연결 확인
-tomysql.connect((err) => {
-  if (err) {
-    console.error('[오류] 데이터 베이스에 연결하던 중 오류 발생:', err);
-    return;
-  }
-  console.log('[연결됨] 데이터 베이스에 연결됨');
-});
 app.use(express.json());
 // 로그인 요청
 app.post('/login', (req, res) => {
@@ -94,13 +92,13 @@ app.post('/calgradexlsx', upload.single('file'), (req, res) => {
   // 엑셀에서 학생의 동국 소양 현재 학점 추출 "이수구분"이 소양인 학점을 추출 등급이 F가 아닌것만 추출 재수강 구분이 OLD재수강이 아닌 학점을 추출
   const std_dk_score = data.filter((row) => row['E'] === '소양' && row['L'] !== 'F' && row['N'] !== 'OLD재수강').reduce((acc, row) => acc + row['K'], 0);
   // 학생의 공통 교육
-  const std_cm_score = data.filter((row) => row['E'] === '공교'&& row['L'] !== 'F' && row['N'] !== 'OLD재수강').reduce((acc, row) => acc + row['K'], 0);
+  const std_cm_score = data.filter((row) => row['E'] === '공교' && row['L'] !== 'F' && row['N'] !== 'OLD재수강').reduce((acc, row) => acc + row['K'], 0);
   // 학생의 계열 교육
-  const std_sub_score = data.filter((row) => row['E'] === '학기'&& row['L'] !== 'F' && row['N'] !== 'OLD재수강').reduce((acc, row) => acc + row['K'], 0);
+  const std_sub_score = data.filter((row) => row['E'] === '학기' && row['L'] !== 'F' && row['N'] !== 'OLD재수강').reduce((acc, row) => acc + row['K'], 0);
   // 학생의 교양
-  const std_liberal_score = data.filter((row) => row['E'] === '교양'&& row['L'] !== 'F' && row['N'] !== 'OLD재수강').reduce((acc, row) => acc + row['K'], 0);
+  const std_liberal_score = data.filter((row) => row['E'] === '교양' && row['L'] !== 'F' && row['N'] !== 'OLD재수강').reduce((acc, row) => acc + row['K'], 0);
   // 학생의 단수 전공
-  const std_single_score = data.filter((row) => row['E'] === '전공'&& row['L'] !== 'F' && row['N'] !== 'OLD재수강').reduce((acc, row) => acc + row['K'], 0);
+  const std_single_score = data.filter((row) => row['E'] === '전공' && row['L'] !== 'F' && row['N'] !== 'OLD재수강').reduce((acc, row) => acc + row['K'], 0);
   // 학생의 총 점수 acc는 2번째 줄부터
   const std_total_score = data.filter((row) => row['L'] !== 'F' && row['N'] !== 'OLD재수강' && row['K'] !== '학점').reduce((acc, row) => acc + row['K'], 0);
 
@@ -140,7 +138,7 @@ app.post('/calgradexlsx', upload.single('file'), (req, res) => {
     const rq_lib_2 = graduationRequire.lib_2; // 제2영역 필요 점수
     const rq_lib_3 = graduationRequire.lib_3; // 제3영역 필요 점수
     const rq_lib_4 = graduationRequire.lib_4; // 제4영역 필요 점수
-    
+
     // 졸업 요건의 id를 이용하여 필수과목을 조회
     tomysql.query('SELECT * FROM RCR WHERE rid = ?', [graduationRequire.rid], (err, results) => {
       if (err) {
@@ -155,7 +153,7 @@ app.post('/calgradexlsx', upload.single('file'), (req, res) => {
         return;
       else {
         // 필수과목 데이터를 조회 rid 와 course_id 를 이용
-        tomysql.query('SELECT * FROM RCourse WHERE course_id IN (?)', [requiredCourses], (err, results) =>{
+        tomysql.query('SELECT * FROM RCourse WHERE course_id IN (?)', [requiredCourses], (err, results) => {
           if (err) {
             console.error('[오류] 필수과목 조회중 오류 발생:', err);
             res.status(500).json({ error: '내부 서버 오류' });
@@ -165,6 +163,7 @@ app.post('/calgradexlsx', upload.single('file'), (req, res) => {
 
           // requiredCourses에서 데이터를 정제 course_type별로 리스트로 묶어서 학생의 엑셀과 비교할 것임
           // 전문, 소양, 공교, 학기
+          const rq_capston = requiredCourses.filter((row) => row.course_type === '캡스톤').map((row) => row.course_name);
           const rq_professional = requiredCourses.filter((row) => row.course_type === '전문').map((row) => row.course_name);
           const rq_soyang = requiredCourses.filter((row) => row.course_type === '소양').map((row) => row.course_name);
           const rq_common = requiredCourses.filter((row) => row.course_type === '공교').map((row) => row.course_name);
@@ -172,6 +171,7 @@ app.post('/calgradexlsx', upload.single('file'), (req, res) => {
 
           // std_all_title에 있는 강의명과 rq_professional, rq_soyang, rq_common, rq_semester을 비교하여 각각의 강의를 들었는지 확인 후 들었으면 ture, 안들었으면 false 이름과 같이 저장
           // 이름, true or false 형식
+          const std_capston = rq_capston.map((row) => [row, std_all_title.includes(row)]);
           const std_professional = rq_professional.map((row) => [row, std_all_title.includes(row)]);
           const std_soyang = rq_soyang.map((row) => [row, std_all_title.includes(row)]);
           const std_common = rq_common.map((row) => [row, std_all_title.includes(row)]);
@@ -182,10 +182,10 @@ app.post('/calgradexlsx', upload.single('file'), (req, res) => {
           res.json({
             success: true,
             data: {
-            std_professional, std_soyang, std_common, std_semester,
-            std_dk_score, std_cm_score, std_sub_score, std_liberal_score, std_single_score, std_total_score,
-            rq_dk_score, rq_cm_score, rq_sub_score, rq_liberal_score, rq_single_score, rq_total_score,
-            rq_lib_1, rq_lib_2, rq_lib_3, rq_lib_4, std_lib_1, std_lib_2, std_lib_3, std_lib_4
+              std_professional, std_soyang, std_common, std_semester, std_capston,
+              std_dk_score, std_cm_score, std_sub_score, std_liberal_score, std_single_score, std_total_score,
+              rq_dk_score, rq_cm_score, rq_sub_score, rq_liberal_score, rq_single_score, rq_total_score,
+              rq_lib_1, rq_lib_2, rq_lib_3, rq_lib_4, std_lib_1, std_lib_2, std_lib_3, std_lib_4
             }
           });
         });
@@ -231,7 +231,7 @@ app.post('/board/QnA', (req, res) => {
 });
 
 // QnA게시물 수정
-app.put('/board/:id', (req, res) => {
+app.put('/board/QnA/:id', (req, res) => {
   // 게시물 수정자 이메일, 제목, 내용을 받음
   const { title, content } = req.body;
   const email = req.user.email;
@@ -266,7 +266,7 @@ app.get('/board/QnA', (req, res) => {
   const offset = (page - 1) * limit;
 
   // QnA게시물 목록 조회
-  tomysql.query(`SELECT qid, title, created_at FROM QnA ORDER BY created_at DESC LIMIT ? OFFSET ?`, [ +limit, offset], (err, results) => {
+  tomysql.query(`SELECT qid, title, created_at FROM QnA ORDER BY created_at DESC LIMIT ? OFFSET ?`, [+limit, offset], (err, results) => {
     if (err) {
       console.error('[오류] 게시물 조회중 오류 발생:', err);
       res.status(500).json({ error: '내부 서버 오류' });
@@ -277,7 +277,7 @@ app.get('/board/QnA', (req, res) => {
 });
 
 // QnA 게시물 댓글 조회
-app.get('/board/:board_type/:post_id/comments', (req, res) => {
+app.get('/board/QnA/:post_id/comments', (req, res) => {
   const { post_id } = req.params;
   // 게시물 댓글 조회
   tomysql.query('SELECT * FROM comments WHERE post_id = ?', [post_id], (err, results) => {
@@ -291,7 +291,7 @@ app.get('/board/:board_type/:post_id/comments', (req, res) => {
 });
 
 // QnA 게시물 댓글 생성
-app.post('/board/:board_type/:post_id/comments', (req, res) => {
+app.post('/board/QnA/:post_id/comments', (req, res) => {
   const { content } = req.body;
   const email = req.user.email;
   const { post_id } = req.params;
@@ -307,7 +307,7 @@ app.post('/board/:board_type/:post_id/comments', (req, res) => {
 });
 
 // QnA 게시물 댓글 수정
-app.put('/board/:board_type/:post_id/comments/:comment_id', (req, res) => {
+app.put('/board/QnA/:post_id/comments/:comment_id', (req, res) => {
   const { content } = req.body;
   const email = req.user.email;
   const { comment_id } = req.params;
@@ -323,7 +323,7 @@ app.put('/board/:board_type/:post_id/comments/:comment_id', (req, res) => {
 });
 
 // QnA 게시물 댓글 삭제
-app.delete('/board/:board_type/:post_id/comments/:comment_id', (req, res) => {
+app.delete('/board/QnA/:post_id/comments/:comment_id', (req, res) => {
   const { comment_id } = req.params;
   // 게시물 댓글 삭제
   tomysql.query('DELETE FROM comments WHERE id = ?', [comment_id], (err, results) => {
@@ -684,6 +684,15 @@ function authenticateToken(req, res, next) {
     next();
   });
 }
+
+process.on('SIGINT', () => {
+  pool.end(err => {
+    if (err) {
+      console.error('연결 풀 종료 중 오류 발생:', err);
+    }
+    process.exit();
+  });
+});
 
 // 서버 시작
 app.listen(3000, () => {
