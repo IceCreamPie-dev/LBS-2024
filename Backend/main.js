@@ -282,14 +282,27 @@ app.get('/board/QnA', (req, res) => {
 
   const offset = (page - 1) * limit;
 
-  // QnA게시물 목록 조회
-  tomysql.query(`SELECT qid, title, created_at FROM QnA ORDER BY created_at DESC LIMIT ? OFFSET ?`, [+limit, offset], (err, results) => {
+  // QnA게시물 개수 조회
+  tomysql.query('SELECT COUNT(*) AS total FROM QnA', (err, countResult) => {
     if (err) {
-      console.error('[오류] 게시물 조회중 오류 발생:', err);
+      console.error('[오류] 게시물 개수 조회중 오류 발생:', err);
       res.status(500).json({ error: '내부 서버 오류' });
       return;
     }
-    res.json(results);
+    const totalCount = countResult[0].total;
+    const totalPages = Math.ceil(totalCount / limit);
+
+    // QnA게시물 목록 조회
+    tomysql.query(`SELECT qid, title, created_at FROM QnA ORDER BY created_at DESC LIMIT ? OFFSET ?`, [+limit, offset], (err, results) => {
+      if (err) {
+        console.error('[오류] 게시물 조회중 오류 발생:', err);
+        res.status(500).json({ error: '내부 서버 오류' });
+        return;
+      }
+      
+      res.set('x-total-pages', totalPages);
+      res.json(results);
+    });
   });
 });
 
