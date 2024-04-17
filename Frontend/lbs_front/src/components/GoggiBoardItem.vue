@@ -6,6 +6,7 @@
       <p class="card-text" @click="handleClick">{{ title }}</p>
       <p class="text-muted" @click="handleClick">{{ formattedDate }}</p>
       <button @click="deletePost(postId)">삭제</button>
+      <button @click="clickEditPost(postId)">수정</button>
     </div>
   </div>
 </template>
@@ -47,6 +48,9 @@ export default {
     },
     deletePost() {
       this.$emit('deletePost', this.postId);
+    },
+    clickEditPost() {
+      this.$emit('clickEditPost', this.postId);
     },
   },
 };

@@ -291,7 +291,7 @@ app.get('/board/QnA/:post_id/comments', (req, res) => {
 });
 
 // QnA 게시물 댓글 생성
-app.post('/board/QnA/:post_id/comments', authenticateToken,(req, res) => {
+app.post('/board/QnA/:post_id/comments', authenticateToken, (req, res) => {
   const { content } = req.body;
   const email = req.user.email;
   const { post_id } = req.params;
@@ -307,7 +307,7 @@ app.post('/board/QnA/:post_id/comments', authenticateToken,(req, res) => {
 });
 
 // QnA 게시물 댓글 수정
-app.put('/board/QnA/:post_id/comments/:comment_id', authenticateToken,(req, res) => {
+app.put('/board/QnA/:post_id/comments/:comment_id', authenticateToken, (req, res) => {
   const { content } = req.body;
   const email = req.user.email;
   const { comment_id } = req.params;
@@ -323,7 +323,7 @@ app.put('/board/QnA/:post_id/comments/:comment_id', authenticateToken,(req, res)
 });
 
 // QnA 게시물 댓글 삭제
-app.delete('/board/QnA/:post_id/comments/:comment_id', authenticateToken,(req, res) => {
+app.delete('/board/QnA/:post_id/comments/:comment_id', authenticateToken, (req, res) => {
   const { comment_id } = req.params;
   // 게시물 댓글 삭제
   tomysql.query('DELETE FROM comments WHERE id = ?', [comment_id], (err, results) => {
@@ -390,14 +390,22 @@ app.put('/board/info/:id', authenticateToken, (req, res) => {
   const { title, content } = req.body;
   const email = req.user.email;
   const { id } = req.params;
-  // 공지 게시물 수정
-  tomysql.query('UPDATE Info SET title = ?, content = ?, updated_at = NOW() WHERE iid = ?', [title, content, id], (err, results) => {
-    if (err) {
-      console.error('[오류] 게시물 수정중 오류 발생:', err);
-      res.status(500).json({ error: '내부 서버 오류' });
-      return;
+
+  // 게시물 작성자와 수정자가 같은지 확인
+  const owner = tomysql.query('SELECT email FROM Info WHERE iid = ?', [id], (err, results) => {
+    if (email == results[0].email || req.user.role == 'admin' || email == owner) { // 수정자가 작성자와 같거나 관리자인 경우에만 수정 가능
+      // 공지 게시물 수정
+      tomysql.query('UPDATE Info SET title = ?, content = ?, updated_at = NOW() WHERE iid = ?', [title, content, id], (err, results) => {
+        if (err) {
+          console.error('[오류] 게시물 수정중 오류 발생:', err);
+          res.status(500).json({ error: '내부 서버 오류' });
+          return;
+        }
+        res.json({ success: true });
+      });
+    } else {
+      res.status(403).json({ error: '수정 권한이 없습니다.' });
     }
-    res.json({ success: true });
   });
 });
 
