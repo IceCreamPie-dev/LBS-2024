@@ -79,6 +79,8 @@ export default {
       this.email = '';
       this.role = '';
       this.$router.push('/');
+      // 화면 갱신 
+      window.location.reload();
     }
   }
 };
