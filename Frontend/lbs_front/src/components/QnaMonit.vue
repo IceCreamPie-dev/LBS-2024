@@ -10,7 +10,7 @@
 </div>
   <div v-for="post in posts" :key="post.qid">
           <QnABoardItem :post-id="post.qid" :title="post.title" :createdAt="post.created_at" :content="post.content"
-          :role="role" @onPostClick="onPostClick" @deletePost="deletePost"/>
+          :role="role" @onPostClick="onPostClick" @deletePost="deletePost" @clickEditPost="clickEditPost"/>
   </div>
   </div>
 <div v-else-if=isDetailMode>
@@ -29,6 +29,20 @@
     <button type="submit" class="btn btn-primary" @click="CreatePost">등록</button>
     <button type="button" class="btn btn-secondary" @click="goBack">취소</button>
   </form>
+  </div>
+  <div v-else-if=isEditMode>
+    <form @submit.prevent="submitPost">
+      <div class="form-group">
+        <label for="title">제목</label>
+        <input type="text" id="title" v-model="title" class="form-control" placeholder="제목을 입력하세요">
+      </div>
+      <div class="form-group">
+        <label for="content">내용</label>
+        <textarea id="content" v-model="content" class="form-control" placeholder="내용을 입력하세요"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary" @click="editPost">수정</button>
+      <button type="button" class="btn btn-secondary" @click="goBack">취소</button>
+    </form>
   </div>
 </template>
 
@@ -85,6 +99,7 @@ export default {
       this.post = response.data;
       this.isCreateMode = false;
       this.isListMode = true;
+        this.fetchPosts();
     } catch (error) {
       console.error(error);
     }
@@ -119,7 +134,39 @@ export default {
         console.error(error);
       }
     },
-},
+    async editPost() {
+      try {
+        const token = localStorage.getItem('token');
+        await axios.put(`/api/board/QnA/${this.selectedPostID}`, {
+          title: this.title,
+          content: this.content,
+        }, {
+          headers: {
+            'Authorization': token
+          }
+        });
+        this.fetchPosts();
+        this.isEditMode = false;
+        this.isListMode = true;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async clickEditPost(postId) {
+      try {
+        const response = await axios.get(`/api/board/QnA/${postId}`);
+        this.title = response.data.title;
+        this.content = response.data.content;
+
+        this.selectedPostID = postId;
+      this.isDetailMode = false;
+      this.isListMode = false;
+      this.isEditMode = true;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+  },
 
 };
 </script>

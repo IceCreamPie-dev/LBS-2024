@@ -5,6 +5,7 @@
       <h5 class="card-title" @click="handleClick">{{ postId }}</h5>
       <p class="card-text" @click="handleClick">{{ title }}</p>
       <p class="text-muted" @click="handleClick">{{ formattedDate }}</p>
+      <button @click="clickEditPost(postId)">수정</button>
       <button @click="deletePost(postId)">삭제</button>
     </div>
     </div>
@@ -47,6 +48,9 @@ export default {
     },
     deletePost() {
       this.$emit('deletePost', this.postId);
+    },
+    clickEditPost() {
+      this.$emit('clickEditPost', this.postId);
     },
   },
 };

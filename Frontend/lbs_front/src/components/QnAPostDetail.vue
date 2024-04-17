@@ -2,7 +2,6 @@
   <div>
     <h2>{{ post.title }}</h2>
     <p>{{ post.content }}</p>
-    <p>작성일: {{ post.createdAt }}</p>
     <button @click="goBack">목록으로 돌아가기</button>
   </div>
 </template>
