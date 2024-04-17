@@ -10,14 +10,32 @@
   </div>
     <div v-for="post in post" :key="post.iid">
       <GoggiBoardItem :post-id="post.iid" :title="post.title" :createdAt="post.created_at" :content="post.content"
-        :role="role" @onPostClick="onPostClick"/>
+        :role="role" @onPostClick="onPostClick" @deletePost="deletePost" @clickEditPost="clickEditPost"/>
+    </div>
+    <div class="pagination">
+      <button :disabled="currentPage === 1" @click="changePage(currentPage - 1)">이전</button>
+      <span>{{ currentPage }} / {{ totalPages }}</span>
+      <button :disabled="currentPage === totalPages" @click="changePage(currentPage + 1)">다음</button>
     </div>
   </div>
   <div v-else-if=isDetailMode>
     <GoggiPostDetail :post-id="selectedPostID" @goBack="goBack"/>
   </div>
   <div v-else-if=isCreateMode>
-   
+    <form @submit.prevent="submitPost">
+      <div class="form-group">
+        <label for="title">제목</label>
+        <input type="text" id="title" v-model="title" class="form-control" placeholder="제목을 입력하세요">
+      </div>
+      <div class="form-group">
+        <label for="content">내용</label>
+        <textarea id="content" v-model="content" class="form-control" placeholder="내용을 입력하세요"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary" @click="createPost">등록</button>
+      <button type="button" class="btn btn-secondary" @click="goBack">취소</button>
+    </form>
+  </div>
+  <div v-else-if=isEditMode>
     <form @submit.prevent="submitPost">
       <div class="container">
 
@@ -35,10 +53,8 @@
       <button type="submit" class="btn-primary" @click="CreatePost">등록</button>
       <button type="button" class="btn-secondary" @click="goBack">취소</button>
       </div>
-
-    </div>
-
-    </div>
+      <button type="submit" class="btn btn-primary" @click="CreatePost">등록</button>
+      <button type="button" class="btn btn-secondary" @click="goBack">취소</button>
     </form>
   </div>
 </template>
@@ -58,9 +74,12 @@ export default {
       post: [],
       isDetailMode: false,
       isCreateMode: false,
+      isEditMode: false,
       isListMode: true,
       selectedPostID: null,
       role: false,
+      currentPage: 1,
+      totalPages: 0,
     };
   },
   created() {
@@ -73,23 +92,39 @@ export default {
     }
   },
   methods: {
+    changePage(pageNumber) {
+      this.currentPage = pageNumber;
+      this.fetchPosts();
+    },
     async fetchPosts() {
       try {
-        const response = await axios.get('/api/board/info');
+        const response = await axios.get('/api/board/info', {
+          params: {
+            page: this.currentPage,
+          },
+        });
         this.post = response.data;
+        this.totalPages = response.headers['x-total-pages'];
       } catch (error) {
         console.error(error);
       }
     },
-    async CreatePost() {
+    async createPost() {
       try {
+        const token = localStorage.getItem('token');
         const response = await axios.post('/api/board/info', {
           title: this.title,
           content: this.content,
+        }, {
+          headers: {
+        'Authorization': token
+      }
         });
         this.post = response.data;
         this.isCreateMode = false;
         this.isListMode = true;
+
+        this.fetchPosts();
       } catch (error) {
         console.error(error);
       }
@@ -110,6 +145,51 @@ export default {
       this.isListMode = true;
       this.isCreateMode = false;
       this.selectedPostID = null;
+    },
+    async deletePost(postId) {
+      try {
+        const token = localStorage.getItem('token');
+        await axios.delete(`/api/board/info/${postId}`, {
+          headers: {
+            'Authorization': token
+          }
+        });
+        this.fetchPosts();
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async editPost() {
+      try {
+        const token = localStorage.getItem('token');
+        await axios.put(`/api/board/info/${this.selectedPostID}`, {
+          title: this.title,
+          content: this.content,
+        }, {
+          headers: {
+            'Authorization': token
+          }
+        });
+        this.fetchPosts();
+        this.isEditMode = false;
+        this.isListMode = true;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async clickEditPost(postId) {
+      try {
+        const response = await axios.get(`/api/board/info/${postId}`);
+        this.title = response.data.title;
+        this.content = response.data.content;
+
+        this.selectedPostID = postId;
+      this.isDetailMode = false;
+      this.isListMode = false;
+      this.isEditMode = true;
+      } catch (error) {
+        console.error(error);
+      }
     },
   },
 

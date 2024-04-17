@@ -1,10 +1,12 @@
 <template>
   <div>
     <link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css" rel="stylesheet">
-    <div class="card" @click="handleClick">
-      <h5 class="card-title">{{ postId }}</h5>
-      <p class="card-text">{{ title }}</p>
-      <p class="text-muted">{{ formattedDate }}</p>
+    <div class="card">
+      <h5 class="card-title" @click="handleClick">{{ postId }}</h5>
+      <p class="card-text" @click="handleClick">{{ title }}</p>
+      <p class="text-muted" @click="handleClick">{{ formattedDate }}</p>
+      <button v-if=role @click="deletePost(postId)">삭제</button>
+      <button v-if=role @click="clickEditPost(postId)">수정</button>
     </div>
   </div>
 </template>
@@ -43,6 +45,12 @@ export default {
   methods: {
     handleClick() {
       this.$emit('onPostClick', this.postId);
+    },
+    deletePost() {
+      this.$emit('deletePost', this.postId);
+    },
+    clickEditPost() {
+      this.$emit('clickEditPost', this.postId);
     },
   },
 };

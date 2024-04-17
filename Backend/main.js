@@ -215,7 +215,7 @@ app.get('/board/QnA/:postId', (req, res) => {
 });
 
 // QnA게시물 생성
-app.post('/board/QnA', (req, res) => {
+app.post('/board/QnA', authenticateToken, (req, res) => {
   // 게시물 작성자 이메일, 제목, 내용을 받음
   const { title, content } = req.body;
   const email = req.user.email;
@@ -231,31 +231,48 @@ app.post('/board/QnA', (req, res) => {
 });
 
 // QnA게시물 수정
-app.put('/board/QnA/:id', (req, res) => {
+app.put('/board/QnA/:id', authenticateToken, (req, res) => {
   // 게시물 수정자 이메일, 제목, 내용을 받음
   const { title, content } = req.body;
   const email = req.user.email;
-  // 게시물 수정 역할이 관리자이거나 게시물 작성자인 경우에만 수정 가능
-  tomysql.query('UPDATE QnA SET title = ?, content = ? WHERE id = ?', [title, content, req.params.id], (err, results) => {
-    if (err) {
-      console.error('[오류] 게시물 수정중 오류 발생:', err);
-      res.status(500).json({ error: '내부 서버 오류' });
-      return;
+
+  tomysql.query('SELECT email FROM QnA WHERE id = ?', [req.params.id], (err, results) => {
+    const owner = results[0].email;
+    if (email == owner || req.user.role == 'admin') {
+
+      // 게시물 수정 역할이 관리자이거나 게시물 작성자인 경우에만 수정 가능
+      tomysql.query('UPDATE QnA SET title = ?, content = ? WHERE id = ?', [title, content, req.params.id], (err, results) => {
+        if (err) {
+          console.error('[오류] 게시물 수정중 오류 발생:', err);
+          res.status(500).json({ error: '내부 서버 오류' });
+          return;
+        }
+        res.json({ success: true });
+      });
+    } else {
+      res.status(403).json({ error: '수정 권한이 없습니다.' });
     }
-    res.json({ success: true });
   });
 });
 
 // QnA게시물 삭제
-app.delete('/board/QnA/:id', (req, res) => {
+app.delete('/board/QnA/:id', authenticateToken, (req, res) => {
   // 게시물 삭제 역할이 관리자이거나 게시물 작성자인 경우에만 삭제 가능
-  tomysql.query('DELETE FROM QnA WHERE id = ?', [req.params.id], (err, results) => {
-    if (err) {
-      console.error('[오류] 게시물 삭제중 오류 발생:', err);
-      res.status(500).json({ error: '내부 서버 오류' });
-      return;
+  const email = req.user.email;
+  tomysql.query('SELECT email FROM QnA WHERE id = ?', [req.params.id], (err, results) => {
+    const owner = results[0].email;
+    if (email == owner || req.user.role == 'admin') {
+      tomysql.query('DELETE FROM QnA WHERE id = ?', [req.params.id], (err, results) => {
+        if (err) {
+          console.error('[오류] 게시물 삭제중 오류 발생:', err);
+          res.status(500).json({ error: '내부 서버 오류' });
+          return;
+        }
+        res.json({ success: true });
+      });
+    } else {
+      res.status(403).json({ error: '삭제 권한이 없습니다.' });
     }
-    res.json({ success: true });
   });
 });
 
@@ -291,7 +308,7 @@ app.get('/board/QnA/:post_id/comments', (req, res) => {
 });
 
 // QnA 게시물 댓글 생성
-app.post('/board/QnA/:post_id/comments', (req, res) => {
+app.post('/board/QnA/:post_id/comments', authenticateToken, (req, res) => {
   const { content } = req.body;
   const email = req.user.email;
   const { post_id } = req.params;
@@ -307,7 +324,7 @@ app.post('/board/QnA/:post_id/comments', (req, res) => {
 });
 
 // QnA 게시물 댓글 수정
-app.put('/board/QnA/:post_id/comments/:comment_id', (req, res) => {
+app.put('/board/QnA/:post_id/comments/:comment_id', authenticateToken, (req, res) => {
   const { content } = req.body;
   const email = req.user.email;
   const { comment_id } = req.params;
@@ -323,7 +340,7 @@ app.put('/board/QnA/:post_id/comments/:comment_id', (req, res) => {
 });
 
 // QnA 게시물 댓글 삭제
-app.delete('/board/QnA/:post_id/comments/:comment_id', (req, res) => {
+app.delete('/board/QnA/:post_id/comments/:comment_id', authenticateToken, (req, res) => {
   const { comment_id } = req.params;
   // 게시물 댓글 삭제
   tomysql.query('DELETE FROM comments WHERE id = ?', [comment_id], (err, results) => {
@@ -340,14 +357,29 @@ app.delete('/board/QnA/:post_id/comments/:comment_id', (req, res) => {
 app.get('/board/info', (req, res) => {
   const { page = 1, limit = 5 } = req.query;
   const offset = (page - 1) * limit;
-  // 공지 게시물 목록 조회
-  tomysql.query('SELECT iid, title, created_at FROM Info ORDER BY created_at DESC LIMIT ? OFFSET ?', [limit, offset], (err, results) => {
+
+  // 공지 게시물 개수 조회
+  tomysql.query('SELECT COUNT(*) AS total FROM Info', (err, countResult) => {
     if (err) {
-      console.error('[오류] 게시물 조회중 오류 발생:', err);
+      console.error('[오류] 게시물 개수 조회중 오류 발생:', err);
       res.status(500).json({ error: '내부 서버 오류' });
       return;
     }
-    res.json(results);
+
+    const totalCount = countResult[0].total;
+    const totalPages = Math.ceil(totalCount / limit);
+
+    // 공지 게시물 목록 조회
+    tomysql.query('SELECT iid, title, created_at FROM Info ORDER BY created_at DESC LIMIT ? OFFSET ?', [limit, offset], (err, results) => {
+      if (err) {
+        console.error('[오류] 게시물 조회중 오류 발생:', err);
+        res.status(500).json({ error: '내부 서버 오류' });
+        return;
+      }
+
+      res.set('x-total-pages', totalPages);
+      res.json(results);
+    });
   });
 });
 
@@ -369,17 +401,13 @@ app.get('/board/info/:postId', (req, res) => {
   });
 });
 
-// 공지 게시물 생성 이미지도 받음
-app.post('/board/info', (req, res) => {
+// 공지 게시물 생성  받음
+app.post('/board/info', authenticateToken, (req, res) => {
   const { title, content } = req.body;
-  const image = req.file.buffer;
   const email = req.user.email;
 
-  if (image === undefined) {
-    image = null;
-  }
   // 공지 게시물 생성
-  tomysql.query('INSERT INTO Info (title, content, email, created_at, image, updated_at) VALUES (?, ?, ?, ?, NOW(), NOW())', [title, content, email, image], (err, results) => {
+  tomysql.query('INSERT INTO Info (title, content, email, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())', [title, content, email], (err, results) => {
     if (err) {
       console.error('[오류] 게시물 작성중 오류 발생:', err);
       res.status(500).json({ error: '내부 서버 오류' });
@@ -390,43 +418,36 @@ app.post('/board/info', (req, res) => {
 });
 
 // 공지 게시물 수정
-app.put('/board/info/:id', (req, res) => {
+app.put('/board/info/:id', authenticateToken, (req, res) => {
   const { title, content } = req.body;
   const email = req.user.email;
   const { id } = req.params;
-  // 공지 게시물 수정
-  tomysql.query('UPDATE Info SET title = ?, content = ?, updated_at = NOW() WHERE iid = ?', [title, content, id], (err, results) => {
-    if (err) {
-      console.error('[오류] 게시물 수정중 오류 발생:', err);
-      res.status(500).json({ error: '내부 서버 오류' });
-      return;
+
+  // 게시물 작성자와 수정자가 같은지 확인
+  const owner = tomysql.query('SELECT email FROM Info WHERE iid = ?', [id], (err, results) => {
+    if (email == results[0].email || req.user.role == 'admin' || email == owner) { // 수정자가 작성자와 같거나 관리자인 경우에만 수정 가능
+      // 공지 게시물 수정
+      tomysql.query('UPDATE Info SET title = ?, content = ?, updated_at = NOW() WHERE iid = ?', [title, content, id], (err, results) => {
+        if (err) {
+          console.error('[오류] 게시물 수정중 오류 발생:', err);
+          res.status(500).json({ error: '내부 서버 오류' });
+          return;
+        }
+        res.json({ success: true });
+      });
+    } else {
+      res.status(403).json({ error: '수정 권한이 없습니다.' });
     }
-    res.json({ success: true });
   });
 });
 
 // 공지 게시물 삭제
-app.delete('/board/info/:id', (req, res) => {
+app.delete('/board/info/:id', authenticateToken, (req, res) => {
   const { id } = req.params;
   // 공지 게시물 삭제
   tomysql.query('DELETE FROM Info WHERE iid = ?', [id], (err, results) => {
     if (err) {
       console.error('[오류] 게시물 삭제중 오류 발생:', err);
-      res.status(500).json({ error: '내부 서버 오류' });
-      return;
-    }
-    res.json({ success: true });
-  });
-});
-
-// 공지 게시물 생성
-app.post('/board/info', (req, res) => {
-  const { title, content } = req.body;
-  const email = req.user.email;
-  // 공지 게시물 생성
-  tomysql.query('INSERT INTO Info (title, content, email, created_at, updated_at) VALUES (?, ?, ?, NOW())', [title, content, email], (err, results) => {
-    if (err) {
-      console.error('[오류] 게시물 작성중 오류 발생:', err);
       res.status(500).json({ error: '내부 서버 오류' });
       return;
     }
@@ -685,8 +706,8 @@ app.use(cors({
 
 // 보안기능
 function authenticateToken(req, res, next) {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+  const token = req.headers['authorization'];
+
   if (!token) {
     return res.sendStatus(401);
   }
