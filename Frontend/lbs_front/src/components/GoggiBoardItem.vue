@@ -5,8 +5,8 @@
       <h5 class="card-title" @click="handleClick">{{ postId }}</h5>
       <p class="card-text" @click="handleClick">{{ title }}</p>
       <p class="text-muted" @click="handleClick">{{ formattedDate }}</p>
-      <button @click="deletePost(postId)">삭제</button>
-      <button @click="clickEditPost(postId)">수정</button>
+      <button v-if=role @click="deletePost(postId)">삭제</button>
+      <button v-if=role @click="clickEditPost(postId)">수정</button>
     </div>
   </div>
 </template>
