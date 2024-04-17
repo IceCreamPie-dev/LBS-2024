@@ -357,14 +357,29 @@ app.delete('/board/QnA/:post_id/comments/:comment_id', authenticateToken, (req, 
 app.get('/board/info', (req, res) => {
   const { page = 1, limit = 5 } = req.query;
   const offset = (page - 1) * limit;
-  // 공지 게시물 목록 조회
-  tomysql.query('SELECT iid, title, created_at FROM Info ORDER BY created_at DESC LIMIT ? OFFSET ?', [limit, offset], (err, results) => {
+
+  // 공지 게시물 개수 조회
+  tomysql.query('SELECT COUNT(*) AS total FROM Info', (err, countResult) => {
     if (err) {
-      console.error('[오류] 게시물 조회중 오류 발생:', err);
+      console.error('[오류] 게시물 개수 조회중 오류 발생:', err);
       res.status(500).json({ error: '내부 서버 오류' });
       return;
     }
-    res.json(results);
+
+    const totalCount = countResult[0].total;
+    const totalPages = Math.ceil(totalCount / limit);
+
+    // 공지 게시물 목록 조회
+    tomysql.query('SELECT iid, title, created_at FROM Info ORDER BY created_at DESC LIMIT ? OFFSET ?', [limit, offset], (err, results) => {
+      if (err) {
+        console.error('[오류] 게시물 조회중 오류 발생:', err);
+        res.status(500).json({ error: '내부 서버 오류' });
+        return;
+      }
+
+      res.set('x-total-pages', totalPages);
+      res.json(results);
+    });
   });
 });
 
