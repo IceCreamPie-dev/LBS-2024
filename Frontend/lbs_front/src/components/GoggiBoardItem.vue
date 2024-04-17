@@ -1,7 +1,7 @@
 <template>
-  <div @click="handleClick">
+  <div>
     <link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css" rel="stylesheet">
-    <div class="card">
+    <div class="card" @click="handleClick">
       <h5 class="card-title">{{ postId }}</h5>
       <p class="card-text">{{ title }}</p>
       <p class="text-muted">{{ formattedDate }}</p>
@@ -42,7 +42,7 @@ export default {
   },
   methods: {
     handleClick() {
-      this.$emit('click', this.postId);
+      this.$emit('onPostClick', this.postId);
     },
   },
 };

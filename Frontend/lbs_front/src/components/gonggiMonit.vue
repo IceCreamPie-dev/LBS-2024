@@ -10,17 +10,16 @@
   <div v-if=isListMode>
     <div v-for="post in post" :key="post.iid">
       <GoggiBoardItem :post-id="post.iid" :title="post.title" :createdAt="post.created_at" :content="post.content"
-        :role="role" @click="selectedPostID" />
+        :role="role" @onPostClick="onPostClick"/>
     </div>
   </div>
   <div v-else-if=isDetailMode>
-    <GoggiPostDetail :post-id="selectedPostID" />
+    <GoggiPostDetail :post-id="selectedPostID" @goBack="goBack"/>
     디테일 모드라네
   </div>
   <div v-else-if=isCreateMode>
     효효효
   </div>
-  {{ selectedPostID }}
 </template>
 
 <script>
@@ -65,6 +64,18 @@ export default {
       this.isDetailMod = false;
       this.isListMode = false;
       this.isCreateMode = true;
+    },
+    onPostClick(postId) {
+      this.selectedPostID = postId;
+      this.isDetailMode = true;
+      this.isListMode = false;
+      this.isCreateMode = false;
+    },
+    goBack() {
+      this.isDetailMode = false;
+      this.isListMode = true;
+      this.isCreateMode = false;
+      this.selectedPostID = null;
     },
   },
 
