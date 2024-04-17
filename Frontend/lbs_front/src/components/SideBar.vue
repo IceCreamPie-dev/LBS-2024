@@ -121,7 +121,7 @@ export default {
   transform: translateX(100%); /* 컴포넌트가 오른쪽에서 왼쪽으로 이동하도록 설정 */
 }
   /*---------------------------------------------------------------------------------------- */
-  @media  screen and (max-width: 1500px){
+@media  screen and (max-width: 1500px){
 
 .main-container {
 display: flex;
@@ -208,7 +208,7 @@ margin-top: 12px;
   font-size: 13px;
   margin: 3px;
   opacity: 0.85;
-  margin-left: 8.5px;
+  margin-left: 15%;
 }
 
 .logout-button {
@@ -320,7 +320,7 @@ ul{
 
 }
 
-  @media  screen and (min-width: 1500px){
+@media  screen and (min-width: 1500px){
   .main-container {
   display: flex;
   flex-direction: row-reverse; /* 메뉴가 오른쪽에서 왼쪽으로 이동하도록 설정 */
@@ -387,7 +387,7 @@ ul{
   .user-info {
     display: flex;
     align-items: center;
-    margin-left: 27px;
+    margin-left: 16%;
     margin-top: 3px;
     padding: 3px;
     opacity: 0.85;
@@ -406,7 +406,7 @@ ul{
     font-size: 13px;
     margin: 3px;
     opacity: 0.85;
-    margin-left: 8.5px;
+    margin-left: 13%;
   }
   
   .logout-button {

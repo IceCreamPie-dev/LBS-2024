@@ -5,7 +5,7 @@
       <h5 class="card-title" @click="handleClick">{{ postId }}</h5>
       <p class="card-text" @click="handleClick">{{ title }}</p>
       <p class="text-muted" @click="handleClick">{{ formattedDate }}</p>
-      <button @click="deletePost(postId)">삭제</button>
+      <button @click="deletePost(postId)" class="action-button"><img src="@/assets/delete.svg" alt="삭제"></button>
     </div>
     </div>
 </template>
@@ -142,4 +142,27 @@ export default {
 }
 }
 
+.action-button{
+  border: none;
+  border-radius: 10px;
+  background-color: #ffffff;
+  cursor: pointer;
+}
+
+.action-button:hover{
+  transition: box-shadow 0.3s ease; /* 그림자 애니메이션 적용 */
+  box-shadow: 0px 3px 2px rgba(0, 0, 0, 0.2);
+}
+
+
+.action-button img{
+  width: 95%;
+  
+}
+
+.card-text:hover{
+  color: #FFBB06;
+  font-size: 17px;
+
+}
 </style>

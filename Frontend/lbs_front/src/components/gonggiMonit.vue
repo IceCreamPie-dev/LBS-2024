@@ -23,20 +23,26 @@
   </div>
   <div v-else-if=isCreateMode>
     <form @submit.prevent="submitPost">
+      <div class="container">
       <div class="form-group">
-        <label for="title">제목</label>
+        <label for="title" class="title-label_post">제목</label>
         <input type="text" id="title" v-model="title" class="form-control" placeholder="제목을 입력하세요">
       </div>
-      <div class="form-group">
-        <label for="content">내용</label>
-        <textarea id="content" v-model="content" class="form-control" placeholder="내용을 입력하세요"></textarea>
+      <div class="form-group2">
+        <label for="content" class="content-label">내용</label>
+        <textarea id="content" v-model="content" class="form-control" rows="15" placeholder="내용을 입력하세요"></textarea>
       </div>
-      <button type="submit" class="btn btn-primary" @click="createPost">등록</button>
-      <button type="button" class="btn btn-secondary" @click="goBack">취소</button>
+      <div class="button-group">
+      <button type="submit" class="btn-primary" @click="createPost">등록</button>
+      <button type="button" class="btn-secondary" @click="goBack">취소</button>
+    </div>
+    </div>
     </form>
+    
   </div>
   <div v-else-if=isEditMode>
     <form @submit.prevent="submitPost">
+       <div class="container">
           <div class="form-group">
             <label for="title" class="title-label_post">제목</label>
             <input type="text" id="title" v-model="title" class="form-control" placeholder="제목을 입력하세요">
@@ -47,9 +53,10 @@
               placeholder="내용을 입력하세요"></textarea>
           </div>
           <div class="button-group">
-            <button type="submit" class="btn-primary" @click="editPost">등록</button>
+            <button type="submit" class="btn-primary" @click="editPost">수정</button>
             <button type="button" class="btn-secondary" @click="goBack">취소</button>
           </div>
+        </div>
     </form>
   </div>
 </template>
@@ -243,9 +250,16 @@ export default {
 
 /*------------------------------------------------------------------------------------------ */
 .container {
-  max-width: 100%;
+  margin: 0 auto; 
+  margin-top: 4%;
+  width: 92%;
   height: 90%;
-  margin: 0 auto;
+  color: #605548;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 1px 2px 5px 2px rgba(0, 0, 0, 0.2);
+  font-family: 'NanumSquareNeo';
+
 }
 
 .post-form {
@@ -353,6 +367,52 @@ textarea {
 .btn-secondary:hover {
   box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.4);
 }
+/*---------------------------------------------------------------------------------------------------------------*/
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1.5%; 
+}
 
-@media screen and (max-width: 1500px) {}
+/*관리자 모드일때 margin 조정이필요 ㅜ 
+@media  screen and (min-width: 1500px){
+  .pagination {
+    margin-left: -7%;
+  }
+}
+*/
+
+@media screen and (max-width: 1500px) {
+  .pagination {
+    margin-left: -15%;
+  }
+}
+.pagination button {
+  background-color: #605548; 
+  color: #fff; 
+  border: none; 
+  border-radius: 5px; 
+  padding: 1.1% 1.9%; 
+  margin: 0 5px; 
+  cursor: pointer; 
+  font-size: 14px; 
+  transition: box-shadow 0.3s ease;
+  font-family: 'NanumSquareNeo';
+}
+.pagination button:hover{
+  box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.4);
+}
+.pagination button:disabled {
+  opacity: 0.5; /* 비활성 상태일 때 투명도 조절 */
+  cursor: not-allowed; /* 비활성 상태일 때 포인터 커서 변경 */
+}
+
+.pagination span {
+  margin: 0 5%; 
+  font-size: 16px;
+  color: #333; 
+  font-family: 'NanumSquareNeo';
+}
+
 </style>
