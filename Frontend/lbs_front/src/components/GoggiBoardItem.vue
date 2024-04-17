@@ -5,11 +5,13 @@
       <h5 class="card-title">{{ postId }}</h5>
       <p class="card-text">{{ title }}</p>
       <p class="text-muted">{{ formattedDate }}</p>
+      <button @click="deletePost(postId)">삭제</button>
     </div>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   props: {
     postId: {
@@ -44,6 +46,14 @@ export default {
     handleClick() {
       this.$emit('onPostClick', this.postId);
     },
+    async deletePost(postId) {
+      try {
+        await axios.delete(`/api/board/QnA/${postId}`);
+        this.$emit('delete', postId);
+      } catch (error) {
+        console.error(error);
+      }
+    }
   },
 };
 </script>
