@@ -12,6 +12,7 @@
 </template>
 
 <script>
+import { jwtDecode } from 'jwt-decode';
 export default {
   props: {
     postId: {
@@ -25,6 +26,14 @@ export default {
     createdAt: {
       type: [String, Date, Number],
     },
+  },
+  created() {
+    const token = localStorage.getItem('token');
+    if (token) {
+      this.isLogin = true;
+      const decoded = jwtDecode(token);
+      this.role = decoded.role.toString() === '1' ? true : false;
+    }
   },
   Data() {
     return {
