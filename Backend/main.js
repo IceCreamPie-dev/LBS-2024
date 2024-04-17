@@ -419,6 +419,21 @@ app.delete('/board/info/:id', (req, res) => {
   });
 });
 
+// 공지 게시물 생성
+app.post('/board/info', (req, res) => {
+  const { title, content } = req.body;
+  const email = req.user.email;
+  // 공지 게시물 생성
+  tomysql.query('INSERT INTO Info (title, content, email, created_at, updated_at) VALUES (?, ?, ?, NOW())', [title, content, email], (err, results) => {
+    if (err) {
+      console.error('[오류] 게시물 작성중 오류 발생:', err);
+      res.status(500).json({ error: '내부 서버 오류' });
+      return;
+    }
+    res.json({ success: true });
+  });
+});
+
 // 졸업요건 생성
 app.post('/admin/graduation-requirements', (req, res) => {
   // year(기수),type(학생 유형),dk_score(동국 소양 졸업학점),cm_score(공통 기초교육 학점),sub_score(계열 기초교육 학점),liberal_score(교양교육 학점),single_score(단수전공 학점),total_score(총 졸업학점)

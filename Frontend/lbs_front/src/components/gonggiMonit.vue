@@ -6,7 +6,7 @@
   <div class="yellow-line"></div>
   <div v-if=isListMode>
     <div v-if=role> <!-- 관리자 게시물 생성 기능이 보임 왼쪼 정렬-->
-    <button class="post-add-button" @click="clickAddPostMod = true">게시물 생성</button>
+    <button class="post-add-button" @click="clickAddPostMod">게시물 생성</button>
   </div>
     <div v-for="post in post" :key="post.iid">
       <GoggiBoardItem :post-id="post.iid" :title="post.title" :createdAt="post.created_at" :content="post.content"
@@ -17,6 +17,7 @@
     <GoggiPostDetail :post-id="selectedPostID" @goBack="goBack"/>
   </div>
   <div v-else-if=isCreateMode>
+    테스트
     <form @submit.prevent="submitPost">
       <div class="form-group">
         <label for="title">제목</label>
@@ -26,7 +27,7 @@
         <label for="content">내용</label>
         <textarea id="content" v-model="content" class="form-control" placeholder="내용을 입력하세요"></textarea>
       </div>
-      <button type="submit" class="btn btn-primary">등록</button>
+      <button type="submit" class="btn btn-primary" @click="CreatePost">등록</button>
       <button type="button" class="btn btn-secondary" @click="goBack">취소</button>
     </form>
   </div>
@@ -66,6 +67,19 @@ export default {
       try {
         const response = await axios.get('/api/board/info');
         this.post = response.data;
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async CreatePost() {
+      try {
+        const response = await axios.post('/api/board/info', {
+          title: this.title,
+          content: this.content,
+        });
+        this.post = response.data;
+        this.isCreateMode = false;
+        this.isListMode = true;
       } catch (error) {
         console.error(error);
       }
