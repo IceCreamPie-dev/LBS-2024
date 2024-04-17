@@ -369,17 +369,13 @@ app.get('/board/info/:postId', (req, res) => {
   });
 });
 
-// 공지 게시물 생성 이미지도 받음
-app.post('/board/info', (req, res) => {
+// 공지 게시물 생성  받음
+app.post('/board/info', authenticateToken, (req, res) => {
   const { title, content } = req.body;
-  const image = req.file.buffer;
   const email = req.user.email;
 
-  if (image === undefined) {
-    image = null;
-  }
   // 공지 게시물 생성
-  tomysql.query('INSERT INTO Info (title, content, email, created_at, image, updated_at) VALUES (?, ?, ?, ?, NOW(), NOW())', [title, content, email, image], (err, results) => {
+  tomysql.query('INSERT INTO Info (title, content, email, created_at, updated_at) VALUES (?, ?, ?, NOW(), NOW())', [title, content, email], (err, results) => {
     if (err) {
       console.error('[오류] 게시물 작성중 오류 발생:', err);
       res.status(500).json({ error: '내부 서버 오류' });
@@ -406,27 +402,12 @@ app.put('/board/info/:id', (req, res) => {
 });
 
 // 공지 게시물 삭제
-app.delete('/board/info/:id', (req, res) => {
+app.delete('/board/info/:id', authenticateToken, (req, res) => {
   const { id } = req.params;
   // 공지 게시물 삭제
   tomysql.query('DELETE FROM Info WHERE iid = ?', [id], (err, results) => {
     if (err) {
       console.error('[오류] 게시물 삭제중 오류 발생:', err);
-      res.status(500).json({ error: '내부 서버 오류' });
-      return;
-    }
-    res.json({ success: true });
-  });
-});
-
-// 공지 게시물 생성
-app.post('/board/info', (req, res) => {
-  const { title, content } = req.body;
-  const email = req.user.email;
-  // 공지 게시물 생성
-  tomysql.query('INSERT INTO Info (title, content, email, created_at, updated_at) VALUES (?, ?, ?, NOW())', [title, content, email], (err, results) => {
-    if (err) {
-      console.error('[오류] 게시물 작성중 오류 발생:', err);
       res.status(500).json({ error: '내부 서버 오류' });
       return;
     }
@@ -685,8 +666,8 @@ app.use(cors({
 
 // 보안기능
 function authenticateToken(req, res, next) {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+  const token = req.headers['authorization'];
+
   if (!token) {
     return res.sendStatus(401);
   }
