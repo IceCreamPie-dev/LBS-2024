@@ -1,15 +1,16 @@
 <template>
+  <div>
   <link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css" rel="stylesheet">
   <div class="card">
-    <h5 class="card-title">{{ postId }}</h5>
-    <p class="card-text">{{ title }}</p>
-    <p class="text-muted">{{ formattedDate }}</p>
-    <button @click="deletePost(postId)">삭제</button>
-  </div>
+      <h5 class="card-title" @click="handleClick">{{ postId }}</h5>
+      <p class="card-text" @click="handleClick">{{ title }}</p>
+      <p class="text-muted" @click="handleClick">{{ formattedDate }}</p>
+      <button @click="deletePost(postId)">삭제</button>
+    </div>
+    </div>
 </template>
 
 <script>
-/*import axios from 'axios';*/
 export default {
   props: {
     postId: {
@@ -21,44 +22,40 @@ export default {
       required: true,
     },
     createdAt: {
-      type: String,
+      type: [String, Date, Number],
     },
-  },/*
-  methods: {
-    // 기존 메서드
-    
-    async deletePost(postId) {
-      try {
-        await axios.delete(`/api/board/QnA/${postId}`);
-        // 삭제한 포스트를 화면에서 제거
-        this.$emit('delete', postId);
-      } catch (error) {
-        console.error(error);
-      }
-    }
-  },*/
-  Data () {
+  },
+  Data() {
     return {
       formattedDate: '',
     };
   },
   computed: {
-  formattedDate() {
-    const created_at = new Date(this.createdAt);
-    const year = created_at.getFullYear();
-    const month = String(created_at.getMonth() + 1).padStart(2, '0');
-    const day = String(created_at.getDate()).padStart(2, '0');
+    formattedDate() {
+      const created_at = new Date(this.createdAt);
+      const year = created_at.getFullYear();
+      const month = String(created_at.getMonth() + 1).padStart(2, '0');
+      const day = String(created_at.getDate()).padStart(2, '0');
 
-    const formattedDate = `${year}-${month}-${day}`;
-    return formattedDate;
-  }
-}
+      const formattedDate = `${year}-${month}-${day}`;
+      return formattedDate;
+    }
+  },
+  methods: {
+    handleClick() {
+      this.$emit('onPostClick', this.postId);
+    },
+    deletePost() {
+      this.$emit('deletePost', this.postId);
+    },
+  },
 };
 </script>
 
+
 <style scoped>
- 
- @media screen and (max-width: 1500px) {
+
+@media screen and (max-width: 1500px) {
   .card {
   background-color: #ffffff;
   width: 100%;
