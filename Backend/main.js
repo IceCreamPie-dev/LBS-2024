@@ -235,27 +235,44 @@ app.put('/board/QnA/:id', authenticateToken, (req, res) => {
   // 게시물 수정자 이메일, 제목, 내용을 받음
   const { title, content } = req.body;
   const email = req.user.email;
-  // 게시물 수정 역할이 관리자이거나 게시물 작성자인 경우에만 수정 가능
-  tomysql.query('UPDATE QnA SET title = ?, content = ? WHERE id = ?', [title, content, req.params.id], (err, results) => {
-    if (err) {
-      console.error('[오류] 게시물 수정중 오류 발생:', err);
-      res.status(500).json({ error: '내부 서버 오류' });
-      return;
+
+  tomysql.query('SELECT email FROM QnA WHERE id = ?', [req.params.id], (err, results) => {
+    const owner = results[0].email;
+    if (email == owner || req.user.role == 'admin') {
+
+      // 게시물 수정 역할이 관리자이거나 게시물 작성자인 경우에만 수정 가능
+      tomysql.query('UPDATE QnA SET title = ?, content = ? WHERE id = ?', [title, content, req.params.id], (err, results) => {
+        if (err) {
+          console.error('[오류] 게시물 수정중 오류 발생:', err);
+          res.status(500).json({ error: '내부 서버 오류' });
+          return;
+        }
+        res.json({ success: true });
+      });
+    } else {
+      res.status(403).json({ error: '수정 권한이 없습니다.' });
     }
-    res.json({ success: true });
   });
 });
 
 // QnA게시물 삭제
 app.delete('/board/QnA/:id', authenticateToken, (req, res) => {
   // 게시물 삭제 역할이 관리자이거나 게시물 작성자인 경우에만 삭제 가능
-  tomysql.query('DELETE FROM QnA WHERE id = ?', [req.params.id], (err, results) => {
-    if (err) {
-      console.error('[오류] 게시물 삭제중 오류 발생:', err);
-      res.status(500).json({ error: '내부 서버 오류' });
-      return;
+  const email = req.user.email;
+  tomysql.query('SELECT email FROM QnA WHERE id = ?', [req.params.id], (err, results) => {
+    const owner = results[0].email;
+    if (email == owner || req.user.role == 'admin') {
+      tomysql.query('DELETE FROM QnA WHERE id = ?', [req.params.id], (err, results) => {
+        if (err) {
+          console.error('[오류] 게시물 삭제중 오류 발생:', err);
+          res.status(500).json({ error: '내부 서버 오류' });
+          return;
+        }
+        res.json({ success: true });
+      });
+    } else {
+      res.status(403).json({ error: '삭제 권한이 없습니다.' });
     }
-    res.json({ success: true });
   });
 });
 
