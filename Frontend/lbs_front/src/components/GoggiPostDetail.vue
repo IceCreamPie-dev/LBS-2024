@@ -19,6 +19,12 @@ export default {
   created() {
     this.fetchPostDetail();
   },
+  mounted() {
+    window.addEventListener('keydown', this.handleKeydown);
+  },
+  beforeUnmount() {
+    window.removeEventListener('keydown', this.handleKeydown);
+  },
   methods: {
     async fetchPostDetail() {
       try {
@@ -30,6 +36,11 @@ export default {
     },
     goBack() {
       this.$emit('goBack');
+    },
+    handleKeydown(event) {
+      if (event.key === 'Escape') {
+        this.goBack();
+      }
     },
   },
 };

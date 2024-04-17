@@ -4,10 +4,10 @@
     <label for="title" class="title-label">공지사항</label>
   </div>
   <div class="yellow-line"></div>
-  <div v-if=role> <!-- 관리자 게시물 생성 기능이 보임 왼쪼 정렬-->
-    <button class="post-add-button" @click="clickAddPost = true">게시물 생성</button>
-  </div>
   <div v-if=isListMode>
+    <div v-if=role> <!-- 관리자 게시물 생성 기능이 보임 왼쪼 정렬-->
+    <button class="post-add-button" @click="clickAddPostMod = true">게시물 생성</button>
+  </div>
     <div v-for="post in post" :key="post.iid">
       <GoggiBoardItem :post-id="post.iid" :title="post.title" :createdAt="post.created_at" :content="post.content"
         :role="role" @onPostClick="onPostClick"/>
@@ -15,10 +15,20 @@
   </div>
   <div v-else-if=isDetailMode>
     <GoggiPostDetail :post-id="selectedPostID" @goBack="goBack"/>
-    디테일 모드라네
   </div>
   <div v-else-if=isCreateMode>
-    효효효
+    <form @submit.prevent="submitPost">
+      <div class="form-group">
+        <label for="title">제목</label>
+        <input type="text" id="title" v-model="title" class="form-control" placeholder="제목을 입력하세요">
+      </div>
+      <div class="form-group">
+        <label for="content">내용</label>
+        <textarea id="content" v-model="content" class="form-control" placeholder="내용을 입력하세요"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary">등록</button>
+      <button type="button" class="btn btn-secondary" @click="goBack">취소</button>
+    </form>
   </div>
 </template>
 
@@ -60,7 +70,7 @@ export default {
         console.error(error);
       }
     },
-    clickAddPost() {
+    clickAddPostMod() {
       this.isDetailMod = false;
       this.isListMode = false;
       this.isCreateMode = true;
