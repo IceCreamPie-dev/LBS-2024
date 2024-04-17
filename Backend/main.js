@@ -236,12 +236,12 @@ app.put('/board/QnA/:id', authenticateToken, (req, res) => {
   const { title, content } = req.body;
   const email = req.user.email;
 
-  tomysql.query('SELECT email FROM QnA WHERE id = ?', [req.params.id], (err, results) => {
+  tomysql.query('SELECT email FROM QnA WHERE qid = ?', [req.params.id], (err, results) => {
     const owner = results[0].email;
     if (email == owner || req.user.role == 'admin') {
 
       // 게시물 수정 역할이 관리자이거나 게시물 작성자인 경우에만 수정 가능
-      tomysql.query('UPDATE QnA SET title = ?, content = ? WHERE id = ?', [title, content, req.params.id], (err, results) => {
+      tomysql.query('UPDATE QnA SET title = ?, content = ? WHERE qid = ?', [title, content, req.params.id], (err, results) => {
         if (err) {
           console.error('[오류] 게시물 수정중 오류 발생:', err);
           res.status(500).json({ error: '내부 서버 오류' });
@@ -259,10 +259,10 @@ app.put('/board/QnA/:id', authenticateToken, (req, res) => {
 app.delete('/board/QnA/:id', authenticateToken, (req, res) => {
   // 게시물 삭제 역할이 관리자이거나 게시물 작성자인 경우에만 삭제 가능
   const email = req.user.email;
-  tomysql.query('SELECT email FROM QnA WHERE id = ?', [req.params.id], (err, results) => {
+  tomysql.query('SELECT email FROM QnA WHERE qid = ?', [req.params.id], (err, results) => {
     const owner = results[0].email;
     if (email == owner || req.user.role == 'admin') {
-      tomysql.query('DELETE FROM QnA WHERE id = ?', [req.params.id], (err, results) => {
+      tomysql.query('DELETE FROM QnA WHERE qid = ?', [req.params.id], (err, results) => {
         if (err) {
           console.error('[오류] 게시물 삭제중 오류 발생:', err);
           res.status(500).json({ error: '내부 서버 오류' });
@@ -299,24 +299,10 @@ app.get('/board/QnA', (req, res) => {
         res.status(500).json({ error: '내부 서버 오류' });
         return;
       }
-      
+
       res.set('x-total-pages', totalPages);
       res.json(results);
     });
-  });
-});
-
-// QnA 게시물 댓글 조회
-app.get('/board/QnA/:post_id/comments', (req, res) => {
-  const { post_id } = req.params;
-  // 게시물 댓글 조회
-  tomysql.query('SELECT * FROM comments WHERE post_id = ?', [post_id], (err, results) => {
-    if (err) {
-      console.error('[오류] 게시물 댓글 조회중 오류 발생:', err);
-      res.status(500).json({ error: '내부 서버 오류' });
-      return;
-    }
-    res.json(results);
   });
 });
 
@@ -326,7 +312,7 @@ app.post('/board/QnA/:post_id/comments', authenticateToken, (req, res) => {
   const email = req.user.email;
   const { post_id } = req.params;
   // 게시물 댓글 생성
-  tomysql.query('INSERT INTO comments (content, email, post_id, created_at) VALUES (?, ?, ?, NOW())', [content, email, post_id], (err, results) => {
+  tomysql.query('INSERT INTO Answer (content, email, qid, created_at) VALUES (?, ?, ?, NOW())', [content, email, post_id], (err, results) => {
     if (err) {
       console.error('[오류] 게시물 댓글 생성중 오류 발생:', err);
       res.status(500).json({ error: '내부 서버 오류' });
@@ -336,29 +322,50 @@ app.post('/board/QnA/:post_id/comments', authenticateToken, (req, res) => {
   });
 });
 
+// QnA 게시물 댓글 목록 조회
+app.get('/board/QnA/:post_id/comments', (req, res) => {
+  const { post_id } = req.params;
+  // 게시물 댓글 목록 조회
+  tomysql.query('SELECT * FROM Answer WHERE qid = ?', [post_id], (err, results) => {
+    if (err) {
+      console.error('[오류] 댓글 조회중 오류 발생:', err);
+      res.status(500).json({ error: '내부 서버 오류' });
+      return;
+    }
+    res.json(results);
+  });
+});
+
 // QnA 게시물 댓글 수정
 app.put('/board/QnA/:post_id/comments/:comment_id', authenticateToken, (req, res) => {
   const { content } = req.body;
   const email = req.user.email;
-  const { comment_id } = req.params;
-  // 게시물 댓글 수정
-  tomysql.query('UPDATE comments SET content = ? WHERE id = ?', [content, comment_id], (err, results) => {
-    if (err) {
-      console.error('[오류] 게시물 댓글 수정중 오류 발생:', err);
-      res.status(500).json({ error: '내부 서버 오류' });
-      return;
+  const { post_id, comment_id } = req.params;
+  // 댓글 수정자와 작성자가 같은지 확인
+  const owner = tomysql.query('SELECT email FROM Answer WHERE aid = ?', [comment_id], (err, results) => {
+    if (email == results[0].email || req.user.role == 'admin') {
+      // 댓글 수정
+      tomysql.query('UPDATE Answer SET content = ? WHERE aid = ?', [content, comment_id], (err, results) => {
+        if (err) {
+          console.error('[오류] 댓글 수정중 오류 발생:', err);
+          res.status(500).json({ error: '내부 서버 오류' });
+          return;
+        }
+        res.json({ success: true });
+      });
+    } else {
+      res.status(403).json({ error: '수정 권한이 없습니다.' });
     }
-    res.json({ success: true });
   });
 });
 
 // QnA 게시물 댓글 삭제
 app.delete('/board/QnA/:post_id/comments/:comment_id', authenticateToken, (req, res) => {
-  const { comment_id } = req.params;
-  // 게시물 댓글 삭제
-  tomysql.query('DELETE FROM comments WHERE id = ?', [comment_id], (err, results) => {
+  const { post_id, comment_id } = req.params;
+  // 댓글 삭제
+  tomysql.query('DELETE FROM Answer WHERE aid = ?', [comment_id], (err, results) => {
     if (err) {
-      console.error('[오류] 게시물 댓글 삭제중 오류 발생:', err);
+      console.error('[오류] 댓글 삭제중 오류 발생:', err);
       res.status(500).json({ error: '내부 서버 오류' });
       return;
     }

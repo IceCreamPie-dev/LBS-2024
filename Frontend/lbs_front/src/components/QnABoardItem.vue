@@ -5,7 +5,8 @@
       <h5 class="card-title" @click="handleClick">{{ postId }}</h5>
       <p class="card-text" @click="handleClick">{{ title }}</p>
       <p class="text-muted" @click="handleClick">{{ formattedDate }}</p>
-      <button @click="deletePost(postId)" class="action-button"><img src="@/assets/delete.svg" alt="삭제"></button>
+    <button @click="clickEditPost(postId)" class="action-button"><img src="@/assets/submit.svg" alt="수정"></button>      
+    <button @click="deletePost(postId)" class="action-button"><img src="@/assets/delete.svg" alt="삭제"></button>      
     </div>
     </div>
 </template>
@@ -47,6 +48,9 @@ export default {
     },
     deletePost() {
       this.$emit('deletePost', this.postId);
+    },
+    clickEditPost() {
+      this.$emit('clickEditPost', this.postId);
     },
   },
 };
