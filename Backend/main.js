@@ -215,7 +215,7 @@ app.get('/board/QnA/:postId', (req, res) => {
 });
 
 // QnA게시물 생성
-app.post('/board/QnA', (req, res) => {
+app.post('/board/QnA', authenticateToken, (req, res) => {
   // 게시물 작성자 이메일, 제목, 내용을 받음
   const { title, content } = req.body;
   const email = req.user.email;
@@ -231,7 +231,7 @@ app.post('/board/QnA', (req, res) => {
 });
 
 // QnA게시물 수정
-app.put('/board/QnA/:id', (req, res) => {
+app.put('/board/QnA/:id', authenticateToken, (req, res) => {
   // 게시물 수정자 이메일, 제목, 내용을 받음
   const { title, content } = req.body;
   const email = req.user.email;
@@ -247,7 +247,7 @@ app.put('/board/QnA/:id', (req, res) => {
 });
 
 // QnA게시물 삭제
-app.delete('/board/QnA/:id', (req, res) => {
+app.delete('/board/QnA/:id', authenticateToken, (req, res) => {
   // 게시물 삭제 역할이 관리자이거나 게시물 작성자인 경우에만 삭제 가능
   tomysql.query('DELETE FROM QnA WHERE id = ?', [req.params.id], (err, results) => {
     if (err) {
@@ -291,7 +291,7 @@ app.get('/board/QnA/:post_id/comments', (req, res) => {
 });
 
 // QnA 게시물 댓글 생성
-app.post('/board/QnA/:post_id/comments', (req, res) => {
+app.post('/board/QnA/:post_id/comments', authenticateToken,(req, res) => {
   const { content } = req.body;
   const email = req.user.email;
   const { post_id } = req.params;
@@ -307,7 +307,7 @@ app.post('/board/QnA/:post_id/comments', (req, res) => {
 });
 
 // QnA 게시물 댓글 수정
-app.put('/board/QnA/:post_id/comments/:comment_id', (req, res) => {
+app.put('/board/QnA/:post_id/comments/:comment_id', authenticateToken,(req, res) => {
   const { content } = req.body;
   const email = req.user.email;
   const { comment_id } = req.params;
@@ -323,7 +323,7 @@ app.put('/board/QnA/:post_id/comments/:comment_id', (req, res) => {
 });
 
 // QnA 게시물 댓글 삭제
-app.delete('/board/QnA/:post_id/comments/:comment_id', (req, res) => {
+app.delete('/board/QnA/:post_id/comments/:comment_id', authenticateToken,(req, res) => {
   const { comment_id } = req.params;
   // 게시물 댓글 삭제
   tomysql.query('DELETE FROM comments WHERE id = ?', [comment_id], (err, results) => {
@@ -386,7 +386,7 @@ app.post('/board/info', authenticateToken, (req, res) => {
 });
 
 // 공지 게시물 수정
-app.put('/board/info/:id', (req, res) => {
+app.put('/board/info/:id', authenticateToken, (req, res) => {
   const { title, content } = req.body;
   const email = req.user.email;
   const { id } = req.params;
