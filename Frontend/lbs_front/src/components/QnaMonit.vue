@@ -1,39 +1,45 @@
 <template>
   <link href="https://hangeul.pstatic.net/hangeul_static/css/nanum-square-neo.css" rel="stylesheet">
-      <div class="title-group">
-          <label for="title" class="title-label">Q&A 게시판</label>
-      </div>
-      <div class="yellow-line"></div>
-<div v-if=isListMode>
-  <div v-if=hastoken> <!-- 관리자 게시물 생성 기능이 보임 왼쪼 정렬-->
-    <div class="post-add-button-container">
-  <button class="post-add-button" @click="clickAddPostMod">게시물 생성</button>
-</div> 
-</div>
-  <div v-for="post in posts" :key="post.qid">
-          <QnABoardItem :post-id="post.qid" :title="post.title" :createdAt="post.created_at" :content="post.content"
-          :role="role" :email="post.email" @onPostClick="onPostClick" @deletePost="deletePost" @clickEditPost="clickEditPost"/>
+  <div class="title-group">
+    <label for="title" class="title-label">Q&A 게시판</label>
   </div>
+  <div class="yellow-line"></div>
+  <div v-if=isListMode>
+    <div v-if=hastoken> <!-- 관리자 게시물 생성 기능이 보임 왼쪼 정렬-->
+      <div class="post-add-button-container">
+        <button class="post-add-button" @click="clickAddPostMod">게시물 생성</button>
+      </div>
+    </div>
+    <div v-for="post in posts" :key="post.qid">
+      <QnABoardItem :post-id="post.qid" :title="post.title" :createdAt="post.created_at" :content="post.content"
+        :role="role" :email="post.email" @onPostClick="onPostClick" @deletePost="deletePost"
+        @clickEditPost="clickEditPost" />
+    </div>
+    <div class="pagination">
+      <button :disabled="currentPage === 1" @click="changePage(currentPage - 1)">이전</button>
+      <span>{{ currentPage }} / {{ totalPages }}</span>
+      <button :disabled="currentPage === totalPages" @click="changePage(currentPage + 1)">다음</button>
+    </div>
   </div>
-<div v-else-if=isDetailMode>
-  <QnAPostDetail :post-id="selectedPostID" @goBack="goBack"/>
-</div>
-<div v-else-if=isCreateMode>
-  <form @submit.prevent="submitPost">
-    <div class="container">
-      <div class="form-group">
-        <label for="title" class="title-label_post">제목</label>
-        <input type="text" id="title" v-model="title" class="form-control" placeholder="제목을 입력하세요">
+  <div v-else-if=isDetailMode>
+    <QnAPostDetail :post-id="selectedPostID" @goBack="goBack" />
+  </div>
+  <div v-else-if=isCreateMode>
+    <form @submit.prevent="submitPost">
+      <div class="container">
+        <div class="form-group">
+          <label for="title" class="title-label_post">제목</label>
+          <input type="text" id="title" v-model="title" class="form-control" placeholder="제목을 입력하세요">
+        </div>
+        <div class="form-group2">
+          <label for="content" class="content-label">내용</label>
+          <textarea id="content" v-model="content" class="form-control" rows="15" placeholder="내용을 입력하세요"></textarea>
+        </div>
+        <div class="button-group">
+          <button type="submit" class="btn-primary" @click="createPost">게시</button>
+          <button type="button" class="btn-secondary" @click="goBack">취소</button>
+        </div>
       </div>
-      <div class="form-group2">
-        <label for="content" class="content-label">내용</label>
-        <textarea id="content" v-model="content" class="form-control" rows="15" placeholder="내용을 입력하세요"></textarea>
-      </div>
-      <div class="button-group">
-      <button type="submit" class="btn-primary" @click="createPost">게시</button>
-      <button type="button" class="btn-secondary" @click="goBack">취소</button>
-    </div>
-    </div>
     </form>
   </div>
   <div v-else-if=isEditMode>
@@ -60,11 +66,11 @@ import QnAPostDetail from '@/components/QnAPostDetail.vue';
 
 export default {
   components: {
-      QnABoardItem,
-      QnAPostDetail
+    QnABoardItem,
+    QnAPostDetail
   },
   data() {
-      return {
+    return {
       posts: [],
       isDetailMode: false,
       isCreateMode: false,
@@ -72,63 +78,74 @@ export default {
       selectedPostID: null,
       role: false,
       hastoken: false,
-      };
+      currentPage: 1,
+      totalPages: 0,
+    };
   },
   created() {
-      this.fetchPosts();
-      const token = localStorage.getItem('token');
-      if (token) {
-          this.isLogin = true;
-          const decoded = jwtDecode(token);
-          this.role = decoded.role.toString() === '1' ? true : false;
-          this.hastoken = true;
-}
-},
-  methods: {
-      async fetchPosts() {
-          try {
-              const response = await axios.get('/api/board/QnA');
-              this.posts = response.data;
-          } catch (error) {
-              console.error(error);
-          }
-      },
-      async createPost() {
-    try {
-      const token = localStorage.getItem('token');
-      const response = await axios.post('/api/board/QnA', {
-        title: this.title,
-        content: this.content,
-        }, {
-          headers: {
-        'Authorization': token
-      }
-      });
-      this.post = response.data;
-      this.isCreateMode = false;
-      this.isListMode = true;
-        this.fetchPosts();
-    } catch (error) {
-      console.error(error);
+    this.fetchPosts();
+    const token = localStorage.getItem('token');
+    if (token) {
+      this.isLogin = true;
+      const decoded = jwtDecode(token);
+      this.role = decoded.role.toString() === '1' ? true : false;
+      this.hastoken = true;
     }
   },
-  clickAddPostMod() {
-    this.isDetailMod = false;
-    this.isListMode = false;
-    this.isCreateMode = true;
-  },
-  onPostClick(postId) {
-    this.selectedPostID = postId;
-    this.isDetailMode = true;
-    this.isListMode = false;
-    this.isCreateMode = false;
-  },
-  goBack() {
-    this.isDetailMode = false;
-    this.isListMode = true;
-    this.isCreateMode = false;
-    this.selectedPostID = null;
-  },
+  methods: {
+    changePage(pageNumber) {
+      this.currentPage = pageNumber;
+      this.fetchPosts();
+    },
+    async fetchPosts() {
+      try {
+        const response = await axios.get('/api/board/QnA', {
+          params: {
+            page: this.currentPage,
+          },
+        });
+        this.posts = response.data;
+        this.totalPages = response.headers['x-total-pages'];
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    async createPost() {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await axios.post('/api/board/QnA', {
+          title: this.title,
+          content: this.content,
+        }, {
+          headers: {
+            'Authorization': token
+          }
+        });
+        this.post = response.data;
+        this.isCreateMode = false;
+        this.isListMode = true;
+        this.fetchPosts();
+      } catch (error) {
+        console.error(error);
+      }
+    },
+    clickAddPostMod() {
+      this.isDetailMod = false;
+      this.isListMode = false;
+      this.isCreateMode = true;
+    },
+    onPostClick(postId) {
+      this.selectedPostID = postId;
+      this.isDetailMode = true;
+      this.isListMode = false;
+      this.isCreateMode = false;
+    },
+    goBack() {
+      this.isDetailMode = false;
+      this.isListMode = true;
+      this.isCreateMode = false;
+      this.selectedPostID = null;
+    },
     async deletePost(postId) {
       try {
         const token = localStorage.getItem('token');
@@ -167,9 +184,9 @@ export default {
         this.content = response.data.content;
 
         this.selectedPostID = postId;
-      this.isDetailMode = false;
-      this.isListMode = false;
-      this.isEditMode = true;
+        this.isDetailMode = false;
+        this.isListMode = false;
+        this.isEditMode = true;
       } catch (error) {
         console.error(error);
       }
@@ -185,13 +202,15 @@ export default {
   margin-top: 20px;
   font-family: 'NanumSquareNeo';
 }
-    
+
 .title-label {
-  font-size: 27px; /* 상대적인 단위로 변경 */
+  font-size: 27px;
+  /* 상대적인 단위로 변경 */
   font-weight: bold;
   color: #484848;
-  margin-left: 25px; /* 상대적인 단위로 변경 */
-  margin-bottom: 5px ;
+  margin-left: 25px;
+  /* 상대적인 단위로 변경 */
+  margin-bottom: 5px;
 }
 
 .post-add-button-container {
@@ -224,9 +243,10 @@ export default {
   box-shadow: 2px 2px 4px 1px rgba(0, 0, 0, 0.2);
 
 }
+
 /*------------------------------------------------------------------------------*/
 .container {
-  margin: 0 auto; 
+  margin: 0 auto;
   margin-top: 4%;
   width: 92%;
   height: 90%;
@@ -342,5 +362,44 @@ textarea {
 
 .btn-secondary:hover {
   box-shadow: 2px 4px 4px rgba(0, 0, 0, 0.4);
+}
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 1.5%; 
+}
+
+@media screen and (max-width: 1500px) {
+  .pagination {
+    margin-left: -15%;
+  }
+}
+.pagination button {
+  background-color: #605548; 
+  color: #fff; 
+  border: none; 
+  border-radius: 5px; 
+  padding: 1.1% 1.9%; 
+  margin: 0 5px; 
+  cursor: pointer; 
+  font-size: 14px; 
+  transition: box-shadow 0.3s ease;
+  font-family: 'NanumSquareNeo';
+}
+.pagination button:hover{
+  box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.4);
+}
+.pagination button:disabled {
+  opacity: 0.5; /* 비활성 상태일 때 투명도 조절 */
+  cursor: not-allowed; /* 비활성 상태일 때 포인터 커서 변경 */
+}
+
+.pagination span {
+  margin: 0 5%; 
+  font-size: 16px;
+  color: #333; 
+  font-family: 'NanumSquareNeo';
 }
 </style>
