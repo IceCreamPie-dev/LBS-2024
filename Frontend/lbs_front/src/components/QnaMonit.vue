@@ -5,14 +5,14 @@
       </div>
       <div class="yellow-line"></div>
 <div v-if=isListMode>
-  <div v-if=role> <!-- 관리자 게시물 생성 기능이 보임 왼쪼 정렬-->
+  <div v-if=hastoken> <!-- 관리자 게시물 생성 기능이 보임 왼쪼 정렬-->
     <div class="post-add-button-container">
   <button class="post-add-button" @click="clickAddPostMod">게시물 생성</button>
 </div> 
 </div>
   <div v-for="post in posts" :key="post.qid">
           <QnABoardItem :post-id="post.qid" :title="post.title" :createdAt="post.created_at" :content="post.content"
-          :role="role" @onPostClick="onPostClick" @deletePost="deletePost" @clickEditPost="clickEditPost"/>
+          :role="role" :email="post.email" @onPostClick="onPostClick" @deletePost="deletePost" @clickEditPost="clickEditPost"/>
   </div>
   </div>
 <div v-else-if=isDetailMode>
@@ -71,6 +71,7 @@ export default {
       isListMode: true,
       selectedPostID: null,
       role: false,
+      hastoken: false,
       };
   },
   created() {
@@ -80,6 +81,7 @@ export default {
           this.isLogin = true;
           const decoded = jwtDecode(token);
           this.role = decoded.role.toString() === '1' ? true : false;
+          this.hastoken = true;
 }
 },
   methods: {
@@ -91,7 +93,7 @@ export default {
               console.error(error);
           }
       },
-      async CreatePost() {
+      async createPost() {
     try {
       const token = localStorage.getItem('token');
       const response = await axios.post('/api/board/QnA', {

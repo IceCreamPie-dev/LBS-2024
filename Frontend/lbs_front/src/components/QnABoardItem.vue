@@ -5,13 +5,14 @@
       <h5 class="card-title" @click="handleClick">{{ postId }}</h5>
       <p class="card-text" @click="handleClick">{{ title }}</p>
       <p class="text-muted" @click="handleClick">{{ formattedDate }}</p>
-    <button @click="clickEditPost(postId)" class="action-button"><img src="@/assets/submit.svg" alt="수정"></button>      
-    <button @click="deletePost(postId)" class="action-button"><img src="@/assets/delete.svg" alt="삭제"></button>      
+    <button v-if="email === currentUserEmail || role" @click="clickEditPost(postId)" class="action-button"><img src="@/assets/submit.svg" alt="수정"></button>      
+    <button v-if="email === currentUserEmail || role" @click="deletePost(postId)" class="action-button"><img src="@/assets/delete.svg" alt="삭제"></button>      
     </div>
     </div>
 </template>
 
 <script>
+import { jwtDecode } from 'jwt-decode';
 export default {
   props: {
     postId: {
@@ -25,11 +26,26 @@ export default {
     createdAt: {
       type: [String, Date, Number],
     },
+    email: {
+      type: String,
+      required: true,
+    },
   },
   Data() {
     return {
       formattedDate: '',
+      currentUserEmail: '',
+      role: 0,
     };
+  },
+  created() {
+    const token = localStorage.getItem('token');
+    if (token) {
+      this.isLogin = true;
+      const decoded = jwtDecode(token);
+      this.currentUserEmail = decoded.email;
+      this.role = decoded.role.toString() === '1' ? true : false;
+    }
   },
   computed: {
     formattedDate() {
