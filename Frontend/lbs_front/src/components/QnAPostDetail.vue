@@ -2,12 +2,12 @@
   <div class="post-details">
     <form class="post-form">
       <h2 class="post-title">{{ post.title }}</h2>
-      <p class="post-content">{{ post.content }}</p>
-      <p>작성일: {{ post.createdAt }}</p>
+      <pre class="post-content">{{ post.content }}</pre>
+      <p>작성일: {{ post.created_at }}</p>
     </form>
     <div class="post-btn">
-    <button @click="goBack" class="back-button">목록으로 돌아가기</button>
-  </div>
+      <button @click="goBack" class="back-button">목록으로 돌아가기</button>
+    </div>
   </div>
 </template>
 
@@ -15,7 +15,7 @@
 import axios from 'axios';
 
 export default {
-props: ['postId'],
+  props: ['postId'],
   data() {
     return {
       post: {},
@@ -24,12 +24,12 @@ props: ['postId'],
   created() {
     this.fetchPost();
   },
-mounted() {
-  window.addEventListener('keydown', this.handleKeydown);
-},
-beforeUnmount() {
-  window.removeEventListener('keydown', this.handleKeydown);
-},
+  mounted() {
+    window.addEventListener('keydown', this.handleKeydown);
+  },
+  beforeUnmount() {
+    window.removeEventListener('keydown', this.handleKeydown);
+  },
   methods: {
     async fetchPost() {
       try {
@@ -39,14 +39,14 @@ beforeUnmount() {
         console.error(error);
       }
     },
-  goBack() {
-    this.$emit('goBack');
-  },
-  handleKeydown(event) {
-    if (event.key === 'Escape') {
-      this.goBack();
-    }
-  },
+    goBack() {
+      this.$emit('goBack');
+    },
+    handleKeydown(event) {
+      if (event.key === 'Escape') {
+        this.goBack();
+      }
+    },
   },
 };
 </script>
@@ -56,14 +56,14 @@ beforeUnmount() {
   height: 90%;
   margin: 0 auto;
   margin-top: 2.7%;
-  padding: 1%; 
+  padding: 1%;
   background-color: #fff;
-  border-radius: 10px; 
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.post-form{
-  margin: 0 auto; 
+.post-form {
+  margin: 0 auto;
   margin: 2%;
   width: 92%;
   height: 90%;
@@ -73,23 +73,25 @@ beforeUnmount() {
   font-family: 'NanumSquareNeo';
 
 }
+
 .post-title {
-  font-size: 24px; 
+  font-size: 24px;
   padding: 1%;
-  font-weight: bold; 
+  font-weight: bold;
   color: #605548;
   margin-bottom: 2%;
   border-bottom: #FFDE80 3px solid;
 }
 
 .post-content {
-  font-size: 16px; 
+  font-size: 16px;
   height: 90%;
-  color: #80776D; 
-  margin-bottom: 20px; 
+  color: #80776D;
+  margin-bottom: 20px;
+  white-space: pre-wrap;
 }
 
-.post-btn{
+.post-btn {
 
   text-align: center;
 }
@@ -101,15 +103,17 @@ beforeUnmount() {
   font-size: 16px;
   background-color: #FFDE80;
   color: #605548;
-  border: none; 
+  border: none;
   border-radius: 5px;
-  cursor: pointer; 
-  transition: background-color 0.3s; /* 호버 효과 애니메이션 */
+  cursor: pointer;
+  transition: background-color 0.3s;
+  /* 호버 효과 애니메이션 */
 }
 
 .back-button:hover {
-  background-color: #FFCE55; /* 호버 시 배경색 변경 */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  background-color: #FFCE55;
+  /* 호버 시 배경색 변경 */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 
 }
 </style>

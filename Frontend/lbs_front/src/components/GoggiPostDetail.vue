@@ -2,7 +2,7 @@
   <div class="post-details">
     <form class="post-form">
       <h2 class="post-title">{{ post.title }}</h2>
-      <p class="post-content">{{ post.content }}</p>
+      <pre class="post-content">{{ post.content }}</pre>
     </form>
     <div class="post-btn">
     <button @click="goBack" class="back-button">목록으로 돌아가기</button>
@@ -87,6 +87,7 @@ export default {
   height: 90%;
   color: #80776D; 
   margin-bottom: 20px; 
+  white-space: pre-wrap;
 }
 
 .post-btn{

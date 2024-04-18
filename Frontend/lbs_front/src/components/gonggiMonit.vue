@@ -15,7 +15,7 @@
     <div class="pagination">
       <button :disabled="currentPage === 1" @click="changePage(currentPage - 1)">이전</button>
       <span>{{ currentPage }} / {{ totalPages }}</span>
-      <button :disabled="currentPage === totalPages" @click="changePage(currentPage + 1)">다음</button>
+      <button :disabled="currentPage >= totalPages" @click="changePage(currentPage + 1)">다음</button>
     </div>
   </div>
   <div v-else-if=isDetailMode>
