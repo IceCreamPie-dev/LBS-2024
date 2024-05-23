@@ -1,4 +1,4 @@
-컴퓨터 종합 설계 1 - 4팀
+2024년 1학기 컴퓨터 종합 설계 1 - 4팀
 제목 : 졸업도우미 Department of Computer Science and Engineering
 
 클라이언트 구조 사이트
